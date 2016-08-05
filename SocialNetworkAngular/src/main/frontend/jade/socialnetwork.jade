@@ -1,0 +1,21 @@
+doctype html
+html(lang='en', data-ng-app="socialNetworkApp")
+    head
+        title="SocialNetwork"
+        meta(http-equiv="Content-type", content="text/html;charset=UTF-8")
+        meta(name="viewport", content="width=device-width, user-scalable=yes, initial-scale=1")
+        
+        link(type='text/css', rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css')
+        script(src='../js/socialnetwork/build/app#{jsSuffix}.js')
+        script.
+            if (window.applicationCache) {
+                window.applicationCache.addEventListener('updateready', function () {
+                    window.applicationCache.swapCache();
+                    window.location.reload();
+                }, false);
+            }
+        
+    body(data-ng-controller="AppController")
+        div.navbar.navbar-inverse(data-header-block)
+        div.container
+            div.col-lg-12(data-ng-view)

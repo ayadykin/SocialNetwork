@@ -1,0 +1,200 @@
+package com.social.network.services;
+
+import static org.junit.Assert.*;
+
+import org.hibernate.SessionFactory;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
+
+import com.social.network.config.ApplicationConfig;
+import com.social.network.config.HibernateConfig;
+import com.social.network.config.RedisConfig;
+import com.social.network.config.SecurityConfig;
+import com.social.network.exceptions.chat.ChatRemovedException;
+import com.social.network.exceptions.friend.FriendNotExistException;
+import com.social.network.exceptions.group.GroupAdminException;
+import com.social.network.exceptions.group.GroupPermissionExceptions;
+import com.social.network.model.Group;
+
+/**
+ * Created by andrii.perylo on 5/18/2016.
+ */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = { ApplicationConfig.class, HibernateConfig.class, SecurityConfig.class,
+        RedisConfig.class }, loader = AnnotationConfigContextLoader.class)
+public class GroupServiceTest extends InitTest {
+
+    @Autowired
+    private GroupService groupService;
+    @Autowired
+    private ChatService chatService;
+    @Autowired
+    private FriendService friendService;
+    @Autowired
+    private SessionFactory sessionFactory;
+    private Group group;
+    
+    @Before
+    public void createEmptyGroup() {
+
+        authService.signin(account10);
+        friendService.inviteFriend(user20.getUserId());
+        authService.signin(account20);
+        friendService.acceptInvitation(user10.getUserId());
+        // String[] usersIdList = new String[1];
+        // usersIdList[0] = ((Long) user20.getUserId()).toString();
+        authService.signin(account10);
+        group = groupService.createGroup("testGroup", null);
+        
+        clearSession();
+    }
+    
+    private void clearSession(){
+        sessionFactory.getCurrentSession().flush();
+        sessionFactory.getCurrentSession().clear();
+    }
+    
+    @Test
+    public void testCreateEmptyGroup() {
+        assertEquals(group.getGroupId(), groupService.getGroup(group.getGroupId()).getGroupId());
+    }
+
+    @Test
+    public void testDeleteGroup() {           
+        assertEquals(1, groupService.getGroups().size());
+        assertEquals(2, chatService.getChatsList().size());     
+        
+        groupService.deleteGroup(group.getGroupId());
+        
+        clearSession();
+        
+        assertTrue(groupService.getGroup(group.getGroupId()).getChat().getHidden());     
+    }
+
+    @Test
+    public void testAddUserToGroup() {
+        
+        assertEquals(1, groupService.getGroup(group.getGroupId()).getChat().getUsers().size());
+        
+        groupService.addUserToGroup(group.getGroupId(), user20.getUserId());
+        authService.signin(account20);
+        
+        assertEquals(2, groupService.getGroup(group.getGroupId()).getChat().getUsers().size());
+    }
+
+    @Test(expected = FriendNotExistException.class)
+    public void testAddNotFriendToGroup() {
+        groupService.addUserToGroup(group.getGroupId(), user30.getUserId());
+    }
+
+    @Test
+    public void testDeleteUserFromGroup() {
+        
+        assertEquals(1, groupService.getGroup(group.getGroupId()).getChat().getUsers().size());
+        
+        groupService.addUserToGroup(group.getGroupId(), user20.getUserId());
+        
+        assertEquals(2, groupService.getGroup(group.getGroupId()).getChat().getUsers().size());
+
+        groupService.deleteUserFromGroup(group.getGroupId(), user20.getUserId());
+
+        clearSession();
+        
+        assertEquals(1, groupService.getGroup(group.getGroupId()).getChat().getUsers().size());
+        assertEquals(1, groupService.getGroups().size());
+        assertEquals(2, chatService.getChatsList().size());
+        
+        authService.signin(account20);
+        assertEquals(0, groupService.getGroups().size());
+        assertEquals(1, chatService.getChatsList().size());
+    }
+
+    @Test
+    public void testLeaveGroup() {
+
+        groupService.addUserToGroup(group.getGroupId(), user20.getUserId());
+ 
+        authService.signin(account20);       
+        clearSession();
+        
+        assertEquals(1, groupService.getGroups().size());      
+        assertEquals(2, groupService.getGroup(group.getGroupId()).getChat().getUsers().size());
+
+        groupService.leaveGroup(group.getGroupId());       
+        clearSession();
+        
+        assertEquals(0, groupService.getGroups().size());
+        assertEquals(1, chatService.getChatsList().size());
+        
+        authService.signin(account10);
+        clearSession();
+        
+        assertEquals(1, groupService.getGroup(group.getGroupId()).getChat().getUsers().size());
+    }
+
+    @Test(expected = GroupPermissionExceptions.class)
+    public void testDeleteUserByNotGroupUserException() {
+        authService.signin(account30);
+        groupService.deleteUserFromGroup(group.getGroupId(), user20.getUserId());
+    }
+
+    @Test(expected = GroupAdminException.class)
+    public void testDeleteUserByNotAdminException() {
+        authService.signin(account20);
+        groupService.deleteUserFromGroup(group.getGroupId(), user20.getUserId());
+    }
+
+    @Test(expected = GroupAdminException.class)
+    public void testDeleteAdminException() {
+        groupService.deleteUserFromGroup(group.getGroupId(), user10.getUserId());
+    }
+
+    @Test(expected = GroupPermissionExceptions.class)
+    public void testNoSuchUserDeleteException() {
+        groupService.deleteUserFromGroup(group.getGroupId(), user30.getUserId());
+    }
+
+    @Test(expected = GroupAdminException.class)
+    public void testNotAdminAddUserException() {
+        authService.signin(account20);
+        groupService.addUserToGroup(group.getGroupId(), user30.getUserId());
+    }
+
+    @Test
+    public void testAlreadyInGroupAddException() {
+        groupService.addUserToGroup(group.getGroupId(), user20.getUserId());
+    }
+
+    @Test(expected = GroupPermissionExceptions.class)
+    public void testGetGroupException() {
+        authService.signin(account30);
+        groupService.getGroup(group.getGroupId());
+    }
+
+    @Test(expected = GroupPermissionExceptions.class)
+    public void testAdminLeaveGroupException() {
+        groupService.leaveGroup(group.getGroupId());
+    }
+
+    @Test(expected = GroupPermissionExceptions.class)
+    public void testNullPointerException() {
+        groupService.getGroup(100L);
+    }
+    
+    @Test(expected = ChatRemovedException.class)
+    public void testSendMessageToDeletedGroupException() {
+        groupService.deleteGroup(group.getGroupId());
+        chatService.sendMessage("Test", group.getChatId());
+    }
+
+    @Test
+    public void testNoGroups() {
+        authService.signin(account30);
+        assertEquals(0, groupService.getGroups().size());
+    }
+}
