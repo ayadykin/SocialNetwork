@@ -241,7 +241,7 @@ public class GroupServiceImpl implements GroupService {
         logger.debug("-> getFriendsNotInGroup: start stream filter");
 
         List<User> users = loggedUser.getFriends().stream()
-                .filter(p -> p.getFriend() != groupUsers.stream().filter(g -> g != p.getFriend()).iterator().next()
+                .filter(p -> p.getFriend() != groupUsers.stream().filter(g -> g.getUserId() != p.getUser().getUserId()).iterator().next()
                         && p.getFriendStatus() == FriendStatus.ACCEPTED)
                 .map(f -> f.getFriend()).collect(Collectors.toList());
 
@@ -316,7 +316,11 @@ public class GroupServiceImpl implements GroupService {
 
     private void isYourFriend(User loggedUser, User invitedUser) {
         logger.debug("-> isYourFriend ");
-        friendService.validateFriendByStatus(invitedUser, loggedUser, FriendStatus.ACCEPTED);
+        try {
+            friendService.validateFriendByStatus(invitedUser, loggedUser, FriendStatus.ACCEPTED);
+        } catch (RuntimeException e) {
+            throw new GroupPermissionExceptions("You catn't add this user!");
+        }
     }
 
 }

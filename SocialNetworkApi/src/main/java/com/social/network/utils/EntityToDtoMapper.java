@@ -3,7 +3,6 @@ package com.social.network.utils;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -45,8 +44,8 @@ public class EntityToDtoMapper {
                 ownerName, message.getPublisherId());
 
         // Get invitation message flag
-        if (message instanceof  SystemMessage) {
-            messageDto.setMessageInviteStatus(((SystemMessage)message).getSystemMessageStatus());
+        if (message instanceof SystemMessage) {
+            messageDto.setMessageInviteStatus(((SystemMessage) message).getSystemMessageStatus());
         }
         // Get hidden message flag
         if (message.getHidden().isHidden()) {
@@ -63,8 +62,9 @@ public class EntityToDtoMapper {
     }
 
     public static FriendDto convertFriendToFriendDto(Friend friend) {
-        logger.debug(" convertFriendToFriendDto friend {} ", friend);
-        return new FriendDto(friend.getFriendName(), friend.getFriendStatus(), friend.getChat().getChatId());
+        logger.debug(" convertFriendToFriendDto ");
+        return new FriendDto(friend.getFriend().getUserId(), friend.getFriendName(), friend.getFriendStatus(),
+                friend.getChat().getChatId());
     }
 
     public static Set<GroupUserDto> convertUserToGroupUserDto(Set<User> users, long adminId) {
@@ -80,16 +80,20 @@ public class EntityToDtoMapper {
         return usersList;
     }
 
-    public static GroupDto convertGroupToGroupsDto(Group group, long loggedUserId) {
-        return convertGroupsToGroupsDto(Arrays.asList(group), loggedUserId).iterator().next();
+    public static GroupDto convertGroupToGroupsDto(Group group, long loggedUserId, boolean withUsers) {
+        return convertGroupsToGroupsDto(Arrays.asList(group), loggedUserId, withUsers).iterator().next();
     }
 
-    public static Set<GroupDto> convertGroupsToGroupsDto(List<Group> groups, long loggedUserId) {
+    public static Set<GroupDto> convertGroupsToGroupsDto(List<Group> groups, long loggedUserId, boolean withUsers) {
         logger.debug(" convertGroupsToGroupsDto groups size {} ", groups.size());
         Set<GroupDto> groupsDtoList = new HashSet<>();
         for (Group group : groups) {
             boolean isAdmin = loggedUserId == group.getAdminId();
-            Set<GroupUserDto> users = convertUserToGroupUserDto(group.getChat().getUsers(), group.getAdminId());
+
+            Set<GroupUserDto> users = null;
+            if (withUsers) {
+                users = convertUserToGroupUserDto(group.getChat().getUsers(), group.getAdminId());
+            }
 
             groupsDtoList.add(
                     new GroupDto(group.getGroupName(), group.getGroupId(), group.getChatId(), users, isAdmin, group.getChat().getHidden()));

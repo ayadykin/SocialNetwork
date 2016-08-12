@@ -2,7 +2,6 @@ package com.social.network.facade;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,7 +60,7 @@ public class ChatServiceFacade {
     public List<MessageDto> getChatMesasges(long chatId, Period filter) {
 
         long userId = userService.getLoggedUserId();
-        Set<Message> messagesList = chatService.getChatMesasges(chatId, true, filter);
+        List<Message> messagesList = chatService.getChatMesasges(chatId, true, filter);
         // Fill MessageDto list
         List<MessageDto> messages = new ArrayList<>();
         for (Message message : messagesList) {

@@ -1,6 +1,7 @@
 package com.social.network.dao.impl;
 
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import com.social.network.dao.ChatDao;
 import com.social.network.model.Chat;
+import com.social.network.model.Message;
 import com.social.network.model.User;
 
 /**
@@ -31,24 +33,23 @@ public class ChatDaoImpl extends GenericDaoHibernate<Chat, Long> implements Chat
     }
 
     @Override
-    public Chat getMessages(long chatId, User user, boolean readed, Date date) {
+    public List<Message> getMessages(long chatId, User user, boolean readed, Date date) {
 
-        logger.debug("getMessages : chatId = {}, userId = {},readed = {}, filter date = {} ", chatId, user.getUserId(),
-                readed, date);
+        logger.debug("getMessages : chatId = {}, userId = {},readed = {}, filter date = {} ", chatId, user.getUserId(), readed, date);
         Session session = sessionFactory.getCurrentSession();
 
         if (date != null) {
             session.enableFilter("messageLimit").setParameter("minDate", date);
         }
 
-        Criteria criteria = session.createCriteria(Chat.class, "chat");
-        criteria.createAlias("chat.messages", "messages", JoinType.LEFT_OUTER_JOIN);
-        criteria.createAlias("messages.recipient", "recipient");
+        Criteria criteria = session.createCriteria(Message.class, "message");
+        criteria.createAlias("message.chat", "chat", JoinType.LEFT_OUTER_JOIN);
+        criteria.createAlias("message.recipient", "recipient");
 
         criteria.add(Restrictions.eq("chat.chatId", chatId));
         criteria.add(Restrictions.eq("recipient.user", user));
         criteria.add(Restrictions.eq("recipient.readed", readed));
 
-        return (Chat) criteria.uniqueResult();
+        return criteria.list();
     }
 }

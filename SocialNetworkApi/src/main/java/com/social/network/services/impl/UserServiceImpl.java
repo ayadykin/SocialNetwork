@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     public User getLoggedUserEntity() {
         logger.debug(" getLoggedUserEntity ");
 
-        return userDao.get(getLoggedAccount().getUser().getUserId());
+        return DaoValidation.userExistValidation(userDao,getLoggedAccount().getUser().getUserId());
     }
 
     @Override

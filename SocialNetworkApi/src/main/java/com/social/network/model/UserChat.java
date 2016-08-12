@@ -27,7 +27,7 @@ import com.social.network.utils.Constants;
 public class UserChat implements Serializable {
     @EmbeddedId
     private UserChatId pk;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "chatId", insertable = false, updatable = false)
     private Chat chat;
     @ManyToOne
@@ -35,6 +35,14 @@ public class UserChat implements Serializable {
     private User user;
 
     private String chatName;
+
+    public UserChatId getPk() {
+        return pk;
+    }
+
+    public void setPk(UserChatId pk) {
+        this.pk = pk;
+    }
 
     public String getChatName() {
         return chatName;

@@ -1,8 +1,9 @@
 package com.social.network.services.impl;
 
 import java.text.ParseException;
-import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -21,8 +22,10 @@ import com.social.network.model.Chat;
 import com.social.network.model.Message;
 import com.social.network.model.User;
 import com.social.network.model.UserChat;
+import com.social.network.model.enums.FriendStatus;
 import com.social.network.model.enums.Period;
 import com.social.network.services.ChatService;
+import com.social.network.services.FriendService;
 import com.social.network.services.MessageService;
 import com.social.network.services.UserService;
 import com.social.network.utils.Constants;
@@ -44,6 +47,8 @@ public class ChatServiceImpl implements ChatService {
     @Autowired
     private UserService userService;
     @Autowired
+    private FriendService friendService;
+    @Autowired
     private MessageService messageService;
 
     @Override
@@ -57,7 +62,7 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Message> getChatMesasges(long chatId, boolean readed, Period period) {
+    public List<Message> getChatMesasges(long chatId, boolean readed, Period period) {
         logger.debug("getChatMesasges : chatId = {}, period = {}", chatId, period);
         User loggedUser = userService.getLoggedUserEntity();
 
@@ -67,13 +72,7 @@ public class ChatServiceImpl implements ChatService {
         // Get list of messages
         Date date = getDate(period);
 
-        Chat chat = chatDao.getMessages(chatId, loggedUser, readed, date);
-
-        if (chat == null) {
-            return Collections.emptySet();
-        } else {
-            return chat.getMessages();
-        }
+        return chatDao.getMessages(chatId, loggedUser, readed, date);
     }
 
     @Override
@@ -124,7 +123,7 @@ public class ChatServiceImpl implements ChatService {
         UserChat userChat = userChatDao.findByChatAndUser(chatId, userId);
         validateChat(userChat);
         validateHiddenChat(userChat);
-        validateFriend();
+        validateFriend(chatId);
     }
 
     private void getChatMesasgesValidate(long chatId, long userId) {
@@ -132,9 +131,17 @@ public class ChatServiceImpl implements ChatService {
         validateChat(userChat);
     }
 
-    private void validateFriend() {
+    private void validateFriend(long chatId) {
 
-        // TODO
+        Chat chat = DaoValidation.chatExistValidation(chatDao, chatId);
+        Iterator<User> iterator = chat.getUsers().iterator();
+        User inviterUser = iterator.next();
+        User inviteeUser = iterator.next();
+        try {
+            friendService.validateFriendByStatus(inviterUser, inviteeUser, FriendStatus.ACCEPTED);
+        } catch (RuntimeException e) {
+            throw new ChatPermissionException("Friend not accepted your invitation");
+        }
 
     }
 

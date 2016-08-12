@@ -1,5 +1,6 @@
 package com.social.network.services;
 
+import java.util.List;
 import java.util.Set;
 
 import com.social.network.model.Message;
@@ -30,7 +31,7 @@ public interface ChatService {
      * 
      * @return list of messages
      */
-    Set<Message> getChatMesasges(long chatId, boolean readed, Period period);
+    List<Message> getChatMesasges(long chatId, boolean readed, Period period);
 
     /**
      * Send message to chat

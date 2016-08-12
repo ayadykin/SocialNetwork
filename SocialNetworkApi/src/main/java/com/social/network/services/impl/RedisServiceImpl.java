@@ -46,11 +46,9 @@ public class RedisServiceImpl implements RedisService {
         long userId = userService.getLoggedUserId();
         BoundListOperations<String, MessageDto> listOps = redisTemplate.boundListOps(Long.valueOf(userId).toString());
 
+        User loggedUser = userService.getLoggedUserEntity();
         MessageDto messageDto = listOps.leftPop();
         if (messageDto != null) {
-
-            // Translate
-            User loggedUser = userService.getLoggedUserEntity();
             if (loggedUser.getProfile().isTranslate()) {
                 Locale locale = loggedUser.getProfile().getLocale();
                 logger.debug("getMessage translate to language : {}", locale.getLanguage());

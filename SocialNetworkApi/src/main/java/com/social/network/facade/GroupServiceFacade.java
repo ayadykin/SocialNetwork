@@ -37,19 +37,19 @@ public class GroupServiceFacade {
 
         Group group = groupService.createGroup(name, userList);
         
-        /*Set<Message> messages = group.getChat().getMessages();
+        Set<Message> messages = group.getChat().getMessages();
 
         // Send messages to redis
         for (Message message : messages) {
             sendMessageToRedis(message, userId);
-        }*/
-        return EntityToDtoMapper.convertGroupToGroupsDto(group, userId);
+        }
+        return EntityToDtoMapper.convertGroupToGroupsDto(group, userId, false);
     }
 
     @Transactional
     public Set<GroupDto> getGroups() {
         long userId = userService.getLoggedUserId();
-        return EntityToDtoMapper.convertGroupsToGroupsDto(groupService.getGroups(), userId);
+        return EntityToDtoMapper.convertGroupsToGroupsDto(groupService.getGroups(), userId, false);
     }
 
     @Transactional
@@ -58,7 +58,7 @@ public class GroupServiceFacade {
 
         Group group = groupService.getGroup(groupId);
 
-        return EntityToDtoMapper.convertGroupToGroupsDto(group, userId);
+        return EntityToDtoMapper.convertGroupToGroupsDto(group, userId, true);
     }
 
     @Transactional

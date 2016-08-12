@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -60,12 +58,7 @@ public class Chat implements Serializable {
         this.creation = new CreationLabel();
         this.hidden = new HiddenLabel();
     }
-    
 
-    public Chat getChat() {
-        return this;
-    }
-    
     public long getChatId() {
         return chatId;
     }

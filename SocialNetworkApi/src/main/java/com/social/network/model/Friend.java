@@ -34,7 +34,7 @@ public class Friend implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long friendId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "chat_id")
     private Chat chat;
 
