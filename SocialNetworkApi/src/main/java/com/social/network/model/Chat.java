@@ -1,18 +1,16 @@
 package com.social.network.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Set;
 
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -30,7 +28,6 @@ import com.social.network.model.labels.HiddenLabel;
  */
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 public class Chat implements Serializable {
 
     @Id
@@ -49,25 +46,26 @@ public class Chat implements Serializable {
     private Set<Message> messages = new LinkedHashSet<>();
 
     @OrderBy("userId")
-    @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
+    @Cascade(CascadeType.MERGE)
     @ManyToMany
     @JoinTable(name = "user_chat", joinColumns = { @JoinColumn(name = "chatId") }, inverseJoinColumns = { @JoinColumn(name = "userId") })
-    private List<User> users = new ArrayList<>();
+    private Set<User> users = new LinkedHashSet<>();
 
     public Chat() {
 
     }
 
-    public Chat(List<User> users) {
+    public Chat(Set<User> users) {
         this.users = users;
         this.creation = new CreationLabel();
         this.hidden = new HiddenLabel();
     }
+    
 
     public Chat getChat() {
         return this;
     }
-
+    
     public long getChatId() {
         return chatId;
     }
@@ -92,7 +90,7 @@ public class Chat implements Serializable {
         this.messages = messages;
     }
 
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
@@ -104,7 +102,7 @@ public class Chat implements Serializable {
         users.remove(user);
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 

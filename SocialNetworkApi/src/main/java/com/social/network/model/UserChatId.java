@@ -3,7 +3,6 @@ package com.social.network.model;
 import java.io.Serializable;
 
 import javax.persistence.Embeddable;
-import javax.persistence.ManyToOne;
 
 /**
  * Created by Yadykin Andrii Jul 12, 2016

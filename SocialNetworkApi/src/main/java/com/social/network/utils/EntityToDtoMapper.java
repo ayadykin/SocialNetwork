@@ -1,9 +1,10 @@
 package com.social.network.utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +15,12 @@ import com.social.network.dto.GroupDto;
 import com.social.network.dto.GroupUserDto;
 import com.social.network.dto.MessageDto;
 import com.social.network.exceptions.chat.ConvertMessageException;
-import com.social.network.model.Chat;
 import com.social.network.model.Friend;
 import com.social.network.model.Group;
 import com.social.network.model.Message;
+import com.social.network.model.SystemMessage;
 import com.social.network.model.User;
+import com.social.network.model.UserChat;
 
 /**
  * Created by Yadykin Andrii Jul 14, 2016
@@ -43,8 +45,8 @@ public class EntityToDtoMapper {
                 ownerName, message.getPublisherId());
 
         // Get invitation message flag
-        if (Objects.nonNull(message.getSystemMessage())) {
-            messageDto.setMessageInviteStatus(message.getSystemMessageStatus());
+        if (message instanceof  SystemMessage) {
+            messageDto.setMessageInviteStatus(((SystemMessage)message).getSystemMessageStatus());
         }
         // Get hidden message flag
         if (message.getHidden().isHidden()) {
@@ -56,25 +58,21 @@ public class EntityToDtoMapper {
         return messageDto;
     }
 
-    public static ChatDto convertChatToChatDto(Chat chat, String chatName) {
-        return new ChatDto(chat.getChatId(), chatName, chat.getHidden());
+    public static ChatDto convertChatToChatDto(UserChat chat) {
+        return new ChatDto(chat.getChat().getChatId(), chat.getChatName(), chat.getChat().getHidden());
     }
 
     public static FriendDto convertFriendToFriendDto(Friend friend) {
         logger.debug(" convertFriendToFriendDto friend {} ", friend);
-        return new FriendDto(friend.getFriendName(), friend.getFriendStatus(), friend.getChatId());
+        return new FriendDto(friend.getFriendName(), friend.getFriendStatus(), friend.getChat().getChatId());
     }
 
-    public static GroupDto convertGroupToGroupsDto(Group group, long loggedUserId) {
-        return convertGroupsToGroupsDto(Arrays.asList(group), loggedUserId).get(0);
-    }
-
-    public static List<GroupUserDto> convertUserToGroupUserDto(List<User> users, long adminId) {
-        List<GroupUserDto> usersList = new ArrayList<>();
+    public static Set<GroupUserDto> convertUserToGroupUserDto(Set<User> users, long adminId) {
+        Set<GroupUserDto> usersList = new HashSet<>();
         for (User user : users) {
             boolean isAdmin = user.getUserId() == adminId;
             if (isAdmin) {
-                usersList.add(0, new GroupUserDto(user.getUserId(), user.getUserFullName(), isAdmin));
+                usersList.add(new GroupUserDto(user.getUserId(), user.getUserFullName(), isAdmin));
             } else {
                 usersList.add(new GroupUserDto(user.getUserId(), user.getUserFullName(), isAdmin));
             }
@@ -82,14 +80,19 @@ public class EntityToDtoMapper {
         return usersList;
     }
 
-    public static List<GroupDto> convertGroupsToGroupsDto(List<Group> groups, long loggedUserId) {
+    public static GroupDto convertGroupToGroupsDto(Group group, long loggedUserId) {
+        return convertGroupsToGroupsDto(Arrays.asList(group), loggedUserId).iterator().next();
+    }
+
+    public static Set<GroupDto> convertGroupsToGroupsDto(List<Group> groups, long loggedUserId) {
         logger.debug(" convertGroupsToGroupsDto groups size {} ", groups.size());
-        List<GroupDto> groupsDtoList = new ArrayList<>();
+        Set<GroupDto> groupsDtoList = new HashSet<>();
         for (Group group : groups) {
             boolean isAdmin = loggedUserId == group.getAdminId();
-            List<GroupUserDto> users = convertUserToGroupUserDto(group.getUsers(), group.getAdminId());
+            Set<GroupUserDto> users = convertUserToGroupUserDto(group.getChat().getUsers(), group.getAdminId());
 
-            groupsDtoList.add(new GroupDto(group.getGroupName(), group.getChatId(), users, isAdmin, group.getHidden()));
+            groupsDtoList.add(
+                    new GroupDto(group.getGroupName(), group.getGroupId(), group.getChatId(), users, isAdmin, group.getChat().getHidden()));
         }
         logger.debug(" convertGroupsToGroupsDto groups {} ", groupsDtoList);
         return groupsDtoList;

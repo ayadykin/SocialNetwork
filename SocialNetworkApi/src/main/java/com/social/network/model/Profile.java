@@ -22,10 +22,10 @@ public class Profile implements Serializable {
     private long profileId;
 
     @Column
-    private String firstName;
+    private String phone;
 
     @Column
-    private String lastName;
+    private String street;
 
     @Column
     private String city;
@@ -47,12 +47,13 @@ public class Profile implements Serializable {
         this.locale = locale;
     }
 
-    public Profile(String firstName, String lastName, String city, String country, Locale locale) {
+    public Profile(String phone, String street, String city, String country, Locale locale) {
         this(locale);
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.phone = phone;
+        this.street = street;
         this.city = city;
         this.country = country;
+
     }
 
     public long getProfileId() {
@@ -63,20 +64,20 @@ public class Profile implements Serializable {
         this.profileId = profileId;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getStreet() {
+        return street;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public String getCity() {
@@ -113,8 +114,8 @@ public class Profile implements Serializable {
 
     @Override
     public String toString() {
-        return "Profile [profileId=" + profileId + ", firstName=" + firstName + ", lastName=" + lastName + ", city="
-                + city + ", country=" + country + "]";
+        return "Profile [profileId=" + profileId + ", phone=" + phone + ", street=" + street + ", city=" + city + ", country=" + country
+                + ", locale=" + locale + ", translate=" + translate + "]";
     }
 
 }

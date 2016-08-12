@@ -71,14 +71,11 @@ public class UsersChainTest {
         Group group = new Group();
         group.setAdminId(user1.getUserId());
         group.setGroupName("test");
-        group.setChat(chat);
 
-        Set<Group> groupsList = user1.getUserGroups();
-        groupsList.add(group);
 
         usersDao.save(user1);
 
-        assertEquals(group, groupsDao.get(group.getGroupId()));
+        assertEquals(group, groupsDao.get(group.getChatId()));
         assertEquals(chat, chatDao.get(chat.getChatId()));
         assertEquals(message, messageDao.get(message.getMessageId()));
         assertEquals(recipients, recipientsDao.get(recipients.getResipientId()));

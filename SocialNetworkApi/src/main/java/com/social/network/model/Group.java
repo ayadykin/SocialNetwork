@@ -1,10 +1,17 @@
 package com.social.network.model;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -19,9 +26,16 @@ import com.social.network.utils.Constants;
 
 @Entity
 @Table(name = "groups")
-@PrimaryKeyJoinColumn(name = "chatId")
-@NamedQuery(name = Constants.FIND_GROUP_BY_OWNER, query = "select g from Group g join g.users u where u = :user")
-public class Group extends Chat implements Serializable {
+@NamedQuery(name = Constants.FIND_GROUP_BY_OWNER, query = "select g from Group g join g.chat.users u where u = :user")
+public class Group implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long groupId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id")
+    private Chat chat;
 
     @NotNull
     private String groupName;
@@ -32,10 +46,30 @@ public class Group extends Chat implements Serializable {
     public Group() {
     }
 
-    public Group(String groupName, long adminId, List<User> users) {
-        super(users);
+    public Group(Chat chat, String groupName, long adminId) {
+        this.chat = chat;
         this.groupName = groupName;
         this.adminId = adminId;
+    }
+
+    public long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
+    }
+
+    public Chat getChat() {
+        return chat;
+    }
+    
+    public long getChatId() {
+        return chat.getChatId();
+    }
+    
+    public void setChat(Chat chat) {
+        this.chat = chat;
     }
 
     public String getGroupName() {

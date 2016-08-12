@@ -2,6 +2,7 @@ package com.social.network.services.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,22 +47,22 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional(readOnly = true)
     public ProfileDto getProfile() {
         User loggedUser = userService.getLoggedUserEntity();
-        logger.debug("ProfileService -> getProfile for user = {}", loggedUser.getUserId());
+        logger.debug(" -> getProfile for user = {}", loggedUser.getUserId());
         Profile profile = loggedUser.getProfile();
-        return new ProfileDto(profile.getFirstName(), profile.getLastName(), profile.getCity(), profile.getCountry(),
+        return new ProfileDto(loggedUser.getFirstName(), loggedUser.getLastName(), profile.getCity(), profile.getCountry(),
                 profile.getLocale(), profile.isTranslate());
     }
 
     @Override
     @Transactional
     public ProfileDto updateProfile(ProfileDto profileDto) {
-        logger.debug("ProfileService -> updateProfile profileDto = {}", profileDto);
+        logger.debug(" -> updateProfile profileDto = {}", profileDto);
         User loggedUser = userService.getLoggedUserEntity();
         Profile profile = loggedUser.getProfile();
 
         // Fill profile
-        profile.setFirstName(profileDto.getFirstName());
-        profile.setLastName(profileDto.getLastName());
+        loggedUser.setFirstName(profileDto.getFirstName());
+        loggedUser.setLastName(profileDto.getLastName());
         profile.setCity(profileDto.getCity());
         profile.setCountry(profileDto.getCountry());
         profile.setLocale(profileDto.getLocale());
@@ -98,14 +99,15 @@ public class ProfileServiceImpl implements ProfileService {
                 profileDto.getCity(), profileDto.getCountry());
         List<UserDto> usersList = new ArrayList<>();
 
-        User loggedUser = userService.getLoggedUserEntity();
-        List<Friend> friends = friendDao.findByOwner(loggedUser);
+        //User loggedUser = userService.getLoggedUserEntity();
+        //Set<Friend> friends = loggedUser.getFriends();
         // Fill UserDto list
         for (User user : users) {
-            UserDto userDto = cerateUserDto(user.getProfile(), user.getUserId());
-            setFriendStatus(user, loggedUser, friends, userDto);
+            UserDto userDto = cerateUserDto(user);
+            //setFriendStatus(user, loggedUser, friends, userDto);
             usersList.add(userDto);
         }
+        logger.debug(" searchProfile usersList = {}", usersList);
         return usersList;
     }
 
@@ -114,18 +116,19 @@ public class ProfileServiceImpl implements ProfileService {
     public UserDto viewProfile(long userId) {
         logger.debug("-> viewProfile userId = {}", userId);
         User loggedUser = userService.getLoggedUserEntity();
-        List<Friend> friends = friendDao.findByOwner(loggedUser);
+       //List<Friend> friends = friendDao.findByOwner(loggedUser);
 
         User user = DaoValidation.userExistValidation(usersDao, userId);
-        UserDto userDto = cerateUserDto(user.getProfile(), user.getUserId());
+        UserDto userDto = cerateUserDto(user);
 
-        setFriendStatus(user, loggedUser, friends, userDto);
+        //setFriendStatus(user, loggedUser, friends, userDto);
         return userDto;
     }
 
-    private UserDto cerateUserDto(Profile profile, long userId) {
-        return new UserDto(profile.getFirstName(), profile.getLastName(), profile.getCity(), profile.getCountry(),
-                profile.getLocale(), userId);
+    private UserDto cerateUserDto(User user) {
+        Profile profile = user.getProfile();
+        return new UserDto(user.getFirstName(), user.getLastName(), profile.getCity(), profile.getCountry(),
+                profile.getLocale(), user.getUserId());
     }
 
     private void setFriendStatus(User user, User loggedUser, List<Friend> friends, UserDto userDto) {

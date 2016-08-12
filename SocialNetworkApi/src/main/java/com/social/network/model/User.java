@@ -2,14 +2,17 @@ package com.social.network.model;
 
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -32,18 +35,68 @@ public class User implements Serializable {
 
     @OrderBy("creation")
     @ManyToMany(mappedBy = "users")
-    private Set<Chat> userChats = new HashSet<>();
+    private Set<Chat> userChats = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<Friend> friends = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<UserChat> userChat = new HashSet<>();
 
     @Cascade(CascadeType.SAVE_UPDATE)
     @OneToOne(fetch = FetchType.LAZY)
     private Profile profile;
 
+    @Column
+    private String firstName;
+
+    @Column
+    private String lastName;
+    
+    public User(String firstName, String lastName, Profile profile) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.profile = profile;
+    }
+
     public User() {
 
     }
 
-    public User(Profile profile) {
-        this.profile = profile;
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Set<UserChat> getUserChat() {
+        return userChat;
+    }
+
+    public void setUserChat(Set<UserChat> userChat) {
+        this.userChat = userChat;
+    }
+
+    public Set<Friend> getFriends() {
+        return friends;
+    }
+
+    public void setFriends(Set<Friend> friends) {
+        this.friends = friends;
+    }
+
+    public void addFriend(Friend friend) {
+        this.friends.add(friend);
     }
 
     public long getUserId() {
@@ -79,7 +132,7 @@ public class User implements Serializable {
     }
 
     public String getUserFullName() {
-        return new StringBuilder().append(profile.getFirstName()).append(" ").append(profile.getLastName()).toString();
+        return new StringBuilder().append(firstName).append(" ").append(lastName).toString();
     }
 
     @Override

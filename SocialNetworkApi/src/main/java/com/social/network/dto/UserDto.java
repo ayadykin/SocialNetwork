@@ -48,4 +48,9 @@ public class UserDto extends ProfileDto {
         this.yourProfile = yourProfile;
     }
 
+    @Override
+    public String toString() {
+        return "UserDto [userId=" + userId + ", friendStatus=" + friendStatus + ", yourProfile=" + yourProfile + "]";
+    }
+
 }

@@ -7,8 +7,11 @@ import static com.social.network.utils.Constants.DELETE_USER_FROM_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.LEAVE_GROUP_MESSAGE;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,25 +20,22 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.dao.ChatDao;
-import com.social.network.dao.FriendDao;
 import com.social.network.dao.GroupDao;
 import com.social.network.dao.UserChatDao;
-import com.social.network.dto.FriendDto;
+import com.social.network.dto.GroupUserDto;
 import com.social.network.exceptions.group.GroupAdminException;
 import com.social.network.exceptions.group.GroupPermissionExceptions;
-import com.social.network.message.Subscribers;
 import com.social.network.message.builder.MessageBuilder;
 import com.social.network.message.system.impl.GroupMessage;
 import com.social.network.model.Chat;
-import com.social.network.model.Friend;
 import com.social.network.model.Group;
 import com.social.network.model.Message;
 import com.social.network.model.User;
+import com.social.network.model.UserChat;
 import com.social.network.model.enums.FriendStatus;
 import com.social.network.services.FriendService;
 import com.social.network.services.GroupService;
 import com.social.network.services.UserService;
-import com.social.network.utils.EntityToDtoMapper;
 import com.social.network.validation.DaoValidation;
 
 /**
@@ -46,11 +46,9 @@ public class GroupServiceImpl implements GroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(GroupService.class);
     @Autowired
-    private FriendDao friendDao;
-    @Autowired
-    private ChatDao chatDao;
-    @Autowired
     private GroupDao groupDao;
+    @Autowired
+    protected ChatDao chatDao;
     @Autowired
     private UserChatDao userChatDao;
     @Autowired
@@ -95,28 +93,35 @@ public class GroupServiceImpl implements GroupService {
         // TODO Validate group name
 
         // Create user list
-        List<User> usersList = new ArrayList<>();
+        Set<User> usersList = new HashSet<>();
         usersList.add(loggedUser);
         if (Objects.nonNull(userIds)) {
             int size = userIds.length;
             for (int i = 0; i < size; ++i) {
                 User user = userService.getUserById(Long.valueOf(userIds[i]));
-                friendService.validateFriendByStatus(user, loggedUser, FriendStatus.ACCEPTED);
+                isYourFriend(loggedUser, user);
                 usersList.add(user);
             }
         }
 
+        // Create friend
+        Chat chat = chatDao.merge(new Chat(usersList));
+
         // Create group
-        Group group = groupDao.merge(new Group(name, loggedUser.getUserId(), usersList));
+        Group group = groupDao.merge(new Group(chat, name, loggedUser.getUserId()));
 
         // Create messages
-        Subscribers subscribers = new Subscribers(loggedUser, usersList);
         for (User user : usersList) {
+
+            // Set chat name
+            UserChat userChat = userChatDao.findByChatAndUser(group.getChatId(), user.getUserId());
+            userChat.setChatName(name);
+            userChatDao.saveOrUpdate(userChat);
             if (user.getUserId() == loggedUser.getUserId()) {
-                messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(CREATE_GROUP_MESSAGE, subscribers, group);
+                messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(CREATE_GROUP_MESSAGE, user, usersList, chat);
             } else {
-                messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE, user, subscribers,
-                        group);
+                messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE, user, user,
+                        usersList, chat);
             }
         }
 
@@ -135,16 +140,18 @@ public class GroupServiceImpl implements GroupService {
         User invitedUser = userService.getUserById(invitedUserId);
 
         // Validation
-        //addUserToGroupValidation(loggedUser, invitedUser, group);
+        addUserToGroupValidation(loggedUser, invitedUser, group);
 
         Chat chat = group.getChat();
         chat.addUser(invitedUser);
-        chatDao.saveOrUpdate(chat);
+
+        // Set chat name
+        UserChat loggedUserChat = userChatDao.findByChatAndUser(group.getChatId(), invitedUser.getUserId());
+        loggedUserChat.setChatName(group.getGroupName());
 
         // Create message
-        Subscribers subscribers = new Subscribers(loggedUser, chat.getUsers());
         Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE,
-                invitedUser, subscribers, chat);
+                invitedUser, loggedUser, chat.getUsers(), chat);
 
         return message;
     }
@@ -163,16 +170,12 @@ public class GroupServiceImpl implements GroupService {
         // Validation
         deleteUserFromGroupValidation(loggedUser, removedUser, group);
 
-        // Get chat
         Chat chat = group.getChat();
-
-        // Remove user from chat
-        removeUserFromChat(removedUser, chat);
+        chat.removeUser(removedUser);
 
         // Create message
-        Subscribers subscribers = new Subscribers(loggedUser, chat.getUsers());
         Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(DELETE_USER_FROM_GROUP_MESSAGE,
-                removedUser, subscribers, chat);
+                removedUser, loggedUser, chat.getUsers(), chat);
 
         return message;
     }
@@ -189,15 +192,13 @@ public class GroupServiceImpl implements GroupService {
         // Validation
         leaveGroupValidation(loggedUser, group);
 
-        // Get chat
         Chat chat = group.getChat();
 
-        // Remove user from chat
-        removeUserFromChat(loggedUser, chat);
         // Create message
-        Subscribers subscribers = new Subscribers(loggedUser, chat.getUsers());
-        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(LEAVE_GROUP_MESSAGE, subscribers,
-                chat);
+        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(LEAVE_GROUP_MESSAGE, loggedUser,
+                chat.getUsers(), chat);
+
+        chat.removeUser(loggedUser);
 
         return message;
     }
@@ -214,43 +215,45 @@ public class GroupServiceImpl implements GroupService {
         // Validation
         deleteGroupValidation(loggedUser, group);
 
-        // Get chat
         Chat chat = group.getChat();
-        // Create message
-        Subscribers subscribers = new Subscribers(loggedUser, chat.getUsers());
-        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(DELETE_GROUP_MESSAGE, subscribers,
-                chat);
-
         chat.hiddeChat();
-        groupDao.saveOrUpdate(group);
+
+        // Create message
+        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(DELETE_GROUP_MESSAGE, loggedUser,
+                chat.getUsers(), chat);
+
         return message;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<FriendDto> getFriendsNotInGroup(long groupId) {
+    public List<GroupUserDto> getFriendsNotInGroup(long groupId) {
         // Get loggedUser
         User loggedUser = userService.getLoggedUserEntity();
-        logger.debug("-> getNotGroupFriends: userId: {}, groupId: {}", loggedUser.getUserId(), groupId);
+        logger.debug("-> getFriendsNotInGroup: userId: {}, groupId: {}", loggedUser.getUserId(), groupId);
 
         isUserInGroup(loggedUser.getUserId(), groupId, true);
 
         Group group = DaoValidation.groupExistValidation(groupDao, groupId);
 
-        
-        //group.getUsers();
-        
-        // Fill FriendsDto list
-        List<FriendDto> friendDtoList = new ArrayList<>();
-        for (Friend friend : friendDao.findFriendNotInGroup(group, loggedUser)) {
-            friendDtoList.add(EntityToDtoMapper.convertFriendToFriendDto(friend));
-        }
-        return friendDtoList;
-    }
+        Set<User> groupUsers = group.getChat().getUsers();
 
-    @Transactional
-    private void removeUserFromChat(User user, Chat chat) {
-        userChatDao.removeUserFromChat(chat, user);
+        logger.debug("-> getFriendsNotInGroup: start stream filter");
+
+        List<User> users = loggedUser.getFriends().stream()
+                .filter(p -> p.getFriend() != groupUsers.stream().filter(g -> g != p.getFriend()).iterator().next()
+                        && p.getFriendStatus() == FriendStatus.ACCEPTED)
+                .map(f -> f.getFriend()).collect(Collectors.toList());
+
+        logger.debug("-> getFriendsNotInGroup: end stream filter");
+
+        // Fill FriendsDto list
+        List<GroupUserDto> friendDtoList = new ArrayList<>();
+        for (User user : users) {
+            friendDtoList.add(new GroupUserDto(user.getUserId(), user.getUserFullName(), false));
+        }
+        logger.debug("-> getFriendsNotInGroup: end");
+        return friendDtoList;
     }
 
     /*
@@ -258,12 +261,14 @@ public class GroupServiceImpl implements GroupService {
      */
 
     private void addUserToGroupValidation(User loggedUser, User invitedUser, Group group) {
+        logger.debug("-> addUserToGroupValidation ");
         isAdminAction(loggedUser.getUserId(), group.getAdminId(), true);
         isUserInGroup(invitedUser.getUserId(), group.getChatId(), false);
         isYourFriend(loggedUser, invitedUser);
     }
 
     private void deleteUserFromGroupValidation(User loggedUser, User deletedUser, Group group) {
+        logger.debug("-> deleteUserFromGroupValidation ");
         isAdminAction(loggedUser.getUserId(), group.getAdminId(), true);
         if (loggedUser.getUserId() == deletedUser.getUserId()) {
             throw new GroupAdminException("You are group admin! You can't delete himself");
@@ -272,11 +277,13 @@ public class GroupServiceImpl implements GroupService {
     }
 
     private void leaveGroupValidation(User loggedUser, Group group) {
+        logger.debug("-> leaveGroupValidation ");
         isAdminAction(loggedUser.getUserId(), group.getAdminId(), false);
         isUserInGroup(loggedUser.getUserId(), group.getChatId(), true);
     }
 
     private void deleteGroupValidation(User loggedUser, Group group) {
+        logger.debug("-> deleteGroupValidation ");
         isAdminAction(loggedUser.getUserId(), group.getAdminId(), true);
     }
 
@@ -285,7 +292,7 @@ public class GroupServiceImpl implements GroupService {
      */
 
     private void isAdminAction(long userId, long adminId, boolean adminAction) {
-        logger.debug("-> isUserGroupAdmin ");
+        logger.debug("-> isAdminAction ");
 
         if ((userId != adminId) == adminAction) {
             throw new GroupAdminException("This is admin action. You are not group admin!");
@@ -294,21 +301,21 @@ public class GroupServiceImpl implements GroupService {
         }
     }
 
-    private void isUserInGroup(long userId, long groupId, boolean userStatus) {
-        logger.debug("-> isUserAction: groupId: {}, userId: {}", groupId, userId);
+    private void isUserInGroup(long userId, long chatId, boolean userStatus) {
+        logger.debug("-> isUserInGroup: chatId: {}, userId: {}", chatId, userId);
 
-        boolean result = true;// userGroupDao.findByGroupAndUser(groupId,
-                              // userId);
+        UserChat userChat = userChatDao.findByChatAndUser(chatId, userId);
 
-        if (!result && userStatus) {
+        if (Objects.isNull(userChat) && userStatus) {
             throw new GroupPermissionExceptions("You are not in this group");
-        } else if (result && !userStatus) {
+        } else if (Objects.nonNull(userChat) && !userStatus) {
             throw new GroupPermissionExceptions("User already in this group");
         }
 
     }
 
     private void isYourFriend(User loggedUser, User invitedUser) {
+        logger.debug("-> isYourFriend ");
         friendService.validateFriendByStatus(invitedUser, loggedUser, FriendStatus.ACCEPTED);
     }
 

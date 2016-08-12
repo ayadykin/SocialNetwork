@@ -47,7 +47,7 @@ public class GroupServiceFacade {
     }
 
     @Transactional
-    public List<GroupDto> getGroups() {
+    public Set<GroupDto> getGroups() {
         long userId = userService.getLoggedUserId();
         return EntityToDtoMapper.convertGroupsToGroupsDto(groupService.getGroups(), userId);
     }

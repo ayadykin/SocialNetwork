@@ -11,7 +11,7 @@
 			<div class="panel panel-default">
 				<div class="panel-heading text-center">
 					<h2>
-						<c:out value="Group ${group.name} (id:${group.groupId})" />
+						<c:out value="Group ${group.name} (chat id:${group.chatId})" />
 					</h2>
 				</div>
 				<div class="panel-body">
@@ -34,7 +34,7 @@
 								<td>
 								<c:if test="${not user.groupAdmin}">
 									<button type="button"
-										onclick="deleteUserFromGroup(${group.groupId}, ${user.userId})"
+										onclick="deleteUserFromGroup(${group.chatId}, ${user.userId})"
 										class="btn btn-info">Delete User</button>
 										</c:if>
 								</td>
@@ -52,21 +52,21 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th>Friend id</th>
-								<th>Friend name</th>
+								<th>User id</th>
+								<th>User name</th>
 								<th>Profile</th>
 							</tr>
 						</thead>
 						<c:forEach items="${friends}" var="friend">
 							<tr id="groupFriend_${friend.userId}">
 								<td><c:out value="${friend.userId}" /></td>
-								<td><c:out value="${friend.name}" /></td>
+								<td><c:out value="${friend.fullName}" /></td>
 								<td><a
 									href="${pageContext.request.contextPath}/profile/view/${friend.userId}"
 									class="btn btn-info">Profile</a></td>
 								<td>
 									<button type="button" class="btn btn-info"
-										onclick="addUserToGroup(${group.groupId}, ${friend.userId})">Add
+										onclick="addUserToGroup(${group.chatId}, ${friend.userId})">Add
 										user</button>
 
 								</td>

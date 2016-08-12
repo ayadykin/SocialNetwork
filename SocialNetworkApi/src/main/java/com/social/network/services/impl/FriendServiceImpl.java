@@ -1,11 +1,7 @@
 package com.social.network.services.impl;
 
-import static com.social.network.utils.Constants.ACCEPT_INVITATION_MESSAGE;
-import static com.social.network.utils.Constants.DECLINE_INVITATION_MESSAGE;
-import static com.social.network.utils.Constants.INVITATION_MESSAGE;
-
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,16 +15,15 @@ import com.social.network.exceptions.friend.FriendNotExistException;
 import com.social.network.exceptions.friend.InviteAcceptedException;
 import com.social.network.exceptions.friend.InviteDeclinedException;
 import com.social.network.exceptions.friend.InviteException;
-import com.social.network.message.Subscribers;
-import com.social.network.message.builder.MessageBuilder;
-import com.social.network.message.system.impl.FriendAnswerMessage;
-import com.social.network.message.system.impl.InviteFriendMessage;
+import com.social.network.friends.FriendAction;
+import com.social.network.friends.FriendFactory;
 import com.social.network.model.Friend;
 import com.social.network.model.Message;
 import com.social.network.model.User;
 import com.social.network.model.enums.FriendStatus;
 import com.social.network.services.FriendService;
 import com.social.network.services.UserService;
+import com.social.network.validation.DaoValidation;
 
 /**
  * Created by Yadykin Andrii May 16, 2016
@@ -45,87 +40,38 @@ public class FriendServiceImpl implements FriendService {
     @Autowired
     private UserService userService;
     @Autowired
-    private InviteFriendMessage inviteFriendMessage;
-    @Autowired
-    private FriendAnswerMessage friendAnswerMessage;
-    @Autowired
-    private MessageBuilder messageBuilder;
+    private FriendFactory friendFactory;
 
     @Override
     @Transactional(readOnly = true)
-    public List<Friend> getFriends() {
-        // Get logged user
-        User loggedUser = userService.getLoggedUserEntity();
-        logger.debug(" getFriends for user : {}", loggedUser.getUserId());
+    public Set<Friend> getFriends() {
+        logger.debug(" getFriends  ");
 
-        List<Friend> friends = friendDao.findByOwner(loggedUser);
-
-        // Refactor
-        friends.stream().forEach(friend -> friend.setFriendName(friend.getUsers().stream().filter(user -> user != loggedUser)
-                .map(user -> user.getUserFullName()).findFirst().orElse("No name")));
-
-        return friends;
-
+        return userService.getLoggedUserEntity().getFriends();
     }
 
     @Override
     @Transactional
     public Message inviteFriend(long userId) {
         logger.debug(" inviteFriend  userId : {}", userId);
-        User loggedUser = userService.getLoggedUserEntity();
-        User invitee = userService.getUserById(userId);
 
-        // Validate friend status
-         createFriendValidation(invitee, loggedUser);
-
-        // Create friend
-        Friend friend = friendDao.merge(new Friend(FriendStatus.INVITATION, loggedUser, invitee));
-
-        logger.debug(" inviteFriend  friend : {}", friend);
-
-        // Create message
-        Message message = messageBuilder.setMessageBuilder(inviteFriendMessage).createOneParamMessage(INVITATION_MESSAGE,
-                new Subscribers(loggedUser, invitee), friend);
-
-        return message;
+        return friendFactory.setAction(FriendAction.INVITE, userId);
     }
 
     @Override
     @Transactional
     public Message acceptInvitation(long userId) {
         logger.debug(" acceptInvite : userId = {}", userId);
-        User loggedUser = userService.getLoggedUserEntity();
-        User inviter = userService.getUserById(userId);
 
-        // Validate friend status
-        Friend invitationFriend = validateFriendByStatus(loggedUser, inviter, FriendStatus.INVITATION);
-
-        // Update status
-        updateFriendsStatus(invitationFriend, FriendStatus.ACCEPTED);
-
-        // Create message
-        return messageBuilder.setMessageBuilder(friendAnswerMessage).createOneParamMessage(ACCEPT_INVITATION_MESSAGE,
-                new Subscribers(loggedUser, inviter), invitationFriend);
+        return friendFactory.setAction(FriendAction.ACCEPT, userId);
     }
 
     @Override
     @Transactional
     public Message declineInvitation(long userId) {
         logger.debug(" declineInvite : userId = {}", userId);
-        User loggedUser = userService.getLoggedUserEntity();
-        User inviter = userService.getUserById(userId);
 
-        // Validate friend status
-        Friend invitedFriend = validateFriendByStatus(loggedUser, inviter, FriendStatus.INVITATION);
-        
-        // Update status
-        updateFriendsStatus(invitedFriend, FriendStatus.DECLINED);
-
-        // Create message
-        Message message = messageBuilder.setMessageBuilder(friendAnswerMessage).createOneParamMessage(DECLINE_INVITATION_MESSAGE,
-                new Subscribers(loggedUser, inviter), invitedFriend);
-
-        return message;
+        return friendFactory.setAction(FriendAction.DECLINE, userId);
     }
 
     @Override
@@ -135,24 +81,30 @@ public class FriendServiceImpl implements FriendService {
         User loggedUser = userService.getLoggedUserEntity();
         logger.debug(" deleteFriend : userId = {}, friendId = {} ", loggedUser.getUserId(), friendId);
 
-        Friend friend = (Friend) loggedUser.getUserChats().stream().filter(chat -> chat.getChatId() == friendId).findFirst()
-                .orElseThrow(() -> new FriendNotExistException("Friend not exist !"));
+        Friend friend = DaoValidation.friendExistValidation(friendDao, friendId);
 
-        if (friend.getFriendStatus() == FriendStatus.ACCEPTED) {
-            friend.hiddeChat();
+        if (friend.getFriendStatus() == FriendStatus.ACCEPTED && friend.getUser().getUserId() == loggedUser.getUserId()) {
+            friend.getChat().hiddeChat();
             // Update status
-            updateFriendsStatus(friend, FriendStatus.DELETED);
+            friend.setFriendStatus(FriendStatus.DELETED);
         } else {
             throw new DeleteFriendException("Error delete friend id = " + friendId);
         }
 
-        return true;
-    }
+        // Delete my friend
+        boolean deleteMyFriend = false;
+        for (Friend myFriend : friend.getFriend().getFriends()) {
+            if (myFriend.getFriend().getUserId() == loggedUser.getUserId() && myFriend.getFriendStatus() == FriendStatus.ACCEPTED) {
+                myFriend.setFriendStatus(FriendStatus.DELETED);
+                deleteMyFriend = true;
+                break;
+            }
+        }
+        if (!deleteMyFriend) {
+            throw new DeleteFriendException("Error delete my friend ");
+        }
 
-    private void updateFriendsStatus(Friend friend, FriendStatus status) {
-        logger.debug(" updateFriendsStatus ");
-        friend.setFriendStatus(status);
-        friendDao.saveOrUpdate(friend);
+        return true;
     }
 
     @Override
@@ -177,16 +129,6 @@ public class FriendServiceImpl implements FriendService {
 
     }
 
-    private void createFriendValidation(User invitee, User inviter) {
-        logger.debug(" validateNullFriendStatus :");
-        Friend friendEntity = friendDao.findByFriendAndOwner(invitee, inviter);
-
-        if (friendEntity != null) {
-            throwInviteStatusException(friendEntity.getFriendStatus());
-        }
-
-    }
-
     private void throwInviteStatusException(FriendStatus status) {
         logger.debug(" throwFriendStatusException status : {}", status);
         switch (status) {
@@ -194,7 +136,8 @@ public class FriendServiceImpl implements FriendService {
             throw new InviteAcceptedException("Invite accepted");
         case DECLINED:
             throw new InviteDeclinedException("Invite declined");
-        case INVITATION:
+        case INVITER:
+        case INVITEE:
             throw new InviteException("For status " + status + " you can 'Accept' or 'Decline' invitation!");
         default:
             throw new InviteException("Invite don't exist");

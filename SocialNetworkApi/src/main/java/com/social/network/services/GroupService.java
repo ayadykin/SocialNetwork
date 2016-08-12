@@ -2,7 +2,7 @@ package com.social.network.services;
 
 import java.util.List;
 
-import com.social.network.dto.FriendDto;
+import com.social.network.dto.GroupUserDto;
 import com.social.network.model.Group;
 import com.social.network.model.Message;
 
@@ -76,5 +76,5 @@ public interface GroupService {
      * @param groupId
      * @return List<FriendDto>
      */
-    List<FriendDto> getFriendsNotInGroup(long groupId);
+    List<GroupUserDto> getFriendsNotInGroup(long groupId);
 }

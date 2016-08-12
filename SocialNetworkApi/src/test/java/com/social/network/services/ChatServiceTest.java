@@ -34,8 +34,7 @@ public class ChatServiceTest extends InitTest {
     private FriendService friendService;
     @Autowired
     private MessageService messageService;
-    @Autowired
-    private SessionFactory sessionFactory;
+
     private long chatId;
     
     @Before
@@ -46,12 +45,7 @@ public class ChatServiceTest extends InitTest {
         authService.signin(account20);
         friendService.acceptInvitation(user10.getUserId());
         clearSession();
-        chatId = chatService.getChatsList().iterator().next().getChatId();
-    }
-    
-    private void clearSession(){
-        sessionFactory.getCurrentSession().flush();
-        sessionFactory.getCurrentSession().clear();
+        chatId = chatService.getChatsList().iterator().next().getChat().getChatId();
     }
     
     @Test

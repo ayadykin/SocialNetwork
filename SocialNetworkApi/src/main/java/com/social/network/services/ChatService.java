@@ -1,10 +1,9 @@
 package com.social.network.services;
 
-import java.util.List;
 import java.util.Set;
 
-import com.social.network.model.Chat;
 import com.social.network.model.Message;
+import com.social.network.model.UserChat;
 import com.social.network.model.enums.Period;
 
 /**
@@ -20,7 +19,7 @@ public interface ChatService {
      * 
      * @return list of chats
      */
-    Set<Chat> getChatsList();
+    Set<UserChat> getChatsList();
 
     /**
      * Get filtered by period messages for chat
@@ -42,14 +41,5 @@ public interface ChatService {
      * @return message
      */
     Message sendMessage(String messageText, long chatId);
-    
-    /**
-     * Get chat name (Group or user name).
-     * 
-     * @param chat
-     * @param userId
-     * @return
-     */
-    String getChatName(Chat chat, long userId);
 
 }

@@ -9,7 +9,7 @@ import com.social.network.model.UserChat;
  *
  */
 
-public interface UserChatDao {
+public interface UserChatDao extends GenericDao<UserChat, Long>{
     UserChat findByChatAndUser(long chatId, long userId);
     
     boolean removeUserFromChat(Chat chat, User user);

@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.dto.ChatDto;
 import com.social.network.dto.MessageDto;
-import com.social.network.model.Chat;
 import com.social.network.model.Message;
+import com.social.network.model.UserChat;
 import com.social.network.model.enums.Period;
 import com.social.network.services.ChatService;
 import com.social.network.services.MessageService;
@@ -40,12 +40,10 @@ public class ChatServiceFacade {
     public List<ChatDto> getChatsList() {
         long userId = userService.getLoggedUserId();
 
-        List<ChatDto> chatsList = new ArrayList<>();
-
         // Fill ChatDto list
-        for (Chat chat : chatService.getChatsList()) {
-            String chatName = chatService.getChatName(chat, userId);
-            chatsList.add(EntityToDtoMapper.convertChatToChatDto(chat, chatName));
+        List<ChatDto> chatsList = new ArrayList<>();
+        for (UserChat chat : chatService.getChatsList()) {
+            chatsList.add(EntityToDtoMapper.convertChatToChatDto(chat));
         }
         return chatsList;
     }

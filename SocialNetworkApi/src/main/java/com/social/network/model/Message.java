@@ -2,7 +2,7 @@ package com.social.network.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -11,6 +11,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
@@ -33,6 +35,7 @@ import com.social.network.model.labels.HiddenLabel;
  */
 
 @Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 @FilterDef(name = "messageLimit", parameters = @ParamDef(name = "minDate", type = "date"))
 public class Message implements Serializable {
 
@@ -55,7 +58,7 @@ public class Message implements Serializable {
     private User publisher;
 
     @OneToMany(mappedBy = "messageId")
-    private List<Recipient> recipient;
+    private Set<Recipient> recipient;
 
     @NotNull
     @ManyToOne
@@ -63,9 +66,6 @@ public class Message implements Serializable {
             @JoinColumn(name = "chatId") })
     private Chat chat;
 
-    @Cascade({CascadeType.SAVE_UPDATE})
-    @OneToOne(mappedBy = "message", fetch = FetchType.LAZY)
-    private SystemMessage systemMessage;
 
     public Message() {
 
@@ -77,11 +77,6 @@ public class Message implements Serializable {
         this.chat = chat;
         this.createDate = new CreationLabel();
         this.hidden = new HiddenLabel();
-    }
-
-    public Message(String text, User publisher, Chat chat, SystemMessage systemMessage) {
-        this(text, publisher, chat);
-        this.systemMessage = systemMessage;
     }
 
     public Chat getChat() {
@@ -136,24 +131,12 @@ public class Message implements Serializable {
         this.messageId = messageId;
     }
 
-    public List<Recipient> getRecipient() {
+    public Set<Recipient> getRecipient() {
         return recipient;
     }
 
-    public void setRecipient(List<Recipient> recipients) {
+    public void setRecipient(Set<Recipient> recipients) {
         this.recipient = recipients;
-    }
-
-    public SystemMessage getSystemMessage() {
-        return systemMessage;
-    }
-    
-    public SystemMessageStatus getSystemMessageStatus() {
-        return systemMessage.getSystemMessageStatus();
-    }
-
-    public void setSystemMessage(SystemMessage systemMessage) {
-        this.systemMessage = systemMessage;
     }
 
     @Override

@@ -1,15 +1,16 @@
 package com.social.network.model;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NamedQueries;
@@ -25,37 +26,77 @@ import com.social.network.utils.Constants;
 
 @Entity
 @DynamicUpdate(value = true)
-@PrimaryKeyJoinColumn(name = "chatId")
-@NamedQueries(value = { @NamedQuery(name = Constants.FIND_FRIEND_BY_OWNER, query = "select f from Friend f join f.users u where u = :user"),
-        @NamedQuery(name = Constants.FIND_BY_FRIEND_AND_OWNER, query = "select f from Friend f join f.users u  where u = :invitee and f.inviter = :inviter") })
-public class Friend extends Chat implements Serializable {
+@NamedQueries(value = { @NamedQuery(name = Constants.FIND_FRIEND_BY_OWNER, query = "select f from Friend f join f.user u where u = :user"),
+        @NamedQuery(name = Constants.FIND_BY_FRIEND_AND_OWNER, query = "FROM Friend f where f.user = :invitee and f.friend = :inviter)") })
+public class Friend implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long friendId;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "chat_id")
+    private Chat chat;
+
+    @OneToOne
+    @JoinColumn(name = "userId")
+    private User user;
+
+    @OneToOne
+    @JoinColumn(name = "user_friend_id")
+    private User friend;
 
     @Enumerated(EnumType.STRING)
     private FriendStatus friendStatus;
 
-    @NotNull
-    @OneToOne
-    private User inviter;
-
-    @Transient
     private String friendName;
 
     public Friend() {
 
     }
 
-    public Friend(FriendStatus friendStatus, User inviter, User invitee) {
-        super(Arrays.asList(inviter, invitee));
+    public Friend(Chat chat, FriendStatus friendStatus, User inviter, User invitee) {
+        this.chat = chat;
         this.friendStatus = friendStatus;
-        this.inviter = inviter;
+        this.user = inviter;
+        this.friend = invitee;
+        this.friendName = invitee.getUserFullName();
     }
 
-    public User getInviter() {
-        return inviter;
+    public long getFriendId() {
+        return friendId;
     }
 
-    public void setInviter(User inviter) {
-        this.inviter = inviter;
+    public void setFriendId(long friendId) {
+        this.friendId = friendId;
+    }
+
+    public Chat getChat() {
+        return chat;
+    }
+
+    public void setChat(Chat chat) {
+        this.chat = chat;
+    }
+
+    public User getFriend() {
+        return friend;
+    }
+
+    public String getFriendName() {
+        return friendName;
+    }
+
+    public void setFriend(User friend) {
+        this.friend = friend;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public FriendStatus getFriendStatus() {
@@ -67,17 +108,8 @@ public class Friend extends Chat implements Serializable {
         return this;
     }
 
-    public String getFriendName() {
-        return friendName;
-    }
-
     public void setFriendName(String friendName) {
         this.friendName = friendName;
-    }
-
-    @Override
-    public String toString() {
-        return "Friend [chatId=" + getChatId() + ", friendStatus=" + friendStatus + ", inviterId=" + inviter.getUserId() + "]";
     }
 
 }

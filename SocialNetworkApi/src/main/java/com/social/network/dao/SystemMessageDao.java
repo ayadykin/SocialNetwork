@@ -1,6 +1,5 @@
 package com.social.network.dao;
 
-import com.social.network.model.Chat;
 import com.social.network.model.SystemMessage;
 
 /**
@@ -9,5 +8,4 @@ import com.social.network.model.SystemMessage;
  */
 
 public interface SystemMessageDao extends GenericDao<SystemMessage, Long> {
-    SystemMessage findSystemMessageByChat(Chat chat);
 }

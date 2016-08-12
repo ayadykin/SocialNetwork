@@ -1,6 +1,6 @@
 package com.social.network.services;
 
-import java.util.List;
+import java.util.Set;
 
 import com.social.network.model.Friend;
 import com.social.network.model.Message;
@@ -20,7 +20,7 @@ public interface FriendService {
      * 
      * @return set of friends
      */
-    List<Friend> getFriends();
+    Set<Friend> getFriends();
 
     /**
      * Invite friend

@@ -41,7 +41,7 @@ public class SignupController {
         if (result.hasErrors()) {
             return SIGNUP_VIEW_NAME;
         }
-        User user = new User(new Profile( Locale.US));
+        User user = new User("", "", new Profile( Locale.US));
         Account account = new Account(signupFormDto.getEmail(), signupFormDto.getPassword(), "ROLE_USER", user);
         if (!authService.signup(account)) {
             model.addAttribute("exception", "User with this email already exist!");

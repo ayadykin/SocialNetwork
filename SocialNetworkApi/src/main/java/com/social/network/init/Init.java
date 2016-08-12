@@ -45,11 +45,11 @@ public class Init {
 
         logger.debug("-> initialize");
 
-        User user1 = new User(new Profile("Andrey", "Y", "Mikoleav", "", Locale.US));
-        User user2 = new User(new Profile("Andrey", "P", "Mikoleav", "", Locale.US));
-        User user3 = new User(new Profile("Dima", "D", "Kiev", "", Locale.US));
-        User user4 = new User(new Profile("Viktor", "G", "", "", Locale.US));
-        User user5 = new User(new Profile("Egor", "H", "", "", Locale.US));
+        User user1 = new User("Andrey", "Y", new Profile("", "", "Mikoleav", "", Locale.US));
+        User user2 = new User("Andrey", "P", new Profile("", "", "Mikoleav", "", Locale.US));
+        User user3 = new User("Dima", "D", new Profile("", "", "Kiev", "", Locale.US));
+        User user4 = new User("Viktor", "G", new Profile("", "", "", "", Locale.US));
+        User user5 = new User("Egor", "H", new Profile("", "", "", "", Locale.US));
 
         Account account1 = new Account("user1", "user1", "ROLE_USER", user1);
         Account account2 = new Account("user2", "user2", "ROLE_USER", user2);
@@ -74,14 +74,15 @@ public class Init {
         
         //Decline
         authService.signin(account3);
-        friendFacade.declineInvitation(user1.getUserId());
+        friendFacade.acceptInvitation(user1.getUserId());
+        friendFacade.inviteFriend(user4.getUserId());
 
         // createGroup
         authService.signin(account1);
         String[] usersIdList = { ((Long) user2.getUserId()).toString() };
         GroupDto group = groupFacade.createGroup("test", null);
 
-         groupFacade.addUserToGroup(group.getChatId(), user2.getUserId());
+         groupFacade.addUserToGroup(group.getGroupId(), user2.getUserId());
 
         // authService.signin(account1);
         // friendService.inviteFriend(user3.getUserId());

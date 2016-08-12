@@ -11,9 +11,7 @@ import com.social.network.model.User;
  */
 public interface FriendDao extends GenericDao<Friend, Long> {
     
-    List<Friend> findByOwner(User user);
-    
     Friend findByFriendAndOwner(User invitee, User inviter);
     
-    List<Friend> findFriendNotInGroup(Group group, User user);
+    List<User> findFriendNotInGroup(Group group, User user);
 }

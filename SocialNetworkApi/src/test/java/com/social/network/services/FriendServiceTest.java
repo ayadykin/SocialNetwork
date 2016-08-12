@@ -19,6 +19,7 @@ import com.social.network.config.HibernateConfig;
 import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
 import com.social.network.dto.FriendDto;
+import com.social.network.exceptions.friend.DeleteFriendException;
 import com.social.network.exceptions.friend.FriendNotExistException;
 import com.social.network.exceptions.friend.InviteAcceptedException;
 import com.social.network.exceptions.friend.InviteDeclinedException;
@@ -44,11 +45,14 @@ public class FriendServiceTest extends InitTest {
         authService.signin(account10);
         friendService.inviteFriend(user20.getUserId());
 
+        clearSession();
+        
         assertEquals(1, friendService.getFriends().size());
-        assertTrue(friendService.getFriends().iterator().next().getFriendStatus().equals(FriendStatus.INVITED));
+        assertTrue(friendService.getFriends().iterator().next().getFriendStatus().equals(FriendStatus.INVITER));
+        
         authService.signin(account20);
         assertEquals(1, friendService.getFriends().size());
-        assertTrue(friendService.getFriends().iterator().next().getFriendStatus().equals(FriendStatus.INVITATION));
+        assertTrue(friendService.getFriends().iterator().next().getFriendStatus().equals(FriendStatus.INVITEE));
     }
 
     @Test
@@ -58,6 +62,9 @@ public class FriendServiceTest extends InitTest {
 
         authService.signin(account20);
         friendService.acceptInvitation(user10.getUserId());
+        
+        clearSession();
+        
         assertTrue(friendService.getFriends().iterator().next().getFriendStatus().equals(FriendStatus.ACCEPTED));
         authService.signin(account10);
         assertTrue(friendService.getFriends().iterator().next().getFriendStatus().equals(FriendStatus.ACCEPTED));
@@ -70,6 +77,9 @@ public class FriendServiceTest extends InitTest {
 
         authService.signin(account20);
         friendService.declineInvitation(user10.getUserId());
+        
+        clearSession();
+        
         assertTrue(friendService.getFriends().iterator().next().getFriendStatus().equals(FriendStatus.DECLINED));
 
         authService.signin(account10);
@@ -83,12 +93,16 @@ public class FriendServiceTest extends InitTest {
 
         authService.signin(account20);
         friendService.acceptInvitation(user10.getUserId());
+        
+        clearSession();
 
         friendService.deleteFriend(friendService.getFriends().iterator().next().getFriendId());
         
-        assertEquals(0, friendService.getFriends().size());
+        clearSession();
+        
+        assertTrue(friendService.getFriends().iterator().next().getFriendStatus() == FriendStatus.DELETED);
         authService.signin(account10);
-        assertEquals(0, friendService.getFriends().size());
+        assertTrue(friendService.getFriends().iterator().next().getFriendStatus() == FriendStatus.DELETED);
     }
 
     @Test
@@ -96,6 +110,8 @@ public class FriendServiceTest extends InitTest {
         authService.signin(account10);
         friendService.inviteFriend(user20.getUserId());
 
+        clearSession();
+        
         assertEquals(1, friendService.getFriends().size());
         assertFalse(friendService.getFriends().iterator().next().getFriendStatus().equals(FriendStatus.ACCEPTED));
 
@@ -108,13 +124,18 @@ public class FriendServiceTest extends InitTest {
     public void testInviteFriendExceptions() {
         authService.signin(account10);
         friendService.inviteFriend(user20.getUserId());
+        
+        clearSession();
+        
         friendService.acceptInvitation(user20.getUserId());
     }
     
-    @Test(expected = FriendNotExistException.class)
+    @Test(expected = DeleteFriendException.class)
     public void testDeleteInvitedFriendExceptions() {
         authService.signin(account10);
         friendService.inviteFriend(user20.getUserId());
+        
+        clearSession();
 
         friendService.deleteFriend(friendService.getFriends().iterator().next().getFriendId());
     }
@@ -153,4 +174,5 @@ public class FriendServiceTest extends InitTest {
         friendService.inviteFriend(user20.getUserId());
         friendService.declineInvitation(10l);
     }
+    
 }

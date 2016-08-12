@@ -17,9 +17,7 @@ import com.social.network.dao.ChatDao;
 import com.social.network.dao.UserChatDao;
 import com.social.network.exceptions.chat.ChatPermissionException;
 import com.social.network.exceptions.chat.ChatRemovedException;
-import com.social.network.message.Subscribers;
 import com.social.network.model.Chat;
-import com.social.network.model.Group;
 import com.social.network.model.Message;
 import com.social.network.model.User;
 import com.social.network.model.UserChat;
@@ -50,11 +48,11 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Chat> getChatsList() {
+    public Set<UserChat> getChatsList() {
         User loggedUser = userService.getLoggedUserEntity();
         logger.debug("->getChatsList for user : {}", loggedUser.getUserId());
 
-        return loggedUser.getUserChats();
+        return loggedUser.getUserChat();
     }
 
     @Override
@@ -70,6 +68,7 @@ public class ChatServiceImpl implements ChatService {
         Date date = getDate(period);
 
         Chat chat = chatDao.getMessages(chatId, loggedUser, readed, date);
+
         if (chat == null) {
             return Collections.emptySet();
         } else {
@@ -88,25 +87,10 @@ public class ChatServiceImpl implements ChatService {
 
         Chat chat = DaoValidation.chatExistValidation(chatDao, chatId);
 
-        Subscribers subscribers = new Subscribers(loggedUser, chat.getUsers());
-        Message message = messageService.createMessage(messageText, subscribers, chat);
+        Message message = messageService.createMessage(messageText, loggedUser, chat.getUsers(), chat);
 
         return message;
 
-    }
-
-    @Override
-    @Transactional
-    public String getChatName(Chat chat, long userId) {
-        // Get group chat name
-        Group group = null;//chat.getGroup();
-        if (!Objects.isNull(group)) {
-            return group.getGroupName();
-        } else {
-            // Get PTP chat name
-            return chat.getUsers().stream().filter(user -> user.getUserId() != userId).map(user -> user.getUserFullName()).findFirst()
-                    .orElse("");
-        }
     }
 
     private Date getDate(Period period) {
