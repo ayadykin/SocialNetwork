@@ -17,11 +17,8 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
-import org.springframework.web.servlet.handler.SimpleMappingExceptionResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import com.social.network.Application;
 
@@ -32,19 +29,10 @@ import com.social.network.Application;
 @Configuration
 @ComponentScan(basePackageClasses = Application.class, includeFilters = @Filter(Controller.class), useDefaultFilters = false)
 class WebMvcConfig extends WebMvcConfigurationSupport {
-    private static final String VIEWS = "/WEB-INF/views/";
     private static final String RESOURCES_HANDLER = "/resources/";
     private static final String RESOURCES_LOCATION = RESOURCES_HANDLER + "**";
     @Autowired
     private MessageSource messageSource;
-
-    @Override
-    public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-        RequestMappingHandlerMapping requestMappingHandlerMapping = super.requestMappingHandlerMapping();
-        requestMappingHandlerMapping.setUseSuffixPatternMatch(false);
-        requestMappingHandlerMapping.setUseTrailingSlashMatch(false);
-        return requestMappingHandlerMapping;
-    }
 
     @Bean
     public LocaleResolver localeResolver() {
@@ -60,23 +48,6 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
         interceptor.setParamName("locale");
         registry.addInterceptor(interceptor);
-    }
-
-    @Bean
-    public InternalResourceViewResolver viewResolver() {
-        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix(VIEWS);
-        resolver.setSuffix(".jsp");
-        resolver.setContentType("text/html;charset=UTF-8");
-        return resolver;
-    }
-
-    @Bean(name = "simpleMappingExceptionResolver")
-    public SimpleMappingExceptionResolver createSimpleMappingExceptionResolver() {
-        SimpleMappingExceptionResolver r = new SimpleMappingExceptionResolver();
-
-        r.setDefaultErrorView("error/general");
-        return r;
     }
 
     @Override

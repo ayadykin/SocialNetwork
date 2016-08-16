@@ -6,9 +6,9 @@ angular.module('socialNetworkControllers').controller('FriendController',
 				$scope.friends = response[0];
 			});
 
-			$scope.deleteFriend = function(chatId) {
-				console.log('remove friendId : '+ chatId);
-				FriendRest.remove({friendId: chatId}).$promise.then(function(data) {
+			$scope.deleteFriend = function(friendId) {
+				console.log('remove friendId : '+ friendId);
+				FriendRest.remove({friendId: friendId}).$promise.then(function(data) {
 					if(data.error){
 						alert(data.error);
 					}

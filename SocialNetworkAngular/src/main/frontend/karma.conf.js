@@ -16,6 +16,7 @@ module.exports = function(config) {
       'js/socialnetwork/init.js',
       'js/socialnetwork/**/*.js',
       'js/friend/**/*.js',
+      'js/group/**/*.js',
       'test/**/*Spec.js'
     ],
     

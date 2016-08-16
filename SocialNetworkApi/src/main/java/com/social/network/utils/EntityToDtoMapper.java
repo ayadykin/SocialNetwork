@@ -63,7 +63,7 @@ public class EntityToDtoMapper {
 
     public static FriendDto convertFriendToFriendDto(Friend friend) {
         logger.debug(" convertFriendToFriendDto ");
-        return new FriendDto(friend.getFriend().getUserId(), friend.getFriendName(), friend.getFriendStatus(),
+        return new FriendDto(friend.getFriendId(), friend.getFriendName(), friend.getFriendStatus(),
                 friend.getChat().getChatId());
     }
 

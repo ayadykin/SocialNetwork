@@ -3,6 +3,12 @@ function initPagesPermissions($route) {
 		'/friend' : {
 			templateUrl : 'templates/pages/friend.html'
 		},
+		'/group' : {
+			templateUrl : 'templates/pages/group.html'
+		},
+		'/createGroup' : {
+			templateUrl : 'templates/pages/createGroup.html'
+		},
 		'/signin' : {
 			templateUrl : 'templates/pages/signin.html'
 		},

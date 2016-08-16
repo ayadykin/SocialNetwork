@@ -18,7 +18,7 @@ public class SigninApi {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
-    public RestResponse getChatMessages() {
-        return new RestResponse(true);
+    public RestResponse getToken() {
+        return new RestResponse().convert(() -> true);
     }
 }

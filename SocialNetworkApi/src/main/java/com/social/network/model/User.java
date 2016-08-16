@@ -37,8 +37,9 @@ public class User implements Serializable {
     @ManyToMany(mappedBy = "users")
     private Set<Chat> userChats = new LinkedHashSet<>();
 
+    @OrderBy("friendId")
     @OneToMany(mappedBy = "user")
-    private Set<Friend> friends = new HashSet<>();
+    private Set<Friend> friends = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "user")
     private Set<UserChat> userChat = new HashSet<>();

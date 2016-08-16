@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.dto.GroupDto;
+import com.social.network.dto.GroupUserDto;
 import com.social.network.dto.MessageDto;
 import com.social.network.model.Group;
 import com.social.network.model.Message;
@@ -36,7 +37,7 @@ public class GroupServiceFacade {
         long userId = userService.getLoggedUserId();
 
         Group group = groupService.createGroup(name, userList);
-        
+
         Set<Message> messages = group.getChat().getMessages();
 
         // Send messages to redis
@@ -44,6 +45,11 @@ public class GroupServiceFacade {
             sendMessageToRedis(message, userId);
         }
         return EntityToDtoMapper.convertGroupToGroupsDto(group, userId, false);
+    }
+
+    @Transactional
+    public List<GroupUserDto> getFriendsNotInGroup(long groupId) {
+        return groupService.getFriendsNotInGroup(groupId);
     }
 
     @Transactional

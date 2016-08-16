@@ -9,7 +9,7 @@ import com.social.network.model.enums.FriendStatus;
 
 public class FriendDto {
 
-    private long userId;
+    private long friendId;
     private String name;
     private FriendStatus status;
     private long chatId;
@@ -18,19 +18,19 @@ public class FriendDto {
 
     }
 
-    public FriendDto(long userId, String name, FriendStatus status, long chatId) {
-        this.userId = userId;
+    public FriendDto(long friendId, String name, FriendStatus status, long chatId) {
+        this.friendId = friendId;
         this.name = name;
         this.status = status;
         this.chatId = chatId;
     }
 
-    public long getUserId() {
-        return userId;
+    public long getFriendId() {
+        return friendId;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setFriendId(long userId) {
+        this.friendId = userId;
     }
 
     public String getName() {

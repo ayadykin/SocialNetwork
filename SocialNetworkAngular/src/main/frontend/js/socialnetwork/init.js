@@ -1,14 +1,14 @@
-var models = {},
-    backOfficeApp = angular.module('socialNetworkApp', ['socialNetworkControllers', 'socialNetworkServices','ngRoute', 'ngCookies']);
-
+var models = {}, socialNetworkApp = angular.module('socialNetworkApp', [
+	'socialNetworkControllers',
+	'socialNetworkServices',
+	'ngLocale',
+	'ngRoute',
+	'ngCookies',
+	'ui.bootstrap']);
 
 angular.module('socialNetworkControllers', []);
-angular.module('socialNetworkServices', ['ngResource']);
+angular.module('socialNetworkServices', [ 'ngResource' ]);
 
-backOfficeApp.run(function run( $http, $cookies ){
-	  $http.defaults.headers.common['X-XSRF-TOKEN'] = $cookies.get('XSRF-TOKEN');
-	});
-
-backOfficeApp.config(function ($httpProvider) {
-
+socialNetworkApp.run(function run($http, $cookies) {
+    $http.defaults.headers.common['X-XSRF-TOKEN'] = $cookies.get('XSRF-TOKEN');
 });

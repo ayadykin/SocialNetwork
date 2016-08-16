@@ -5,13 +5,15 @@ module.exports = function(grunt) {
 	grunt.log.warn('Version - ' + grunt.config.get('appVersion'));
 	grunt.initConfig({});
 
-	var socialNetworkTasks = [ 'clean:start', 'concat:controllers', 'friendViewer', 'mainViewer',
+	var socialNetworkTasks = [ 'clean:start', 'concat:controllers', 'groupViewer', 'friendViewer', 'mainViewer',
 			'jade:files', 'jade:debug_files', 'copy' ];
 
 	var taskList = {
 		mainViewer : [ 'ngtemplates:mainViewer', 'concat:mainViewer',"clean:mainViewer" ],
 		friendViewer : [ 'ngtemplates:friendViewer', 'concat:friendViewer','uglify:friendViewer',"clean:friendViewer" ],
+		groupViewer : [ 'ngtemplates:groupViewer', 'concat:groupViewer','uglify:groupViewer',"clean:groupViewer" ],
 		"sn-debug" : socialNetworkTasks,
+		"sn-debug:server": ['sn-debug', 'concat:snServer'],
 		sn: socialNetworkTasks.concat(['uglify:sn']),
 		"karma" : ['karma:unit:run']
 	};

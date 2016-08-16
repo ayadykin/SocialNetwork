@@ -34,7 +34,7 @@ public class ChatApi {
     private RedisService redisService;
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(method = RequestMethod.POST)
     public List<MessageDto> getChatMessages(@RequestParam("chatId") long chatId, @RequestParam("filter") Period period) {
         return chatFacade.getChatMesasges(chatId, period);
     }
@@ -62,7 +62,7 @@ public class ChatApi {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getMessage/{chatId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/getMessage/{chatId}", method = RequestMethod.GET)
     public DeferredResult<MessageDto> getMessage(@PathVariable("chatId") long chatId) {
         final DeferredResult<MessageDto> deferredResult = new DeferredResult<MessageDto>(null, "");
 

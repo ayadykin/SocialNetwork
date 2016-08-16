@@ -20,6 +20,7 @@ module.exports = function(grunt) {
 			src : [ 'manifest.*', '../webapp/**/*', 'css/main.css' ]
 		},
 		mainViewer : getConfig('socialnetwork'),
-		friendViewer : getConfig('friend')
+		friendViewer : getConfig('friend'),
+		groupViewer : getConfig('group')
 	};
 };

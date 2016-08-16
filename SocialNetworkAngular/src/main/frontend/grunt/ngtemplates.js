@@ -18,6 +18,7 @@ var getConfig = function (name) {
 module.exports = function () {
     return {
         mainViewer: getConfig('socialnetwork'),
-        friendViewer: getConfig('friend')
+        friendViewer: getConfig('friend'),
+        groupViewer: getConfig('group')
     };
 };

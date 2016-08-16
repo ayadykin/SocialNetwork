@@ -14,6 +14,11 @@ module.exports = function(grunt) {
 			options : options,
 			'src' : [ deployDir + 'js/friend/build/app.js' ],
 			'dest' : deployDir + 'js/friend/build/app.min.js'
+		},
+		groupViewer : {
+			options : options,
+			'src' : [ deployDir + 'js/group/build/app.js' ],
+			'dest' : deployDir + 'js/group/build/app.min.js'
 		}
 	};
 };

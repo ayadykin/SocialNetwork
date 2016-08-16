@@ -9,11 +9,7 @@ public class RestResponse {
 
     private boolean response;
 
-    public RestResponse(boolean result) {
-        response = result;
-    }
-
-    public boolean isResponse() {
+    public boolean getResponse() {
         return response;
     }
 
@@ -21,4 +17,17 @@ public class RestResponse {
         this.response = response;
     }
 
+    public RestResponse convert(Result result) {
+        Boolean success = result.apply();
+        if (success) {
+            response = true;
+        } else {
+            response = false;
+        }
+        return this;
+    }
+
+    public static interface Result {
+        Boolean apply();
+    }
 }

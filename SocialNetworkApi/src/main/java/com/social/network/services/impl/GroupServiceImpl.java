@@ -23,6 +23,7 @@ import com.social.network.dao.ChatDao;
 import com.social.network.dao.GroupDao;
 import com.social.network.dao.UserChatDao;
 import com.social.network.dto.GroupUserDto;
+import com.social.network.exceptions.group.DeleteGroupException;
 import com.social.network.exceptions.group.GroupAdminException;
 import com.social.network.exceptions.group.GroupPermissionExceptions;
 import com.social.network.message.builder.MessageBuilder;
@@ -274,22 +275,30 @@ public class GroupServiceImpl implements GroupService {
             throw new GroupAdminException("You are group admin! You can't delete himself");
         }
         isUserInGroup(deletedUser.getUserId(), group.getChatId(), true);
+        isGroupRemoved(group);
     }
 
     private void leaveGroupValidation(User loggedUser, Group group) {
         logger.debug("-> leaveGroupValidation ");
         isAdminAction(loggedUser.getUserId(), group.getAdminId(), false);
         isUserInGroup(loggedUser.getUserId(), group.getChatId(), true);
+        isGroupRemoved(group);
     }
 
     private void deleteGroupValidation(User loggedUser, Group group) {
         logger.debug("-> deleteGroupValidation ");
         isAdminAction(loggedUser.getUserId(), group.getAdminId(), true);
+        isGroupRemoved(group);
     }
 
     /*
      * General validation
      */
+    private void isGroupRemoved(Group group) {
+        if (group.isHidden()) {
+            throw new DeleteGroupException("The group has already removed!");
+        }
+    }
 
     private void isAdminAction(long userId, long adminId, boolean adminAction) {
         logger.debug("-> isAdminAction ");

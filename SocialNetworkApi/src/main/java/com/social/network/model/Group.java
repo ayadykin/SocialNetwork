@@ -1,16 +1,12 @@
 package com.social.network.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -26,7 +22,8 @@ import com.social.network.utils.Constants;
 
 @Entity
 @Table(name = "groups")
-@NamedQuery(name = Constants.FIND_GROUP_BY_OWNER, query = "select g from Group g join g.chat.users u where u = :user")
+@NamedQuery(name = Constants.FIND_GROUP_BY_OWNER, 
+query = "select g from Group g join g.chat.users u where u = :user order by chat_id")
 public class Group implements Serializable {
 
     @Id
@@ -63,11 +60,15 @@ public class Group implements Serializable {
     public Chat getChat() {
         return chat;
     }
-    
+
+    public boolean isHidden() {
+        return chat.getHidden();
+    }
+
     public long getChatId() {
         return chat.getChatId();
     }
-    
+
     public void setChat(Chat chat) {
         this.chat = chat;
     }

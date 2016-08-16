@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.social.network.dto.FriendDto;
 import com.social.network.facade.FriendServiceFacade;
+import com.social.network.utils.RestResponse;
 import com.social.network.utils.ResultToResponseWrapper;
 
 /**
@@ -39,19 +40,19 @@ public class FriendApi {
 
     @ResponseBody
     @RequestMapping(value = "/acceptInvitation", method = RequestMethod.POST)
-    public String accceptInvitation(@RequestParam("userId") long userId) {
-        return ResultToResponseWrapper.convert(() -> friendFacade.acceptInvitation(userId));
+    public RestResponse accceptInvitation(@RequestParam("userId") long userId) {
+        return new RestResponse().convert(() -> friendFacade.acceptInvitation(userId));
     }
 
     @ResponseBody
     @RequestMapping(value = "/declineInvitation", method = RequestMethod.POST)
-    public String declineInvitation(@RequestParam("userId") long userId) {
-        return ResultToResponseWrapper.convert(() -> friendFacade.declineInvitation(userId));
+    public RestResponse declineInvitation(@RequestParam("userId") long userId) {
+        return new RestResponse().convert(() -> friendFacade.declineInvitation(userId));
     }
 
     @ResponseBody
     @RequestMapping(value = "/{friendId}", method = RequestMethod.DELETE)
-    public String deleteFriend(@PathVariable("friendId") long friendId) {
-        return ResultToResponseWrapper.convert(() -> friendFacade.deleteFriend(friendId));
+    public RestResponse deleteFriend(@PathVariable("friendId") long friendId) {
+        return new RestResponse().convert(() -> friendFacade.deleteFriend(friendId));
     }
 }

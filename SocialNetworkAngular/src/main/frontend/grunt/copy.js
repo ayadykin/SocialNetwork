@@ -18,6 +18,10 @@ module.exports = function(grunt) {
 				expand : true,
 				src : [ 'html/*.html' ],
 				dest : '../webapp/'
+			}, {
+				expand : true,
+				src : [ 'i18n/*.properties' ],
+				dest : '../webapp/'
 			} ]
 		}
 	};
