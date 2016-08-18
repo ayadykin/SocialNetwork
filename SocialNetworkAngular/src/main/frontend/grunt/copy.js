@@ -8,8 +8,8 @@ module.exports = function(grunt) {
 
 			{
 				expand : true,
-				src : [ 'css/login.css' ],
-				dest : '../webapp/resources/css/'
+				src : [ 'css/*.css' ],
+				dest : '../webapp/'
 			}, {
 				expand : true,
 				src : [ 'WEB-INF/**' ],

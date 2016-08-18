@@ -6,27 +6,26 @@
 			<span class="icon-bar"></span> <span class="icon-bar"></span> <span
 				class="icon-bar"></span>
 		</button>
-		<a class="navbar-brand" href="#">Social
-			Network</a>
+		<a class="navbar-brand" href="#">Social Network</a>
 	</div>
 	<div class="navbar-collapse collapse">
-		<ul class="nav navbar-nav" data-ng-show="authenticated">			
+		<ul class="nav navbar-nav" data-ng-show="authenticated">
 			<li><a href="#/chat">Chats</a></li>
-			<li><a href="#/friend">Friends</a></li>
+			<li><a href="#/friend">{{'FRIENDS' | translate}}</a></li>
 			<li><a href="#/group">Groups</a></li>
 			<li><a href="#/profile">Profile</a></li>
 			<li><a href="#/profile/search">Search</a></li>
-
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
-
+			<li><a ng-click="changeLocale('en')">English </a></li>
+			<li><a ng-click="changeLocale('ru')">Russian </a></li>
+			
 			<li data-ng-show="!authenticated"><a href="#/signin">Sign in</a></li>
 
 			<li data-ng-show="authenticated"><a href="#/logout"
 				onclick="document.getElementById('form').submit();">Logout</a>
 				<form style="visibility: hidden" id="form" method="post"
-					action="#/logout">
-				</form></li>
+					action="#/logout"></form></li>
 
 		</ul>
 	</div>

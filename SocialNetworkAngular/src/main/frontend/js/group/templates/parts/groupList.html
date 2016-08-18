@@ -1,0 +1,33 @@
+<div class="panel panel-default">
+	<div class="panel-heading text-center">
+		<h2>Groups list</h2>
+	</div>
+	<div class="panel-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>Group id</th>
+					<th>Name</th>
+					<th>Hidden</th>
+					<th></th>
+					<th></th>
+				</tr>
+			</thead>
+			<tr id="friend_" data-ng-repeat="group in groups">
+				<td>{{group.groupId}}</td>
+				<td>{{group.name}}</td>
+				<td><span ng-bind="group.hidden"></span></td>
+				<td><a class="btn btn-info" data-ng-if="group.groupAdmin"
+					ng-click='initEditGroup(group.groupId)'>Edit group</a></td>
+				<td ng-hide="group.hidden"><a class="btn btn-info"
+					data-ng-if="group.groupAdmin" ng-click='deleteGroup(group.groupId)'>Delete
+						group</a> <a class="btn btn-info" data-ng-if="!group.groupAdmin"
+					ng-click='leaveGroup(group.groupId)'>Leave group</a></td>
+				<td></td>
+			</tr>
+		</table>
+	</div>
+	<div class="panel-footer text-center">
+		<a class="btn btn-default" ng-click="initCreateGroup()">CreateGroup</a>
+	</div>
+</div>

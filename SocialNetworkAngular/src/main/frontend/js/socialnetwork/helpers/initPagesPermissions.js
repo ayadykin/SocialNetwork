@@ -6,9 +6,6 @@ function initPagesPermissions($route) {
 		'/group' : {
 			templateUrl : 'templates/pages/group.html'
 		},
-		'/createGroup' : {
-			templateUrl : 'templates/pages/createGroup.html'
-		},
 		'/signin' : {
 			templateUrl : 'templates/pages/signin.html'
 		},

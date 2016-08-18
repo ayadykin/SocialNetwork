@@ -5,30 +5,34 @@ angular.module('socialNetworkServices').factory('GroupRest', function ($resource
                 method: 'GET',
                 isArray: true
             },
+            getGroupById: {
+                method: 'GET',
+                url: url + '/:groupId'
+            },
             save: {
                 method: 'POST'
             },
             getFriendsNotInGroup: {
                 method: 'GET',
                 isArray: true,
-                url: config.friendsNotInGroup,
-                params: {groupId: '@groupId'}
+                url: config.friendsNotInGroup + '/:groupId',
+            },
+            addUser: {
+                method: 'POST',
+                url: config.addUserToGroupPath,
             },
             deleteUser: {
                 method: 'PUT',
                 url: config.deleteUserFromGroupPath,
-                data: {groupId: '@groupId', userId: '@userId'}
             },
             leave: {
                 method: 'DELETE',
-                url: config.leaveGroupPath + '/:groupId',
-                params: {groupId: '@groupId'}
+                url: config.leaveGroupPath + '/:groupId'
             },
             remove: {
                 method: 'DELETE',
-                url: url + '/:groupId',
-                params: {groupId: '@groupId'}
-            },
+                url: url + '/:groupId'
+            }
         });
 
     return resource;

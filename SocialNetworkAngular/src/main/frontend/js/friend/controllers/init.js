@@ -1,5 +1,5 @@
 angular.module('socialNetworkControllers').controller('FriendController',
-		function($scope, $rootScope, $q, FriendRest) {
+		function($scope, $q, FriendRest) {
 
 			$q.all([ FriendRest.get().$promise ]).then(function(response) {
 				$scope.friends = [];

@@ -1,0 +1,63 @@
+<div class="panel panel-default">
+	<div class="panel-heading text-center">
+		<h2>Edit group {{group.name}}, group id: {{group.groupId}}</h2>
+	</div>
+	<div class="panel-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>User id</th>
+					<th>User name</th>
+					<th>Profile</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tr id="groupUser_{{user.userId}}"
+				data-ng-repeat="user in group.users">
+				<td>{{user.userId}}</td>
+				<td>{{user.fullName}}</td>
+				<td><a
+					href="${pageContext.request.contextPath}/profile/view/${user.userId}"
+					class="btn btn-info">Profile </a></td>
+				<td><a class="btn btn-info" data-ng-if="!user.groupAdmin"
+					ng-click="deleteUserFromGroup(group.groupId, user.userId)">Delete
+						User</a></td>
+			<tr>
+		</table>
+	</div>
+</div>
+<br />
+<div class="panel panel-default">
+	<div class="panel-heading text-center">
+		<h2>List of friends</h2>
+	</div>
+	<div class="panel-body">
+		<table class="table">
+			<thead>
+				<tr>
+					<th>User id</th>
+					<th>User name</th>
+					<th>Profile</th>
+				</tr>
+			</thead>
+			<tr id="groupFriend_{{friend.userId}}"
+				data-ng-repeat="friend in friendsNotInGroup">
+				<td>{{friend.userId}}</td>
+				<td>{{friend.fullName}}</td>
+				<td><a
+					href="${pageContext.request.contextPath}/profile/view/${friend.userId}"
+					class="btn btn-info">Profile</a></td>
+				<td><a class="btn btn-info"
+					ng-click="addUserToGroup(group.groupId, friend.userId)">{{'ADD_USER'
+						| translate}}</a></td>
+			</tr>
+		</table>
+	</div>
+	<div class="panel-footer">
+		<div class="col-lg-offset-5">
+			<a class="btn btn-default" ng-click="initGroupsList()">Back</a>
+			<a class="btn btn-default" ng-click="initCreateGroup()">CreateGroup</a>
+		</div>
+	</div>
+</div>
+
