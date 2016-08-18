@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.dto.GroupDto;
-import com.social.network.dto.GroupUserDto;
 import com.social.network.dto.MessageDto;
+import com.social.network.dto.group.GroupUserDto;
 import com.social.network.model.Group;
 import com.social.network.model.Message;
 import com.social.network.services.GroupService;

@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/signin").loginProcessingUrl("/j_spring_security_check")
                 .passwordParameter("j_password").usernameParameter("j_username").failureHandler(new AuthenticationFailure())
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/signin?logout")
-                .and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);;
+                .and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
     }
 
     private CsrfTokenRepository csrfTokenRepository() {

@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.social.network.dao.ChatDao;
 import com.social.network.dao.GroupDao;
 import com.social.network.dao.UserChatDao;
-import com.social.network.dto.GroupUserDto;
+import com.social.network.dto.group.GroupUserDto;
 import com.social.network.exceptions.group.DeleteGroupException;
 import com.social.network.exceptions.group.GroupAdminException;
 import com.social.network.exceptions.group.GroupPermissionExceptions;

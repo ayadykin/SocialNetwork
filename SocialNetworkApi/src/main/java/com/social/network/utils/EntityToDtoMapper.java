@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import com.social.network.dto.ChatDto;
 import com.social.network.dto.FriendDto;
 import com.social.network.dto.GroupDto;
-import com.social.network.dto.GroupUserDto;
 import com.social.network.dto.MessageDto;
+import com.social.network.dto.group.GroupUserDto;
 import com.social.network.exceptions.chat.ConvertMessageException;
 import com.social.network.model.Friend;
 import com.social.network.model.Group;
@@ -96,7 +96,7 @@ public class EntityToDtoMapper {
             }
 
             groupsDtoList.add(
-                    new GroupDto(group.getGroupName(), group.getGroupId(), group.getChatId(), users, isAdmin, group.getChat().getHidden()));
+                    new GroupDto(group.getGroupName(), group.getGroupId(), group.getChatId(), users, isAdmin, group.getHidden()));
         }
         logger.debug(" convertGroupsToGroupsDto groups {} ", groupsDtoList);
         return groupsDtoList;

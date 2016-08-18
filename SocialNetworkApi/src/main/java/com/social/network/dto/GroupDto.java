@@ -2,6 +2,10 @@ package com.social.network.dto;
 
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.social.network.dto.group.GroupUserDto;
+
 /**
  * Created by andrii.perylo on 5/19/2016.
  */
@@ -10,6 +14,7 @@ public class GroupDto {
     private String name;
     private long chatId;
     private long groupId;
+    @JsonInclude(Include.NON_NULL)
     private Set<GroupUserDto> users;
     private boolean groupAdmin;
     private boolean hidden;

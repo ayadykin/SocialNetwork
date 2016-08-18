@@ -2,7 +2,7 @@ package com.social.network.services;
 
 import java.util.List;
 
-import com.social.network.dto.GroupUserDto;
+import com.social.network.dto.group.GroupUserDto;
 import com.social.network.model.Group;
 import com.social.network.model.Message;
 

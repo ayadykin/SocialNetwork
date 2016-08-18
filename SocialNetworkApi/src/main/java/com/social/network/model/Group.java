@@ -2,6 +2,7 @@ package com.social.network.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.NamedQuery;
 
+import com.social.network.model.labels.HiddenLabel;
 import com.social.network.utils.Constants;
 
 /**
@@ -23,13 +25,16 @@ import com.social.network.utils.Constants;
 @Entity
 @Table(name = "groups")
 @NamedQuery(name = Constants.FIND_GROUP_BY_OWNER, 
-query = "select g from Group g join g.chat.users u where u = :user order by chat_id")
+query = "select g from Group g join g.chat.users u where u = :user order by groupId")
 public class Group implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long groupId;
-
+    
+    @Embedded
+    private HiddenLabel hidden;
+    
     @OneToOne
     @JoinColumn(name = "chat_id")
     private Chat chat;
@@ -47,6 +52,7 @@ public class Group implements Serializable {
         this.chat = chat;
         this.groupName = groupName;
         this.adminId = adminId;
+        this.hidden = new HiddenLabel();
     }
 
     public long getGroupId() {
@@ -87,6 +93,10 @@ public class Group implements Serializable {
 
     public void setAdminId(long adminId) {
         this.adminId = adminId;
+    }
+
+    public boolean getHidden() {
+        return hidden.isHidden();
     }
 
 }

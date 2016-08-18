@@ -1,4 +1,4 @@
-package com.social.network.dto;
+package com.social.network.dto.group;
 
 /**
  * Created by Yadykin Andrii Jul 22, 2016
@@ -7,6 +7,7 @@ package com.social.network.dto;
 
 public class GroupUserDto {
     private long userId;
+    private long groupId;
     private String fullName;
     private boolean groupAdmin;
 
@@ -44,9 +45,17 @@ public class GroupUserDto {
         this.groupAdmin = groupAdmin;
     }
 
+    public long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
+    }
+
     @Override
     public String toString() {
-        return "GroupUserDto [userId=" + userId + ", fullName=" + fullName + ", groupAdmin=" + groupAdmin + "]";
+        return "GroupUserDto [userId=" + userId + ", groupId=" + groupId + ", fullName=" + fullName + ", groupAdmin=" + groupAdmin + "]";
     }
 
 }

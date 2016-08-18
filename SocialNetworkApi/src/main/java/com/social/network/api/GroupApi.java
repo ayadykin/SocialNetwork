@@ -1,7 +1,8 @@
 package com.social.network.api;
 
+import static com.social.network.utils.Constants.ADD_USER;
 import static com.social.network.utils.Constants.DELETE_USER;
-import static com.social.network.utils.Constants.LEAVE_ROUP;
+import static com.social.network.utils.Constants.LEAVE_GROUP;
 
 import java.util.List;
 import java.util.Set;
@@ -9,15 +10,16 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.social.network.dto.GroupDto;
-import com.social.network.dto.GroupUserDto;
+import com.social.network.dto.group.CreateGroupDto;
+import com.social.network.dto.group.GroupUserDto;
 import com.social.network.facade.GroupServiceFacade;
 import com.social.network.utils.RestResponse;
 import com.social.network.utils.ResultToResponseWrapper;
@@ -27,12 +29,12 @@ import com.social.network.utils.ResultToResponseWrapper;
  *
  */
 
-@Controller
-@RequestMapping("/group")
+@RestController
+@RequestMapping(value = "/group")
 public class GroupApi {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(GroupApi.class);
-    
+
     @Autowired
     private GroupServiceFacade groupServiceFacade;
 
@@ -44,9 +46,9 @@ public class GroupApi {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.POST)
-    public GroupDto createGroup(@RequestParam("groupName") String groupName, @RequestParam("friendsId") String[] friendsId) {
-        logger.debug(" createGroup groupName : {} ", groupName);
-        return groupServiceFacade.createGroup(groupName, friendsId);
+    public GroupDto createGroup(@RequestBody CreateGroupDto createGroupDto) {
+        logger.debug(" createGroup createGroupDto : {} ", createGroupDto);
+        return groupServiceFacade.createGroup(createGroupDto.getGroupName(), createGroupDto.getFriendsId());
     }
 
     @ResponseBody
@@ -69,19 +71,21 @@ public class GroupApi {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/adduser", method = RequestMethod.POST)
-    public String addUserToGroup(@RequestParam("groupId") long groupId, @RequestParam("userId") long userId) {
-        return ResultToResponseWrapper.convert(() -> groupServiceFacade.addUserToGroup(groupId, userId));
+    @RequestMapping(value = ADD_USER, method = RequestMethod.POST)
+    public String addUserToGroup(@RequestBody GroupUserDto groupUserDto) {
+        return ResultToResponseWrapper
+                .convert(() -> groupServiceFacade.addUserToGroup(groupUserDto.getGroupId(), groupUserDto.getUserId()));
     }
 
     @ResponseBody
     @RequestMapping(value = DELETE_USER, method = RequestMethod.PUT)
-    public RestResponse deleteUser(@RequestParam("groupId") long groupId, @RequestParam("userId") long userId) {
-        return new RestResponse().convert(() -> groupServiceFacade.deleteUserFromGroup(groupId, userId));
+    public RestResponse deleteUser(@RequestBody GroupUserDto groupUserDto) {
+        return new RestResponse()
+                .convert(() -> groupServiceFacade.deleteUserFromGroup(groupUserDto.getGroupId(), groupUserDto.getUserId()));
     }
 
     @ResponseBody
-    @RequestMapping(value = LEAVE_ROUP + "/{groupId}", method = RequestMethod.DELETE)
+    @RequestMapping(value = LEAVE_GROUP + "/{groupId}", method = RequestMethod.DELETE)
     public String leaveGroup(@PathVariable("groupId") long groupId) {
         return ResultToResponseWrapper.convert(() -> groupServiceFacade.leaveGroup(groupId));
     }
