@@ -5,7 +5,7 @@ var socialNetworkApp = angular.module('socialNetworkApp', [
 	'ngCookies',
 	'ui.bootstrap',
 	'ngAnimate',
-
+	//'socialNetworkAppM',
 	'socialNetworkControllers',
 	'socialNetworkServices',]);
 

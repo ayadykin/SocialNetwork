@@ -14,12 +14,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
 
     return {
-	start : {
-	    options : {
-		force : true
-	    },
-	    src : [ 'manifest.*', '../webapp/**/*', 'css/main.css' ]
-	},
 	mainViewer : getConfig('socialnetwork'),
 	friendViewer : getConfig('friend'),
 	groupViewer : getConfig('group')

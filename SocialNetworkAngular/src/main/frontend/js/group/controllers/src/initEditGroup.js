@@ -26,7 +26,7 @@ $scope.initEditGroup = function(groupId) {
 		$scope.successDialog(true);
 	    }
 	});
-    }
+    };
 
     $scope.deleteUserFromGroup = function(groupId, userId) {
 	$log.info('delete user from groupId : ' + groupId);
@@ -40,7 +40,7 @@ $scope.initEditGroup = function(groupId) {
 		$scope.successDialog(true);
 	    }
 	});
-    }
+    };
 
     $scope.leaveGroup = function(groupId) {
 	$log.info('leave groupId : ' + groupId);
@@ -51,5 +51,5 @@ $scope.initEditGroup = function(groupId) {
 		$scope.successDialog(data.response);
 	    }
 	});
-    }
+    };
 };

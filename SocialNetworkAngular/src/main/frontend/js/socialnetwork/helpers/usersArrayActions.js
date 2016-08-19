@@ -2,7 +2,7 @@ function findUserById(users, userId) {
     var result = $.grep(users, function(e) {
 	return e.userId == userId;
     });
-    if (result.length == 0) {
+    if (result.length === 0) {
 	alert("User not found");
     } else if (result.length == 1) {
 	return result[0];

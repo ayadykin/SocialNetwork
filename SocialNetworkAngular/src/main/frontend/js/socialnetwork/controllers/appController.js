@@ -8,9 +8,9 @@ angular.module('socialNetworkControllers').controller('AppController',
 	    $scope.changeLocale = function(locale) {
 		$q.all([ $translate.use(locale) ]).then(function(data) {
 		});
-	    }
+	    };
 
-	    $scope.successDialog = function(result, key) {
+	    $rootScope.successDialog = function(result, key) {
 		var templateUrl,
 		message = $translate.instant(key);
 		if (result) {
@@ -31,5 +31,5 @@ angular.module('socialNetworkControllers').controller('AppController',
 		    }
 		});
 		$log.info('Modal open,  message: ' + message);
-	    }
+	    };
 	});

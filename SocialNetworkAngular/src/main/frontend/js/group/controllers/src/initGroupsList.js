@@ -8,15 +8,16 @@ $scope.initGroupsList = function() {
 	GroupRest.remove({
 	    groupId : groupId
 	}).$promise.then(function(data) {
-	    if (data.response) {
-		findGroupById($scope.groups, groupId).hidden = true;
-
-		$scope.successDialog(data.response, 'success_delete_group');
-	    } else if (data.error != '') {
-		$scope.successDialog(data.response, data.error);
+	    if (data.groupId) {
+		removeGroupById($scope.groups, groupId);
+		$rootScope.successDialog(data.response, 'success_delete_group');
+	    } else if (data.error) {
+		$log.error('error remove group : ' + data.error);
+		$rootScope.successDialog(data.response, data.error);
 	    } else {
-		$scope.successDialog(data.response,'error_delete_group');
+		$log.error('error remove groupId : ' + groupId);
+		$rootScope.successDialog(data.response, 'error_delete_group');
 	    }
 	});
-    }
+    };
 };
