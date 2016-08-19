@@ -14,8 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.dao.AccountDao;
-import com.social.network.model.Account;
+import com.social.network.domain.dao.AccountDao;
+import com.social.network.domain.model.Account;
 import com.social.network.services.AuthService;
 
 /**

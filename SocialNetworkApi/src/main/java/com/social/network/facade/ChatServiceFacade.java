@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.UserChat;
+import com.social.network.domain.model.enums.Period;
 import com.social.network.dto.ChatDto;
 import com.social.network.dto.MessageDto;
-import com.social.network.model.Message;
-import com.social.network.model.UserChat;
-import com.social.network.model.enums.Period;
 import com.social.network.services.ChatService;
 import com.social.network.services.MessageService;
 import com.social.network.services.RedisService;

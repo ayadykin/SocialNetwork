@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
+import com.social.network.domain.model.enums.Period;
 import com.social.network.dto.MessageDto;
 import com.social.network.exceptions.chat.EmptyMessageException;
 import com.social.network.facade.ChatServiceFacade;
-import com.social.network.model.enums.Period;
 import com.social.network.services.RedisService;
 import com.social.network.utils.ResultToResponseWrapper;
 

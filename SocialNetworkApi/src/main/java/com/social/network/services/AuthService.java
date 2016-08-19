@@ -1,6 +1,6 @@
 package com.social.network.services;
 
-import com.social.network.model.Account;
+import com.social.network.domain.model.Account;
 
 /**
  * Created by Yadykin Andrii May 16, 2016

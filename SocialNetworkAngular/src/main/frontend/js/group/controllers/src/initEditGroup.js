@@ -20,7 +20,9 @@ $scope.initEditGroup = function(groupId) {
 	    groupId : groupId,
 	    userId : userId
 	}).$promise.then(function(data) {
-	    if (data.userId) {
+	    if (data.userId) {		
+		removeUserById($scope.friendsNotInGroup, userId);
+		$scope.group.users.push(data);
 		$scope.successDialog(true);
 	    }
 	});

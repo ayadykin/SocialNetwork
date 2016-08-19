@@ -25,9 +25,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.social.network.config.ApplicationConfig;
-import com.social.network.config.HibernateConfig;
 import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
+import com.social.network.domain.config.HibernateConfig;
 import com.social.network.dto.ProfileDto;
 import com.social.network.services.ProfileService;
 

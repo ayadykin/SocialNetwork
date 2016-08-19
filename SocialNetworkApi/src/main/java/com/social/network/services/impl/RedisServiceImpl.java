@@ -10,10 +10,10 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.dao.RecipientDao;
+import com.social.network.domain.dao.RecipientDao;
+import com.social.network.domain.model.Recipient;
+import com.social.network.domain.model.User;
 import com.social.network.dto.MessageDto;
-import com.social.network.model.Recipient;
-import com.social.network.model.User;
 import com.social.network.redis.RedisMessageObserver;
 import com.social.network.services.RedisService;
 import com.social.network.services.TranslateService;

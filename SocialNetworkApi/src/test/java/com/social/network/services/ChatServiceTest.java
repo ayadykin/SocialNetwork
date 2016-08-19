@@ -2,7 +2,6 @@ package com.social.network.services;
 
 import static org.junit.Assert.assertEquals;
 
-import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,12 +11,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.social.network.config.ApplicationConfig;
-import com.social.network.config.HibernateConfig;
 import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
+import com.social.network.domain.config.HibernateConfig;
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.enums.Period;
 import com.social.network.exceptions.chat.EditMessageException;
-import com.social.network.model.Message;
-import com.social.network.model.enums.Period;
 
 /**
  * Created by Yadykin Andrii May 23, 2016

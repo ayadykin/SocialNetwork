@@ -2,8 +2,24 @@ module.exports = function(grunt) {
 
     require('time-grunt')(grunt);
 
+    grunt.initConfig({
+	appVersion : grunt.option('appVersion'),
+	target : grunt.option('target') || 'dev',
+	dev : {
+	    options : {
+		outputStyle : 'expanded'
+	    }
+	},
+	staging : {
+	    options : {
+		outputStyle : 'compressed'
+	    }
+	}
+    });
+
+
     grunt.log.warn('Version - ' + grunt.config.get('appVersion'));
-    grunt.initConfig({});
+    grunt.log.warn('target - ' + grunt.config.get('target'));
 
     var socialNetworkTasks = [
 	    'clean:start',

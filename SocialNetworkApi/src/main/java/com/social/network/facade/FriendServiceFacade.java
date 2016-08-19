@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.social.network.domain.model.Friend;
+import com.social.network.domain.model.Message;
 import com.social.network.dto.FriendDto;
 import com.social.network.dto.MessageDto;
-import com.social.network.model.Friend;
-import com.social.network.model.Message;
 import com.social.network.services.FriendService;
 import com.social.network.services.RedisService;
 import com.social.network.utils.EntityToDtoMapper;

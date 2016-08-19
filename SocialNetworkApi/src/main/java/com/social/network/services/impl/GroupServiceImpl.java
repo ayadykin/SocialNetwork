@@ -6,7 +6,6 @@ import static com.social.network.utils.Constants.DELETE_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.DELETE_USER_FROM_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.LEAVE_GROUP_MESSAGE;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -19,21 +18,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.dao.ChatDao;
-import com.social.network.dao.GroupDao;
-import com.social.network.dao.UserChatDao;
-import com.social.network.dto.group.GroupUserDto;
+import com.social.network.core.GroupModel;
+import com.social.network.core.message.builder.MessageBuilder;
+import com.social.network.core.message.builder.system.impl.GroupMessage;
+import com.social.network.domain.dao.ChatDao;
+import com.social.network.domain.dao.GroupDao;
+import com.social.network.domain.dao.UserChatDao;
+import com.social.network.domain.model.Chat;
+import com.social.network.domain.model.Group;
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.User;
+import com.social.network.domain.model.UserChat;
+import com.social.network.domain.model.enums.FriendStatus;
 import com.social.network.exceptions.group.DeleteGroupException;
 import com.social.network.exceptions.group.GroupAdminException;
 import com.social.network.exceptions.group.GroupPermissionExceptions;
-import com.social.network.message.builder.MessageBuilder;
-import com.social.network.message.system.impl.GroupMessage;
-import com.social.network.model.Chat;
-import com.social.network.model.Group;
-import com.social.network.model.Message;
-import com.social.network.model.User;
-import com.social.network.model.UserChat;
-import com.social.network.model.enums.FriendStatus;
 import com.social.network.services.FriendService;
 import com.social.network.services.GroupService;
 import com.social.network.services.UserService;
@@ -119,10 +118,9 @@ public class GroupServiceImpl implements GroupService {
             userChat.setChatName(name);
             userChatDao.saveOrUpdate(userChat);
             if (user.getUserId() == loggedUser.getUserId()) {
-                messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(CREATE_GROUP_MESSAGE, user, usersList, chat);
+                messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(CREATE_GROUP_MESSAGE, user, chat);
             } else {
-                messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE, user, user,
-                        usersList, chat);
+                messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE, user, user, chat);
             }
         }
 
@@ -131,7 +129,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public Message addUserToGroup(long groupId, long invitedUserId) {
+    public GroupModel addUserToGroup(long groupId, long invitedUserId) {
         // Get loggedUser
         User loggedUser = userService.getLoggedUserEntity();
         logger.debug("-> addUserToGroup : groupId = {}, UserId = {}, invitedUserId = {}", groupId, loggedUser.getUserId(), invitedUserId);
@@ -143,18 +141,13 @@ public class GroupServiceImpl implements GroupService {
         // Validation
         addUserToGroupValidation(loggedUser, invitedUser, group);
 
-        Chat chat = group.getChat();
-        chat.addUser(invitedUser);
+        group.getChat().addUser(invitedUser);
 
         // Set chat name
         UserChat loggedUserChat = userChatDao.findByChatAndUser(group.getChatId(), invitedUser.getUserId());
         loggedUserChat.setChatName(group.getGroupName());
 
-        // Create message
-        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE,
-                invitedUser, loggedUser, chat.getUsers(), chat);
-
-        return message;
+        return new GroupModel(invitedUser, loggedUser, group);
     }
 
     @Override
@@ -176,7 +169,7 @@ public class GroupServiceImpl implements GroupService {
 
         // Create message
         Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(DELETE_USER_FROM_GROUP_MESSAGE,
-                removedUser, loggedUser, chat.getUsers(), chat);
+                removedUser, loggedUser, chat);
 
         return message;
     }
@@ -197,7 +190,7 @@ public class GroupServiceImpl implements GroupService {
 
         // Create message
         Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(LEAVE_GROUP_MESSAGE, loggedUser,
-                chat.getUsers(), chat);
+                chat);
 
         chat.removeUser(loggedUser);
 
@@ -221,14 +214,14 @@ public class GroupServiceImpl implements GroupService {
 
         // Create message
         Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(DELETE_GROUP_MESSAGE, loggedUser,
-                chat.getUsers(), chat);
+                chat);
 
         return message;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<GroupUserDto> getFriendsNotInGroup(long groupId) {
+    public List<User> getFriendsNotInGroup(long groupId) {
         // Get loggedUser
         User loggedUser = userService.getLoggedUserEntity();
         logger.debug("-> getFriendsNotInGroup: userId: {}, groupId: {}", loggedUser.getUserId(), groupId);
@@ -248,13 +241,7 @@ public class GroupServiceImpl implements GroupService {
 
         logger.debug("-> getFriendsNotInGroup: end stream filter");
 
-        // Fill FriendsDto list
-        List<GroupUserDto> friendDtoList = new ArrayList<>();
-        for (User user : users) {
-            friendDtoList.add(new GroupUserDto(user.getUserId(), user.getUserFullName(), false));
-        }
-        logger.debug("-> getFriendsNotInGroup: end");
-        return friendDtoList;
+        return users;
     }
 
     /*

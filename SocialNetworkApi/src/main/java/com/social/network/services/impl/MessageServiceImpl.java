@@ -1,23 +1,21 @@
 package com.social.network.services.impl;
 
-import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.dao.MessageDao;
-import com.social.network.dao.RecipientDao;
-import com.social.network.dao.SystemMessageDao;
+import com.social.network.domain.dao.MessageDao;
+import com.social.network.domain.dao.RecipientDao;
+import com.social.network.domain.dao.SystemMessageDao;
+import com.social.network.domain.model.Chat;
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.Recipient;
+import com.social.network.domain.model.SystemMessage;
+import com.social.network.domain.model.User;
+import com.social.network.domain.model.enums.SystemMessageStatus;
 import com.social.network.exceptions.chat.EditMessageException;
-import com.social.network.model.Chat;
-import com.social.network.model.Message;
-import com.social.network.model.Recipient;
-import com.social.network.model.SystemMessage;
-import com.social.network.model.User;
-import com.social.network.model.enums.SystemMessageStatus;
 import com.social.network.redis.RedisMessageObserver;
 import com.social.network.services.MessageService;
 import com.social.network.services.UserService;
@@ -44,30 +42,32 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
 
     @Override
     @Transactional
-    public Message createMessage(String messageText, User publisher, Set<User> subscribers, Chat chat) {
+    public Message createMessage(String messageText, User publisher, Chat chat) {
         logger.debug("createMessage :  messageText = {}, chat = {}", messageText, chat);
         Message message = new Message(messageText, publisher, chat);
         long messageId = messageDao.save(message);
 
-        for (User user : subscribers) {
-            recipientDao.save(new Recipient(user, messageId));
-        }
+        addRecipients(chat, messageId);
 
         return message;
     }
 
     @Override
     @Transactional
-    public Message createSystemMessage(String messageText, User publisher, Set<User> subscribers, Chat chat,
-            SystemMessageStatus systemMessageStatus) {
+    public Message createSystemMessage(String messageText, User publisher, Chat chat, SystemMessageStatus systemMessageStatus) {
         logger.debug("createMessage :  messageText = {}, chat = {}", messageText, chat);
         SystemMessage message = systemMessageDao.merge(new SystemMessage(messageText, publisher, chat, systemMessageStatus));
 
-        for (User user : subscribers) {
-            recipientDao.save(new Recipient(user, message.getMessageId()));
-        }
+        addRecipients(chat, message.getMessageId());
 
         return message;
+    }
+
+    @Transactional
+    private void addRecipients(Chat chat, long messageId) {
+        for (User user : chat.getUsers()) {
+            recipientDao.save(new Recipient(user, messageId));
+        }
     }
 
     @Override

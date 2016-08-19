@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.social.network.domain.model.Account;
+import com.social.network.domain.model.Profile;
+import com.social.network.domain.model.User;
 import com.social.network.dto.SignupFormDto;
-import com.social.network.model.Account;
-import com.social.network.model.Profile;
-import com.social.network.model.User;
 import com.social.network.services.AuthService;
 
 @Controller

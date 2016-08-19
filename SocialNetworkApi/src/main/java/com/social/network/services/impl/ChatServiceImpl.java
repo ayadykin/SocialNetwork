@@ -14,16 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.dao.ChatDao;
-import com.social.network.dao.UserChatDao;
+import com.social.network.domain.dao.ChatDao;
+import com.social.network.domain.dao.UserChatDao;
+import com.social.network.domain.model.Chat;
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.User;
+import com.social.network.domain.model.UserChat;
+import com.social.network.domain.model.enums.FriendStatus;
+import com.social.network.domain.model.enums.Period;
 import com.social.network.exceptions.chat.ChatPermissionException;
 import com.social.network.exceptions.chat.ChatRemovedException;
-import com.social.network.model.Chat;
-import com.social.network.model.Message;
-import com.social.network.model.User;
-import com.social.network.model.UserChat;
-import com.social.network.model.enums.FriendStatus;
-import com.social.network.model.enums.Period;
 import com.social.network.services.ChatService;
 import com.social.network.services.FriendService;
 import com.social.network.services.MessageService;
@@ -86,7 +86,7 @@ public class ChatServiceImpl implements ChatService {
 
         Chat chat = DaoValidation.chatExistValidation(chatDao, chatId);
 
-        Message message = messageService.createMessage(messageText, loggedUser, chat.getUsers(), chat);
+        Message message = messageService.createMessage(messageText, loggedUser, chat);
 
         return message;
 

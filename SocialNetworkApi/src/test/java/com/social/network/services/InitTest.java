@@ -7,9 +7,9 @@ import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.model.Account;
-import com.social.network.model.Profile;
-import com.social.network.model.User;
+import com.social.network.domain.model.Account;
+import com.social.network.domain.model.Profile;
+import com.social.network.domain.model.User;
 
 /**
  * Created by Yadykin Andrii May 18, 2016

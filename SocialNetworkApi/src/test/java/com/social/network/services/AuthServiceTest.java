@@ -10,9 +10,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.social.network.config.ApplicationConfig;
-import com.social.network.config.HibernateConfig;
 import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
+import com.social.network.domain.config.HibernateConfig;
 
 /**
  * Created by andrii.perylo on 5/25/2016.

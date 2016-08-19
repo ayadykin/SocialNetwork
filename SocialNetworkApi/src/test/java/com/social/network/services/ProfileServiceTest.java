@@ -15,14 +15,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.social.network.config.ApplicationConfig;
-import com.social.network.config.HibernateConfig;
 import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
+import com.social.network.domain.config.HibernateConfig;
+import com.social.network.domain.model.enums.FriendStatus;
 import com.social.network.dto.ProfileDto;
 import com.social.network.dto.UserDto;
 import com.social.network.exceptions.friend.InviteException;
 import com.social.network.exceptions.user.UserNotExistException;
-import com.social.network.model.enums.FriendStatus;
 
 /**
  * Created by Yadykin Andrii May 18, 2016

@@ -7,10 +7,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.dao.AccountDao;
-import com.social.network.dao.UsersDao;
-import com.social.network.model.Account;
-import com.social.network.model.User;
+import com.social.network.domain.dao.AccountDao;
+import com.social.network.domain.dao.UsersDao;
+import com.social.network.domain.model.Account;
+import com.social.network.domain.model.User;
 import com.social.network.services.UserService;
 import com.social.network.validation.DaoValidation;
 

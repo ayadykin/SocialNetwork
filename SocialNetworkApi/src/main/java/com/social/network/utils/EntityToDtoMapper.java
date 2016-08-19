@@ -1,25 +1,25 @@
 package com.social.network.utils;
 
 import java.util.Arrays;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.social.network.domain.model.Friend;
+import com.social.network.domain.model.Group;
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.SystemMessage;
+import com.social.network.domain.model.User;
+import com.social.network.domain.model.UserChat;
 import com.social.network.dto.ChatDto;
 import com.social.network.dto.FriendDto;
 import com.social.network.dto.GroupDto;
 import com.social.network.dto.MessageDto;
 import com.social.network.dto.group.GroupUserDto;
 import com.social.network.exceptions.chat.ConvertMessageException;
-import com.social.network.model.Friend;
-import com.social.network.model.Group;
-import com.social.network.model.Message;
-import com.social.network.model.SystemMessage;
-import com.social.network.model.User;
-import com.social.network.model.UserChat;
 
 /**
  * Created by Yadykin Andrii Jul 14, 2016
@@ -68,7 +68,7 @@ public class EntityToDtoMapper {
     }
 
     public static Set<GroupUserDto> convertUserToGroupUserDto(Set<User> users, long adminId) {
-        Set<GroupUserDto> usersList = new HashSet<>();
+        Set<GroupUserDto> usersList = new LinkedHashSet<>();
         for (User user : users) {
             boolean isAdmin = user.getUserId() == adminId;
             if (isAdmin) {
@@ -86,7 +86,7 @@ public class EntityToDtoMapper {
 
     public static Set<GroupDto> convertGroupsToGroupsDto(List<Group> groups, long loggedUserId, boolean withUsers) {
         logger.debug(" convertGroupsToGroupsDto groups size {} ", groups.size());
-        Set<GroupDto> groupsDtoList = new HashSet<>();
+        Set<GroupDto> groupsDtoList = new LinkedHashSet<>();
         for (Group group : groups) {
             boolean isAdmin = loggedUserId == group.getAdminId();
 

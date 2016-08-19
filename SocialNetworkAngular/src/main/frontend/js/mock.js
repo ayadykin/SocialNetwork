@@ -63,8 +63,8 @@ angular.module('socialNetworkAppM', ['ngMockE2E']).run(function($httpBackend) {
     });
 
     $httpBackend.whenPOST('/SocialNetworkApi/group/add_user').respond({
-	"userId" : 2,
-	"fullName" : "Andrey P",
+	"userId" : 3,
+	"fullName" : "Dima D",
 	"groupAdmin" : false
     });
 

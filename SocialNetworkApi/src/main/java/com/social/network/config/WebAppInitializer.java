@@ -6,6 +6,8 @@ import javax.servlet.ServletRegistration.Dynamic;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
+import com.social.network.domain.config.HibernateConfig;
+
 /**
  * Created by andrii.perylo/Yadykin Andrii on 5/30/2016.
  */

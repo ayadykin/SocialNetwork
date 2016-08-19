@@ -1,6 +1,6 @@
 package com.social.network.dto;
 
-import com.social.network.model.enums.FriendStatus;
+import com.social.network.domain.model.enums.FriendStatus;
 
 /**
  * Created by Yadykin Andrii May 20, 2016

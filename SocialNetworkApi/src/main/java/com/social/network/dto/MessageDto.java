@@ -3,7 +3,7 @@ package com.social.network.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.social.network.model.enums.SystemMessageStatus;
+import com.social.network.domain.model.enums.SystemMessageStatus;
 import com.social.network.utils.Constants;
 
 /**

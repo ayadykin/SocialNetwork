@@ -2,9 +2,10 @@ package com.social.network.services;
 
 import java.util.List;
 
-import com.social.network.dto.group.GroupUserDto;
-import com.social.network.model.Group;
-import com.social.network.model.Message;
+import com.social.network.core.GroupModel;
+import com.social.network.domain.model.Group;
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.User;
 
 /**
  * Created by Yadykin Andrii May 12, 2016
@@ -43,7 +44,7 @@ public interface GroupService {
      * @param invitedUserId
      * @return information message
      */
-    Message addUserToGroup(long groupId, long invitedUserId);
+    GroupModel addUserToGroup(long groupId, long invitedUserId);
 
     /**
      * This method is used to delete user from group
@@ -76,5 +77,5 @@ public interface GroupService {
      * @param groupId
      * @return List<FriendDto>
      */
-    List<GroupUserDto> getFriendsNotInGroup(long groupId);
+    List<User> getFriendsNotInGroup(long groupId);
 }

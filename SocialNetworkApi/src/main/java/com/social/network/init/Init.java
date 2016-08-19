@@ -12,13 +12,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.social.network.domain.model.Account;
+import com.social.network.domain.model.Group;
+import com.social.network.domain.model.Profile;
+import com.social.network.domain.model.User;
 import com.social.network.dto.GroupDto;
 import com.social.network.facade.FriendServiceFacade;
 import com.social.network.facade.GroupServiceFacade;
-import com.social.network.model.Account;
-import com.social.network.model.Group;
-import com.social.network.model.Profile;
-import com.social.network.model.User;
 import com.social.network.services.AuthService;
 import com.social.network.services.GroupService;
 

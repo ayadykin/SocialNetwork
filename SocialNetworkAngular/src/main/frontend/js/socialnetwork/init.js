@@ -1,11 +1,11 @@
-var models = {}, socialNetworkApp = angular.module('socialNetworkApp', [
+var socialNetworkApp = angular.module('socialNetworkApp', [
 	'pascalprecht.translate',	
 	'ngLocale',
 	'ngRoute',
 	'ngCookies',
 	'ui.bootstrap',
 	'ngAnimate',
-	'socialNetworkAppM',
+
 	'socialNetworkControllers',
 	'socialNetworkServices',]);
 
@@ -18,5 +18,4 @@ socialNetworkApp.run(function run($http, $cookies) {
 
 socialNetworkApp.config(function($translateProvider) {
     $translateProvider.useLoader('i18nLoader');
-
 });

@@ -72,9 +72,8 @@ public class GroupApi {
 
     @ResponseBody
     @RequestMapping(value = ADD_USER, method = RequestMethod.POST)
-    public String addUserToGroup(@RequestBody GroupUserDto groupUserDto) {
-        return ResultToResponseWrapper
-                .convert(() -> groupServiceFacade.addUserToGroup(groupUserDto.getGroupId(), groupUserDto.getUserId()));
+    public GroupUserDto addUserToGroup(@RequestBody GroupUserDto groupUserDto) {
+        return groupServiceFacade.addUserToGroup(groupUserDto.getGroupId(), groupUserDto.getUserId());
     }
 
     @ResponseBody

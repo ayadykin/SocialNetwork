@@ -1,5 +1,8 @@
 package com.social.network.facade;
 
+import static com.social.network.utils.Constants.ADD_USER_TO_GROUP_MESSAGE;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -7,11 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.social.network.core.GroupModel;
+import com.social.network.core.message.builder.MessageBuilder;
+import com.social.network.core.message.builder.system.impl.GroupMessage;
+import com.social.network.domain.model.Chat;
+import com.social.network.domain.model.Group;
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.User;
 import com.social.network.dto.GroupDto;
 import com.social.network.dto.MessageDto;
 import com.social.network.dto.group.GroupUserDto;
-import com.social.network.model.Group;
-import com.social.network.model.Message;
 import com.social.network.services.GroupService;
 import com.social.network.services.RedisService;
 import com.social.network.services.UserService;
@@ -31,6 +39,10 @@ public class GroupServiceFacade {
     private RedisService redisService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MessageBuilder messageBuilder;
+    @Autowired
+    private GroupMessage groupMessageBuilder;
 
     @Transactional
     public GroupDto createGroup(String name, String[] userList) {
@@ -49,7 +61,13 @@ public class GroupServiceFacade {
 
     @Transactional
     public List<GroupUserDto> getFriendsNotInGroup(long groupId) {
-        return groupService.getFriendsNotInGroup(groupId);
+        List<User> users = groupService.getFriendsNotInGroup(groupId);
+        // Fill FriendsDto list
+        List<GroupUserDto> friendDtoList = new ArrayList<>();
+        for (User user : users) {
+            friendDtoList.add(new GroupUserDto(user.getUserId(), user.getUserFullName(), false));
+        }
+        return friendDtoList;
     }
 
     @Transactional
@@ -68,11 +86,19 @@ public class GroupServiceFacade {
     }
 
     @Transactional
-    public boolean addUserToGroup(long groupId, long userId) {
+    public GroupUserDto addUserToGroup(long groupId, long userId) {
 
-        Message message = groupService.addUserToGroup(groupId, userId);
+        GroupModel groupModel = groupService.addUserToGroup(groupId, userId);
+
+        Chat chat = groupModel.getGroup().getChat();
+        User invitedUser = groupModel.getInvitedUser();
+        
+        // Create message
+        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE,
+                invitedUser, groupModel.getLoggedUser(), chat);
+
         sendMessageToRedis(message, userId);
-        return true;
+        return new GroupUserDto(invitedUser.getUserId(), invitedUser.getUserFullName(), false);
     }
 
     @Transactional

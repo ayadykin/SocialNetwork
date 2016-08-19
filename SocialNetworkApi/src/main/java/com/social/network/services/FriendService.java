@@ -2,10 +2,10 @@ package com.social.network.services;
 
 import java.util.Set;
 
-import com.social.network.model.Friend;
-import com.social.network.model.Message;
-import com.social.network.model.User;
-import com.social.network.model.enums.FriendStatus;
+import com.social.network.domain.model.Friend;
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.User;
+import com.social.network.domain.model.enums.FriendStatus;
 
 /**
  * Created by Yadykin Andrii May 12, 2016

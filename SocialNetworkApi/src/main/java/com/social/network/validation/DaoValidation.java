@@ -5,21 +5,21 @@ import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.social.network.dao.ChatDao;
-import com.social.network.dao.FriendDao;
-import com.social.network.dao.GroupDao;
-import com.social.network.dao.MessageDao;
-import com.social.network.dao.UsersDao;
+import com.social.network.domain.dao.ChatDao;
+import com.social.network.domain.dao.FriendDao;
+import com.social.network.domain.dao.GroupDao;
+import com.social.network.domain.dao.MessageDao;
+import com.social.network.domain.dao.UsersDao;
+import com.social.network.domain.model.Chat;
+import com.social.network.domain.model.Friend;
+import com.social.network.domain.model.Group;
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.User;
 import com.social.network.exceptions.chat.ChatNotExistException;
 import com.social.network.exceptions.chat.EmptyMessageException;
 import com.social.network.exceptions.friend.FriendNotExistException;
 import com.social.network.exceptions.group.GroupPermissionExceptions;
 import com.social.network.exceptions.user.UserNotExistException;
-import com.social.network.model.Chat;
-import com.social.network.model.Friend;
-import com.social.network.model.Group;
-import com.social.network.model.Message;
-import com.social.network.model.User;
 
 /**
  * Created by Yadykin Andrii Jun 3, 2016

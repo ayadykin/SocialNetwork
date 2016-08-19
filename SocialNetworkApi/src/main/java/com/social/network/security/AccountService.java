@@ -10,9 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.dao.AccountDao;
+import com.social.network.domain.dao.AccountDao;
+import com.social.network.domain.model.Account;
 import com.social.network.exceptions.user.UserNotExistException;
-import com.social.network.model.Account;
 
 /**
  * Created by Yadykin Andrii May 13, 2016

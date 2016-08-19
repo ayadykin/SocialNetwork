@@ -11,12 +11,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.social.network.config.ApplicationConfig;
-import com.social.network.config.HibernateConfig;
 import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
-import com.social.network.model.Account;
-import com.social.network.model.Profile;
-import com.social.network.model.User;
+import com.social.network.domain.config.HibernateConfig;
+import com.social.network.domain.model.Account;
+import com.social.network.domain.model.Profile;
+import com.social.network.domain.model.User;
 
 /**
  * Created by andrii.perylo on 5/25/2016.

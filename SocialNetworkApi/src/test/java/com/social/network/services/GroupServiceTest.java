@@ -1,8 +1,8 @@
 package com.social.network.services;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,14 +12,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import com.social.network.config.ApplicationConfig;
-import com.social.network.config.HibernateConfig;
 import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
+import com.social.network.domain.config.HibernateConfig;
+import com.social.network.domain.model.Group;
 import com.social.network.exceptions.chat.ChatRemovedException;
 import com.social.network.exceptions.friend.FriendNotExistException;
 import com.social.network.exceptions.group.GroupAdminException;
 import com.social.network.exceptions.group.GroupPermissionExceptions;
-import com.social.network.model.Group;
 
 /**
  * Created by andrii.perylo on 5/18/2016.

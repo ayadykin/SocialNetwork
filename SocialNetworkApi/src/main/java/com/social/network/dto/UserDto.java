@@ -2,7 +2,7 @@ package com.social.network.dto;
 
 import java.util.Locale;
 
-import com.social.network.model.enums.FriendStatus;
+import com.social.network.domain.model.enums.FriendStatus;
 
 /**
  * Created by Yadykin Andrii May 18, 2016

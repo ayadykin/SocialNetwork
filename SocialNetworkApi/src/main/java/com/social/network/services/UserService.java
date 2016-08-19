@@ -1,7 +1,7 @@
 package com.social.network.services;
 
-import com.social.network.model.Account;
-import com.social.network.model.User;
+import com.social.network.domain.model.Account;
+import com.social.network.domain.model.User;
 
 /**
  * Created by Yadykin Andrii May 13, 2016

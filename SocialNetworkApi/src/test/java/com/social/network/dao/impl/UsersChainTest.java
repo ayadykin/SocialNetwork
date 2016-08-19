@@ -15,19 +15,19 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.config.ApplicationConfig;
-import com.social.network.config.HibernateConfig;
 import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
-import com.social.network.dao.ChatDao;
-import com.social.network.dao.GroupDao;
-import com.social.network.dao.MessageDao;
-import com.social.network.dao.RecipientDao;
-import com.social.network.dao.UsersDao;
-import com.social.network.model.Chat;
-import com.social.network.model.Group;
-import com.social.network.model.Message;
-import com.social.network.model.Recipient;
-import com.social.network.model.User;
+import com.social.network.domain.config.HibernateConfig;
+import com.social.network.domain.dao.ChatDao;
+import com.social.network.domain.dao.GroupDao;
+import com.social.network.domain.dao.MessageDao;
+import com.social.network.domain.dao.RecipientDao;
+import com.social.network.domain.dao.UsersDao;
+import com.social.network.domain.model.Chat;
+import com.social.network.domain.model.Group;
+import com.social.network.domain.model.Message;
+import com.social.network.domain.model.Recipient;
+import com.social.network.domain.model.User;
 
 /**
  * Created by andrii.perylo on 5/16/2016.

@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.social.network.domain.model.enums.Period;
 import com.social.network.facade.ChatServiceFacade;
-import com.social.network.model.enums.Period;
 import com.social.network.services.ChatService;
 import com.social.network.services.UserService;
 
