@@ -27,6 +27,8 @@ describe('GroupController', function() {
 
 	httpMock.flush();
 	scope.$apply();
+	
+	dump(scope.groups);
 
 	expect(scope.groups[0].groupId).toEqual(1);
 	expect(scope.groups[0].chatId).toEqual(5);
@@ -51,7 +53,7 @@ describe('GroupController', function() {
 	controller('GroupController', {
 	    '$scope' : scope
 	});
-
+	debugger;
 	httpMock.expectGET(config.groupPath).respond(
 		'[{"name":"test","chatId":5,"groupId":1,"users":null,"groupAdmin":true,"hidden":false}]');
 
@@ -70,6 +72,8 @@ describe('GroupController', function() {
 
 	httpMock.flush();
 	scope.$apply();
+	
+	//dump(scope);
 	
 	expect(scope.groups.length).toEqual(2);
     });
