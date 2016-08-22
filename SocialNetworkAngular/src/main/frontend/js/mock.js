@@ -1,4 +1,4 @@
-angular.module('socialNetworkAppM', ['ngMockE2E']).run(function($httpBackend) {
+angular.module('socialNetworkAppM', [ 'ngMockE2E' ]).run(function($httpBackend) {
     // 'ngMockE2E'
     $httpBackend.whenGET('../i18n/en.properties').respond({
 	"code" : "en",
@@ -7,17 +7,25 @@ angular.module('socialNetworkAppM', ['ngMockE2E']).run(function($httpBackend) {
 	"ADD_USER" : "Add user",
 	"FRIENDS" : "Friends"
     });
-    
+
+    $httpBackend.whenGET('../i18n/no.properties').respond(function(method, url, obj) {
+	return [ 400, {
+	    "error" : 'error load file '
+	} ]
+    });
+
     $httpBackend.whenGET('../i18n/ru.properties').respond({
 	"code" : "en",
 	"error_delete_group" : "Error delete group ",
 	"success_delete_group" : "Success delete group ",
-	"ADD_USER": "Добавить друга",
-	"FRIENDS":"Друзья"
+	"ADD_USER" : "Добавить друга",
+	"FRIENDS" : "Друзья"
     });
 
     $httpBackend.whenGET('/SocialNetworkApi/signin').respond({});
-    $httpBackend.whenPOST('/SocialNetworkApi/j_spring_security_check?j_password=user1&j_username=user1').respond({"login" : 'SUCCESS'});
+    $httpBackend.whenPOST('/SocialNetworkApi/j_spring_security_check?j_password=user1&j_username=user1').respond({
+	"login" : 'SUCCESS'
+    });
     /**
      * Group mock
      */
@@ -57,9 +65,16 @@ angular.module('socialNetworkAppM', ['ngMockE2E']).run(function($httpBackend) {
     $httpBackend.whenPOST('/SocialNetworkApi/group').respond(function(method, url, obj) {
 	console.log(obj);
 
-	return [ 200, {
-	    "groupId" : 10
-	} ]
+	if (obj) {
+	    return [ 200, {
+		"groupId" : 10
+	    } ]
+	} else {
+	    return [ 200, {
+		"error" : 'no name'
+	    } ]
+	}
+
     });
 
     $httpBackend.whenPOST('/SocialNetworkApi/group/add_user').respond({

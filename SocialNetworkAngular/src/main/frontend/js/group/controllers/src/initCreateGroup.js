@@ -3,29 +3,33 @@ $scope.initCreateGroup = function() {
     $scope.groupListView = false;
     $scope.editGroupView = false;
 
-    $q.all([ FriendRest.get().$promise ]).then(function(response) {
+    FriendRest.get(function(friends) {
 	$log.info('initCreateGroup');
-	$scope.friends = [];
-	$scope.friends = response[0];
+	$scope.friends = friends;
 	$scope.friendsId = [];
+	$scope.groupName = {};
     });
 
     $scope.saveGroup = function() {
-	$log.info('Create group name : ' + $scope.groupName + ', friendId : ' + $scope.friendsId);
+	$log.info('Create group name : ' + $scope.groupName.text + ', friendId : ' + $scope.friendsId);
 
-	GroupRest.save({
-	    groupName : $scope.groupName,
-	    friendId : $scope.friendsId
-	}).$promise.then(function(data) {
-	    if (data.groupId) {
-		$scope.groups.push(data);
-		$scope.successDialog(true);
-		$location.path("/group");
-	    } else if (data.error) {
-		$scope.successDialog(data.response, data.error);
-	    } else {
-		$scope.successDialog(data.response, '');
-	    }
-	});
+	if ($scope.groupName.text) {
+	    GroupRest.save({
+		groupName : $scope.groupName.text,
+		friendId : $scope.friendsId
+	    }, function(data) {
+		if (data.groupId) {
+		    $scope.groups.push(data);
+		    $scope.successDialog(true);
+		    $location.path("/group");
+		} else if (data.error) {
+		    $scope.successDialog(false, data.error);
+		} else {
+		    $scope.successDialog(data.response, '');
+		}
+	    });
+	}else{
+	    $scope.successDialog(false, 'no name'); 
+	}
     };
 };

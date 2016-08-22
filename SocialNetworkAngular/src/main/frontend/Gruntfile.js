@@ -4,11 +4,14 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
 	appVersion : grunt.option('appVersion'),
-	target : grunt.option('target') || 'dev',
+	target : grunt.option('target') || 'sn-debug',
 	dev : {
 	    options : {
 		outputStyle : 'expanded'
 	    }
+	},
+	watch : {
+	    tasks : ['']
 	},
 	staging : {
 	    options : {
@@ -50,6 +53,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jade');
     grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-watch');
 
     require('grunt-config-dir')(grunt, {
 	configDir : require('path').resolve(__dirname + '/grunt'),

@@ -1,11 +1,9 @@
 <div ng-controller="GroupController">
 
-	<div class="slide-animate-container">
-		<div class="slide-animate" data-ng-show="groupListView"
-			data-ng-include="'templates/parts/groupList.html'"></div>
-		<div class="slide-animate" data-ng-show="createGroupView"
-			data-ng-include="'templates/parts/createGroup.html'"></div>
-		<div class="slide-animate" data-ng-show="editGroupView"
-			data-ng-include="'templates/parts/editGroup.html'"></div>
-	</div>
+	<div data-ng-show="groupListView"
+		data-ng-include="'templates/parts/groupList.html'"></div>
+	<div data-ng-show="createGroupView"
+		data-ng-include="'templates/parts/createGroup.html'"></div>
+	<div data-ng-show="editGroupView"
+		data-ng-include="'templates/parts/editGroup.html'"></div>
 </div>

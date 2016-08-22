@@ -1,5 +1,6 @@
 package com.social.network.domain.dao.impl;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.hibernate.NonUniqueResultException;
@@ -28,11 +29,11 @@ public class GroupDaoImpl extends GenericDaoHibernate<Group, Long> implements Gr
         try {
             return getCurrentSession().getNamedQuery(Constants.FIND_GROUP_BY_OWNER).setEntity("user", user).list();
         } catch (NonUniqueResultException e) {
-            logger.debug("findByOwner NonUniqueResultException : {}", e.getMessage());
-            return null;
+            logger.error("findByOwner NonUniqueResultException : {}", e.getMessage());
+            return Collections.emptyList();
         } catch (Exception e) {
-            logger.debug("findByOwner Exception : {}", e.getMessage());
-            return null;
+            logger.error("findByOwner Exception : {}", e.getMessage());
+            return Collections.emptyList();
         }
     }
 }

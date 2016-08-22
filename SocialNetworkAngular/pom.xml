@@ -16,6 +16,11 @@
 	<properties>
 	</properties>
 
+	<dependencies>
+		
+
+	</dependencies>
+
 	<build>
 		<finalName>SocialNetworkAngular</finalName>
 		<plugins>
@@ -42,7 +47,7 @@
 				</configuration>
 
 			</plugin>
-			
+
 		</plugins>
 	</build>
 

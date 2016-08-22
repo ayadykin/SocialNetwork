@@ -1,17 +1,10 @@
 angular.module('socialNetworkServices').factory('GroupRest', function ($resource, config) {
         var url = config.groupPath;
 		resource = $resource(url, null, {
-            get: {
-                method: 'GET',
-                isArray: true
-            },
             getGroupById: {
                 method: 'GET',
                 url: url + '/:groupId'
-            },
-            save: {
-                method: 'POST'
-            },
+            },        
             getFriendsNotInGroup: {
                 method: 'GET',
                 isArray: true,

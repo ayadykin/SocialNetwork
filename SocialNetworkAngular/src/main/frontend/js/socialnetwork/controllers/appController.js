@@ -2,17 +2,14 @@ angular.module('socialNetworkControllers').controller('AppController',
 	function($q, $scope, $rootScope, $route, config, $uibModal, $log, $http, $locale, $translate) {
 	    initPagesPermissions($route);
 
-	    $q.all([ $translate.use("en") ]).then(function(data) {
-	    });
+	    loadFile('en');
 
 	    $scope.changeLocale = function(locale) {
-		$q.all([ $translate.use(locale) ]).then(function(data) {
-		});
+		loadFile(locale);
 	    };
 
 	    $rootScope.successDialog = function(result, key) {
-		var templateUrl,
-		message = $translate.instant(key);
+		var templateUrl, message = $translate.instant(key);
 		if (result) {
 		    templateUrl = 'templates/parts/success_dialog.html';
 		} else {
@@ -32,4 +29,13 @@ angular.module('socialNetworkControllers').controller('AppController',
 		});
 		$log.info('Modal open,  message: ' + message);
 	    };
+
+	    function loadFile(key) {
+		$q.when($translate.use(key)).then(function(data) {
+		    $log.info("AppController load lang :" + data);
+		}, function(data) {
+		    loadFile("en");
+		    $log.error("AppController load lang :" + data);
+		});
+	    }
 	});

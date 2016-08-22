@@ -8,6 +8,7 @@ $scope.initEditGroup = function(groupId) {
     }).$promise, GroupRest.getGroupById({
 	groupId : groupId
     }).$promise ]).then(function(response) {
+	$log.info('initEditGroup');
 	$scope.friendsNotInGroup = [];
 	$scope.group = [];
 	$scope.friendsNotInGroup = response[0];
@@ -19,7 +20,7 @@ $scope.initEditGroup = function(groupId) {
 	GroupRest.addUser({
 	    groupId : groupId,
 	    userId : userId
-	}).$promise.then(function(data) {
+	}, function(data) {
 	    if (data.userId) {		
 		removeUserById($scope.friendsNotInGroup, userId);
 		$scope.group.users.push(data);
@@ -33,7 +34,7 @@ $scope.initEditGroup = function(groupId) {
 	GroupRest.deleteUser({
 	    groupId : groupId,
 	    userId : userId
-	}).$promise.then(function(data) {
+	}, function(data) {
 	    if (data.userId) {
 		removeUserById($scope.group.users, userId);
 		$scope.friendsNotInGroup.push(data);
@@ -46,7 +47,7 @@ $scope.initEditGroup = function(groupId) {
 	$log.info('leave groupId : ' + groupId);
 	GroupRest.leave({
 	    groupId : groupId
-	}).$promise.then(function(data) {
+	}, function(data) {
 	    if (data.response) {
 		$scope.successDialog(data.response);
 	    }

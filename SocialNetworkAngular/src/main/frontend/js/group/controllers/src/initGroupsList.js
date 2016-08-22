@@ -7,7 +7,7 @@ $scope.initGroupsList = function() {
 	$log.info('remove groupId : ' + groupId);
 	GroupRest.remove({
 	    groupId : groupId
-	}).$promise.then(function(data) {
+	}, function(data) {
 	    if (data.groupId) {
 		removeGroupById($scope.groups, groupId);
 		$rootScope.successDialog(data.response, 'success_delete_group');
