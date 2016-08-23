@@ -16,6 +16,7 @@ module.exports = function(grunt) {
     return {
 	mainViewer : getConfig('socialnetwork'),
 	friendViewer : getConfig('friend'),
-	groupViewer : getConfig('group')
+	groupViewer : getConfig('group'),
+	profileViewer : getConfig('profile')
     };
 };

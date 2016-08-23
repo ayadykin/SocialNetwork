@@ -25,7 +25,7 @@ import com.social.network.services.ProfileService;
 public class ProfileController {
 
     private final static Logger logger = LoggerFactory.getLogger(ProfileController.class);
-    private static final String USER_PROFILE_VIEW_NAME = "profile/userProfile";
+
     private static final String SEARCH_VIEW_NAME = "search/search";
     private static final String VIEW_PROFILE_VIEW_NAME = "profile/viewProfile";
     private static final String CHANGE_PASSWORD_VIEW_NAME = "profile/changePassword";
@@ -33,21 +33,6 @@ public class ProfileController {
 
     @Autowired
     private ProfileService profileService;
-
-    @RequestMapping(method = RequestMethod.GET)
-    public String getProfile(Model model, @RequestParam(value = "newUser", required = false) String newUser) {
-        model.addAttribute(profileService.getProfile());
-        if (newUser != null) {
-            model.addAttribute("msg", "You've been signed in successfully! Please fill and save your profile.");
-        }
-        return USER_PROFILE_VIEW_NAME;
-    }
-
-    @RequestMapping(method = RequestMethod.POST)
-    public String saveProfile(@ModelAttribute ProfileDto profileDto) {
-        profileService.updateProfile(profileDto);
-        return USER_PROFILE_VIEW_NAME;
-    }
 
     @RequestMapping(value = "/changepassword", method = RequestMethod.GET)
     public String initChangePassword(Model model) {
@@ -80,10 +65,4 @@ public class ProfileController {
         return mav;
     }
 
-    @RequestMapping(value = "/view/{userId}", method = RequestMethod.GET)
-    public ModelAndView viewProfile(@PathVariable("userId") long userId) {
-        ModelAndView mav = new ModelAndView(VIEW_PROFILE_VIEW_NAME);
-        mav.addObject("user", profileService.viewProfile(userId));
-        return mav;
-    }
 }

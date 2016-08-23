@@ -19,7 +19,7 @@
 		<ul class="nav navbar-nav navbar-right">
 			<li><a ng-click="changeLocale('en')">English </a></li>
 			<li><a ng-click="changeLocale('ru')">Russian </a></li>
-			
+
 			<li data-ng-show="!authenticated"><a href="#/signin">Sign in</a></li>
 
 			<li data-ng-show="authenticated"><a href="#/logout"
@@ -29,5 +29,7 @@
 
 		</ul>
 	</div>
-	<!--/.nav-collapse -->
+	<div class="alert-message-at-bottom "
+		data-ng-include="'templates/parts/notification.html'"
+		data-ng-show="notificationOptions.show">{{notificationOptions.show}}</div>
 </div>

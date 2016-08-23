@@ -8,6 +8,7 @@ function getModuleTree(name) {
 	    prefix + 'constants/**/*.js',
 	    prefix + 'services/**/*.js',
 	    prefix + 'helpers/**/*.js',
+	    prefix + 'filters/**/*.js',
 	    prefix + 'directives/**/*.js',
 	    '../webapp/' + prefix + 'build/parts/*.js' ];
 }
@@ -25,7 +26,11 @@ module.exports = function(grunt) {
 		    'bower_components/angular-resource/angular-resource.js',
 		    'bower_components/angular-translate/angular-translate.js',
 		    'bower_components/angular-cookies/angular-cookies.js' ].concat(getModuleTree('socialnetwork')
-		    .concat([ '../webapp/js/friend/build/app.js', '../webapp/js/group/build/app.js' ])),
+		    .concat(
+			    [
+				    '../webapp/js/friend/build/app.js',
+				    '../webapp/js/group/build/app.js',
+				    '../webapp/js/profile/build/app.js' ])),
 	    dest : '../webapp/js/socialnetwork/build/app.js'
 	},
 	snServer : {
@@ -53,7 +58,10 @@ module.exports = function(grunt) {
 			'js/friend/controllers/src/*.js' ],
 		'../webapp/js/group/controllers/build/ctrl.js' : [
 			'js/group/controllers/init.js',
-			'js/group/controllers/src/*.js' ]
+			'js/group/controllers/src/*.js' ],
+		'../webapp/js/profile/controllers/build/ctrl.js' : [
+			'js/profile/controllers/init.js',
+			'js/profile/controllers/src/*.js' ]
 	    }
 	},
 	friendViewer : {
@@ -65,6 +73,11 @@ module.exports = function(grunt) {
 	    src : getModuleTree('group').concat(
 		    [ '!js/group/controllers/**/*.js', '../webapp/js/group/controllers/build/ctrl.js' ]),
 	    dest : '../webapp/js/group/build/app.js'
+	},
+	profileViewer : {
+	    src : getModuleTree('profile').concat(
+		    [ '!js/profile/controllers/**/*.js', '../webapp/js/profile/controllers/build/ctrl.js' ]),
+	    dest : '../webapp/js/profile/build/app.js'
 	}
     }
 }

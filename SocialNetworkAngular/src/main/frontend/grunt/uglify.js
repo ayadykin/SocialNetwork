@@ -19,6 +19,11 @@ module.exports = function(grunt) {
 			options : options,
 			'src' : [ deployDir + 'js/group/build/app.js' ],
 			'dest' : deployDir + 'js/group/build/app.min.js'
+		},
+		profileViewer : {
+			options : options,
+			'src' : [ deployDir + 'js/profile/build/app.js' ],
+			'dest' : deployDir + 'js/profile/build/app.min.js'
 		}
 	};
 };

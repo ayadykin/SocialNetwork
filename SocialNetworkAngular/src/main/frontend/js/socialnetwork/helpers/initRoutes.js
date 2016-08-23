@@ -1,10 +1,13 @@
-function initPagesPermissions($route) {
+function initRoutes($route) {
 	var k, defaultRoutes = {
 		'/friend' : {
 			templateUrl : 'templates/pages/friend.html'
 		},
 		'/group' : {
 			templateUrl : 'templates/pages/group.html'
+		},
+		'/profile' : {
+			templateUrl : 'templates/pages/profile.html'
 		},
 		'/signin' : {
 			templateUrl : 'templates/pages/signin.html'

@@ -33,8 +33,8 @@ public class ProfileDto {
         return locale;
     }
 
-    public Locale[] getLocales() {
-        return locale.getAvailableLocales();
+    public String[] getLocales() {
+        return locale.getISOLanguages();
     }
 
     public void setLocale(String locale) {

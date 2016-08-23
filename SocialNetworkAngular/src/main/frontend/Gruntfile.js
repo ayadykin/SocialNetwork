@@ -26,9 +26,10 @@ module.exports = function(grunt) {
 
     var socialNetworkTasks = [
 	    'jshint',
-	    'concat:controllers',
-	    'groupViewer',
+	    'concat:controllers',	    
 	    'friendViewer',
+	    'groupViewer',
+	    'profileViewer',
 	    'mainViewer',
 	    'jade:files',
 	    'jade:debug_files',
@@ -38,6 +39,7 @@ module.exports = function(grunt) {
 	mainViewer : [ 'ngtemplates:mainViewer', 'concat:mainViewer', "clean:mainViewer" ],
 	friendViewer : [ 'ngtemplates:friendViewer', 'concat:friendViewer', 'uglify:friendViewer', "clean:friendViewer" ],
 	groupViewer : [ 'ngtemplates:groupViewer', 'concat:groupViewer', 'uglify:groupViewer', "clean:groupViewer" ],
+	profileViewer : [ 'ngtemplates:profileViewer', 'concat:profileViewer', 'uglify:profileViewer', "clean:profileViewer" ],
 	"sn-debug" : socialNetworkTasks,
 	"sn-debug:server" : [ 'sn-debug', 'concat:snServer' ],
 	sn : socialNetworkTasks.concat([ 'uglify:sn' ]),

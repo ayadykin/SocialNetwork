@@ -1,4 +1,4 @@
-angular.module('socialNetworkAppM', [ 'ngMockE2E' ]).run(function($httpBackend) {
+angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($httpBackend) {
     // 'ngMockE2E'
     $httpBackend.whenGET('../i18n/en.properties').respond({
 	"code" : "en",
@@ -12,6 +12,19 @@ angular.module('socialNetworkAppM', [ 'ngMockE2E' ]).run(function($httpBackend) 
 	return [ 400, {
 	    "error" : 'error load file '
 	} ]
+    });
+
+    $httpBackend.whenGET('../i18n/i18n_config.properties').respond({
+	"en" : {
+	    "id" : "en",
+	    "code" : "en",
+	    "name" : "English"
+	},
+	"ru" : {
+	    "id" : "ru",
+	    "code" : "ru",
+	    "name" : "Русский"
+	}
     });
 
     $httpBackend.whenGET('../i18n/ru.properties').respond({
@@ -44,6 +57,13 @@ angular.module('socialNetworkAppM', [ 'ngMockE2E' ]).run(function($httpBackend) 
 	"users" : null,
 	"groupAdmin" : true,
 	"hidden" : true
+    }, {
+	"name" : "Mock test error delete",
+	"chatId" : 5,
+	"groupId" : 3,
+	"users" : null,
+	"groupAdmin" : true,
+	"hidden" : false
     } ]);
 
     $httpBackend.whenGET('/SocialNetworkApi/group/1').respond({
@@ -89,8 +109,12 @@ angular.module('socialNetworkAppM', [ 'ngMockE2E' ]).run(function($httpBackend) 
 	"groupAdmin" : false
     });
 
+    $httpBackend.whenDELETE('/SocialNetworkApi/group/3').respond({
+	"error" : "errrrr"
+    });
+
     $httpBackend.whenDELETE('/SocialNetworkApi/group/1').respond({
-	"response" : true
+	"groupId" : 10
     });
 
     $httpBackend.whenGET('/SocialNetworkApi/group/friends_not_in_group/1').respond([ {
@@ -114,5 +138,17 @@ angular.module('socialNetworkAppM', [ 'ngMockE2E' ]).run(function($httpBackend) 
 	"status" : "ACCEPTED",
 	"chatId" : 2
     } ]);
+
+    /**
+     * Profile mock
+     */
+
+    $httpBackend.whenGET('/SocialNetworkApi/profile').respond({
+	"firstName" : "Andrei Y"
+    });
+
+    $httpBackend.whenPOST('/SocialNetworkApi/profile').respond({
+	"firstName" : "Andrei Y"
+    });
 
 });

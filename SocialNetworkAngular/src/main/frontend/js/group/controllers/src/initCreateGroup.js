@@ -20,16 +20,16 @@ $scope.initCreateGroup = function() {
 	    }, function(data) {
 		if (data.groupId) {
 		    $scope.groups.push(data);
-		    $scope.successDialog(true);
+		    resultDialog.dialog(true);
 		    $location.path("/group");
 		} else if (data.error) {
-		    $scope.successDialog(false, data.error);
+		    resultDialog.dialog(false, data.error);
 		} else {
-		    $scope.successDialog(data.response, '');
+		    resultDialog.dialog(data.response, '');
 		}
 	    });
 	}else{
-	    $scope.successDialog(false, 'no name'); 
+	    resultDialog.dialog(false, 'no name'); 
 	}
     };
 };

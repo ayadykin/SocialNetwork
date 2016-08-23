@@ -24,7 +24,7 @@ $scope.initEditGroup = function(groupId) {
 	    if (data.userId) {		
 		removeUserById($scope.friendsNotInGroup, userId);
 		$scope.group.users.push(data);
-		$scope.successDialog(true);
+		resultDialog.dialog(true);
 	    }
 	});
     };
@@ -38,7 +38,7 @@ $scope.initEditGroup = function(groupId) {
 	    if (data.userId) {
 		removeUserById($scope.group.users, userId);
 		$scope.friendsNotInGroup.push(data);
-		$scope.successDialog(true);
+		resultDialog.dialog(true);
 	    }
 	});
     };
@@ -49,7 +49,7 @@ $scope.initEditGroup = function(groupId) {
 	    groupId : groupId
 	}, function(data) {
 	    if (data.response) {
-		$scope.successDialog(data.response);
+		resultDialog.dialog(data.response);
 	    }
 	});
     };

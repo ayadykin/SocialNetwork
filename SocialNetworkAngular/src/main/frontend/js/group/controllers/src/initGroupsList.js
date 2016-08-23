@@ -3,21 +3,51 @@ $scope.initGroupsList = function() {
     $scope.createGroupView = false;
     $scope.editGroupView = false;
 
+    // Sort group
+    $scope.sortField = undefined;
+    $scope.reverse = false;
+
+    $scope.sort = function(fieldName) {
+	if ($scope.sortField === fieldName) {
+	    $scope.reverse = !$scope.reverse;
+	} else {
+	    $scope.sortField = fieldName;
+	    $scope.reverse = false;
+	}
+    };
+    $scope.isSortUp = function(fieldName) {
+	return $scope.sortField === fieldName && !$scope.reverse;
+    };
+    $scope.isSortDown = function(fieldName) {
+	return $scope.sortField === fieldName && $scope.reverse;
+    };
+
+    // Delete group
     $scope.deleteGroup = function(groupId) {
-	$log.info('remove groupId : ' + groupId);
+	$log.debug('remove groupId : ' + groupId);
 	GroupRest.remove({
 	    groupId : groupId
 	}, function(data) {
 	    if (data.groupId) {
 		removeGroupById($scope.groups, groupId);
-		$rootScope.successDialog(data.response, 'success_delete_group');
+		resultDialog.dialog(true, 'success_delete_group');
 	    } else if (data.error) {
 		$log.error('error remove group : ' + data.error);
-		$rootScope.successDialog(data.response, data.error);
-	    } else {
-		$log.error('error remove groupId : ' + groupId);
-		$rootScope.successDialog(data.response, 'error_delete_group');
+		// resultDialog.dialog(false, data.error);
+		$scope.notificationOptions = ErrorHandler.result(data, 'ERROR');
+		$log.error($scope.notificationOptions.show);
 	    }
+	}, function(data) {
+	    $scope.notificationOptions = ErrorHandler.result(data, 'ERROR');
 	});
+    };
+
+    $scope.nextPage = function() {
+	$scope.pageNo++;
+    };
+    $scope.prevPage = function() {
+	if ($scope.pageNo > 0) {
+	    $scope.pageNo--;
+	}
     };
 };
