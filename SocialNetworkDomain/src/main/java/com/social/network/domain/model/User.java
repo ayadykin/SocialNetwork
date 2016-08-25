@@ -33,10 +33,6 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userId;
 
-    @OrderBy("creation")
-    @ManyToMany(mappedBy = "users")
-    private Set<Chat> userChats = new LinkedHashSet<>();
-
     @OrderBy("friendId")
     @OneToMany(mappedBy = "user")
     private Set<Friend> friends = new LinkedHashSet<>();
@@ -106,22 +102,6 @@ public class User implements Serializable {
 
     public void setUserId(long userId) {
         this.userId = userId;
-    }
-
-    public Set<Chat> getUserChats() {
-        return userChats;
-    }
-
-    public void addChat(Chat chat) {
-        this.userChats.add(chat);
-    }
-
-    public void removeChat(Chat chat) {
-        this.userChats.remove(chat);
-    }
-
-    public void setUserChats(Set<Chat> userChats) {
-        this.userChats = userChats;
     }
 
     public Profile getProfile() {

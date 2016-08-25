@@ -27,53 +27,57 @@ import com.social.network.services.UserService;
 @Service
 public class RedisServiceImpl implements RedisService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RedisService.class);
-    @Autowired
-    private RecipientDao recipientDao;
-    @Autowired
-    private RedisTemplate<String, MessageDto> redisTemplate;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private RedisMessageObserver redisMessageObserver;
-    @Autowired
-    private TranslateService translateService;
+	private static final Logger logger = LoggerFactory.getLogger(RedisService.class);
+	@Autowired
+	private RecipientDao recipientDao;
+	@Autowired
+	private RedisTemplate<String, MessageDto> redisTemplate;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private RedisMessageObserver redisMessageObserver;
+	@Autowired
+	private TranslateService translateService;
 
-    @Override
-    @Transactional
-    public MessageDto getMessage() {
-        logger.debug("getMessage ");
-        long userId = userService.getLoggedUserId();
-        BoundListOperations<String, MessageDto> listOps = redisTemplate.boundListOps(Long.valueOf(userId).toString());
+	@Override
+	@Transactional
+	public MessageDto getMessage() {
+		logger.debug("getMessage ");
+		long userId = userService.getLoggedUserId();
+		BoundListOperations<String, MessageDto> listOps = redisTemplate.boundListOps(Long.valueOf(userId).toString());
 
-        User loggedUser = userService.getLoggedUserEntity();
-        MessageDto messageDto = listOps.leftPop();
-        if (messageDto != null) {
-            if (loggedUser.getProfile().isTranslate()) {
-                Locale locale = loggedUser.getProfile().getLocale();
-                logger.debug("getMessage translate to language : {}", locale.getLanguage());
-                messageDto.setText(translateService.translateString(messageDto.getText(), locale));
-            }
-            // Change message status read true
-            logger.debug(" updateMessageStatus message = {}", messageDto);
-            redisMessageObserver.updateMessageStatus(userId, messageDto.getMessageId());
+		User loggedUser = userService.getLoggedUserEntity();
+		MessageDto messageDto = listOps.leftPop();
+		if (messageDto != null) {
+			if (loggedUser.getProfile().isTranslate()) {
+				Locale locale = loggedUser.getProfile().getLocale();
+				logger.debug("getMessage translate to language : {}", locale.getLanguage());
+				messageDto.setText(translateService.translateString(messageDto.getText(), locale));
+			}
+			// Change message status read true
+			logger.debug(" updateMessageStatus message = {}", messageDto);
+			redisMessageObserver.updateMessageStatus(userId, messageDto.getMessageId());
 
-        }
-        logger.debug("getMessage userId = {},  listOps.size = {}, messageDto = {}", userId, listOps.size(), messageDto);
+		}
+		logger.debug("getMessage userId = {},  listOps.size = {}, messageDto = {}", userId, listOps.size(), messageDto);
 
-        return messageDto;
+		return messageDto;
 
-    }
+	}
 
-    @Override
-    public boolean sendMessageToRedis(MessageDto message) {
-        logger.debug("sendMessagesToRedis :  message = {}", message);        
-        for (Recipient recipient : recipientDao.findRecipientsByMessage(message.getMessageId())) {
-            String key = Long.valueOf(recipient.getUserId()).toString();
-            redisTemplate.boundListOps(key).rightPush(message);
-            redisTemplate.convertAndSend(key, message);
-        }
+	@Override
+	public boolean sendMessageToRedis(MessageDto message) {
+		logger.debug("sendMessagesToRedis :  message = {}", message);
+		try {
+			for (Recipient recipient : recipientDao.findRecipientsByMessage(message.getMessageId())) {
+				String key = Long.valueOf(recipient.getUserId()).toString();
+				redisTemplate.boundListOps(key).rightPush(message);
+				redisTemplate.convertAndSend(key, message);
+			}
+		} catch (Exception c) {
 
-        return true;
-    }
+		}
+
+		return true;
+	}
 }

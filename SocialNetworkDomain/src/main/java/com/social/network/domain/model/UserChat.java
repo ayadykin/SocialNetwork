@@ -2,8 +2,10 @@ package com.social.network.domain.model;
 
 import java.io.Serializable;
 
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -21,50 +23,64 @@ import com.social.network.domain.util.Constants;
 @Entity
 @Table(name = "user_chat")
 @NamedQueries(value = {
-        @NamedQuery(name = Constants.FIND_BY_CHAT_AND_USER, query = "from UserChat uc where uc.chat.chatId = :chatId and uc.user.userId =:userId"),
-        @NamedQuery(name = Constants.REMOVE_CHAT_AND_USER, query = "delete from UserChat uc where uc.chat = :chat and uc.user =:user") })
+		@NamedQuery(name = Constants.FIND_BY_CHAT_AND_USER, query = "from UserChat uc where uc.chat.chatId = :chatId and uc.user.userId =:userId"),
+		@NamedQuery(name = Constants.REMOVE_CHAT_AND_USER, query = "delete from UserChat uc where uc.chat = :chat and uc.user =:user") })
 public class UserChat implements Serializable {
-    @EmbeddedId
-    private UserChatId pk;
-    @ManyToOne
-    @JoinColumn(name = "chatId", insertable = false, updatable = false)
-    private Chat chat;
-    @ManyToOne
-    @JoinColumn(name = "userId", insertable = false, updatable = false)
-    private User user;
 
-    private String chatName;
-    
-    public UserChatId getPk() {
-        return pk;
-    }
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long userChatId;
 
-    public void setPk(UserChatId pk) {
-        this.pk = pk;
-    }
+	@ManyToOne
+	@JoinColumn(name = "chatId")
+	private Chat chat;
+	
+	@ManyToOne
+	@JoinColumn(name = "userId")
+	private User user;
 
-    public String getChatName() {
-        return chatName;
-    }
+	private String chatName;
 
-    public void setChatName(String chatName) {
-        this.chatName = chatName;
-    }
+	public UserChat() {
 
-    public Chat getChat() {
-        return chat;
-    }
+	}
 
-    public void setChat(Chat chat) {
-        this.chat = chat;
-    }
+	public UserChat(Chat chat, User user, String chatName) {
+		this.chat = chat;
+		this.user = user;
+		this.chatName = chatName;
+	}
 
-    public User getUser() {
-        return user;
-    }
+	public long getUserChatId() {
+		return userChatId;
+	}
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+	public void setUserChatId(long userChatId) {
+		this.userChatId = userChatId;
+	}
+
+	public String getChatName() {
+		return chatName;
+	}
+
+	public void setChatName(String chatName) {
+		this.chatName = chatName;
+	}
+
+	public Chat getChat() {
+		return chat;
+	}
+
+	public void setChat(Chat chat) {
+		this.chat = chat;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
 
 }

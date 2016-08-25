@@ -25,7 +25,7 @@ import com.social.network.domain.util.Constants;
 @Entity
 @Table(name = "groups")
 @NamedQuery(name = Constants.FIND_GROUP_BY_OWNER, 
-query = "select g from Group g join g.chat.users u where u = :user order by groupId")
+query = "select g from Group g join g.chat.userChat u where u.user = :user order by groupId")
 public class Group implements Serializable {
 
     @Id

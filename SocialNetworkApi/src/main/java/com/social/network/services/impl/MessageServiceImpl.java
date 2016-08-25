@@ -14,6 +14,7 @@ import com.social.network.domain.model.Message;
 import com.social.network.domain.model.Recipient;
 import com.social.network.domain.model.SystemMessage;
 import com.social.network.domain.model.User;
+import com.social.network.domain.model.UserChat;
 import com.social.network.domain.model.enums.SystemMessageStatus;
 import com.social.network.exceptions.chat.EditMessageException;
 import com.social.network.redis.RedisMessageObserver;
@@ -65,8 +66,8 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
 
     @Transactional
     private void addRecipients(Chat chat, long messageId) {
-        for (User user : chat.getUsers()) {
-            recipientDao.save(new Recipient(user, messageId));
+        for (UserChat user : chat.getUserChat()) {
+            recipientDao.save(new Recipient(user.getUser(), messageId));
         }
     }
 
