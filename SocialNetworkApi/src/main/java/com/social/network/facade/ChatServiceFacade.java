@@ -60,7 +60,7 @@ public class ChatServiceFacade {
     public List<MessageDto> getChatMesasges(long chatId, Period filter) {
 
         long userId = userService.getLoggedUserId();
-        List<Message> messagesList = chatService.getChatMesasges(chatId, true, filter);
+        List<Message> messagesList = chatService.getChatMesasges(chatId, false, filter);
         // Fill MessageDto list
         List<MessageDto> messages = new ArrayList<>();
         for (Message message : messagesList) {

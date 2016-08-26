@@ -4,14 +4,11 @@ module.exports = function(grunt) {
 
     grunt.initConfig({
 	appVersion : grunt.option('appVersion'),
-	target : grunt.option('target') || 'sn-debug',
+	target : grunt.option('target') || 'debug',
 	dev : {
 	    options : {
 		outputStyle : 'expanded'
 	    }
-	},
-	watch : {
-	    tasks : ['']
 	},
 	staging : {
 	    options : {
@@ -23,12 +20,12 @@ module.exports = function(grunt) {
 
     grunt.log.warn('Version - ' + grunt.config.get('appVersion'));
     grunt.log.warn('target - ' + grunt.config.get('target'));
-
     var socialNetworkTasks = [
 	    'jshint',
 	    'concat:controllers',	    
 	    'friendViewer',
 	    'groupViewer',
+	    'chatViewer',
 	    'profileViewer',
 	    'mainViewer',
 	    'jade:files',
@@ -36,9 +33,11 @@ module.exports = function(grunt) {
 	    'copy' ];
 
     var taskList = {
+    'default':{},
 	mainViewer : [ 'ngtemplates:mainViewer', 'concat:mainViewer', "clean:mainViewer" ],
 	friendViewer : [ 'ngtemplates:friendViewer', 'concat:friendViewer', 'uglify:friendViewer', "clean:friendViewer" ],
 	groupViewer : [ 'ngtemplates:groupViewer', 'concat:groupViewer', 'uglify:groupViewer', "clean:groupViewer" ],
+	chatViewer : [ 'ngtemplates:chatViewer', 'concat:chatViewer', 'uglify:chatViewer', "clean:chatViewer" ],
 	profileViewer : [ 'ngtemplates:profileViewer', 'concat:profileViewer', 'uglify:profileViewer', "clean:profileViewer" ],
 	"sn-debug" : socialNetworkTasks,
 	"sn-debug:server" : [ 'sn-debug', 'concat:snServer' ],

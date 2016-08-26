@@ -134,11 +134,11 @@ public class ChatServiceImpl implements ChatService {
     private void validateFriend(long chatId) {
 
         Chat chat = DaoValidation.chatExistValidation(chatDao, chatId);
-        Iterator<User> iterator = chat.getUsers().iterator();
-        User inviterUser = iterator.next();
-        User inviteeUser = iterator.next();
+        Iterator<UserChat> iterator = chat.getUserChat().iterator();
+        UserChat inviterUser = iterator.next();
+        UserChat inviteeUser = iterator.next();
         try {
-            friendService.validateFriendByStatus(inviterUser, inviteeUser, FriendStatus.ACCEPTED);
+            friendService.validateFriendByStatus(inviterUser.getUser(), inviteeUser.getUser(), FriendStatus.ACCEPTED);
         } catch (RuntimeException e) {
             throw new ChatPermissionException("Friend not accepted your invitation");
         }

@@ -5,7 +5,6 @@ import static com.social.network.utils.Constants.CREATE_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.DELETE_USER_FROM_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.LEAVE_GROUP_MESSAGE;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +24,6 @@ import com.social.network.domain.dao.ChatDao;
 import com.social.network.domain.dao.GroupDao;
 import com.social.network.domain.dao.UserChatDao;
 import com.social.network.domain.model.Chat;
-import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.Group;
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.User;
@@ -108,7 +106,7 @@ public class GroupServiceImpl implements GroupService {
         }
 
         // Create friend
-        Chat chat = chatDao.merge(new Chat(usersList));
+        Chat chat = chatDao.merge(new Chat());
 
         // Create group
         Group group = groupDao.merge(new Group(chat, name, loggedUser.getUserId()));
@@ -117,9 +115,9 @@ public class GroupServiceImpl implements GroupService {
         for (User user : usersList) {
 
             // Set chat name
-            UserChat userChat = userChatDao.findByChatAndUser(group.getChatId(), user.getUserId());
-            userChat.setChatName(name);
-            userChatDao.saveOrUpdate(userChat);
+            UserChat userChat = new UserChat(chat, user, name);
+            userChatDao.save(userChat);
+
             if (user.getUserId() == loggedUser.getUserId()) {
                 messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(CREATE_GROUP_MESSAGE, user, chat);
             } else {
@@ -144,11 +142,7 @@ public class GroupServiceImpl implements GroupService {
         // Validation
         addUserToGroupValidation(loggedUser, invitedUser, group);
 
-        group.getChat().addUser(invitedUser);
-
-        // Set chat name
-        UserChat loggedUserChat = userChatDao.findByChatAndUser(group.getChatId(), invitedUser.getUserId());
-        loggedUserChat.setChatName(group.getGroupName());
+        userChatDao.save(new UserChat(group.getChat(), invitedUser, group.getGroupName()));
 
         return new GroupModel(invitedUser, loggedUser, group);
     }
@@ -168,7 +162,7 @@ public class GroupServiceImpl implements GroupService {
         deleteUserFromGroupValidation(loggedUser, removedUser, group);
 
         Chat chat = group.getChat();
-        chat.removeUser(removedUser);
+        userChatDao.removeUserFromChat(group.getChat(), removedUser);
 
         // Create message
         Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(DELETE_USER_FROM_GROUP_MESSAGE,
@@ -194,8 +188,8 @@ public class GroupServiceImpl implements GroupService {
         // Create message
         Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(LEAVE_GROUP_MESSAGE, loggedUser,
                 chat);
-
-        chat.removeUser(loggedUser);
+        
+        userChatDao.removeUserFromChat(chat, loggedUser);
 
         return message;
     }
@@ -229,13 +223,13 @@ public class GroupServiceImpl implements GroupService {
 
         Group group = DaoValidation.groupExistValidation(groupDao, groupId);
 
-        Set<User> groupUsers = group.getChat().getUsers();
+        Set<User> groupUsers = null;// group.getChat().getUsers();
 
         logger.debug("-> getFriendsNotInGroup: start stream filter groupUsers : {}", groupUsers);
 
         List<User> users = loggedUser.getFriends().stream()
-                .filter(p -> p.getFriend() != groupUsers.stream().filter(g -> g.getUserId() != p.getUser().getUserId())
-                        .iterator().next() && p.getFriendStatus() == FriendStatus.ACCEPTED)
+                .filter(p -> p.getFriend() != groupUsers.stream().filter(g -> g.getUserId() != p.getUser().getUserId()).iterator().next()
+                        && p.getFriendStatus() == FriendStatus.ACCEPTED)
                 .map(f -> f.getFriend()).collect(Collectors.toList());
 
         logger.debug("-> getFriendsNotInGroup: end stream filter");

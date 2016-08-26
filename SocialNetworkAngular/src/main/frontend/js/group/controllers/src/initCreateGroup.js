@@ -4,7 +4,7 @@ $scope.initCreateGroup = function() {
     $scope.editGroupView = false;
 
     FriendRest.get(function(friends) {
-	$log.info('initCreateGroup');
+	$log.debug('initCreateGroup');
 	$scope.friends = friends;
 	$scope.friendsId = [];
 	$scope.groupName = {};
@@ -16,12 +16,12 @@ $scope.initCreateGroup = function() {
 	if ($scope.groupName.text) {
 	    GroupRest.save({
 		groupName : $scope.groupName.text,
-		friendId : $scope.friendsId
+		friendsId : $scope.friendsId
 	    }, function(data) {
 		if (data.groupId) {
 		    $scope.groups.push(data);
-		    resultDialog.dialog(true);
-		    $location.path("/group");
+		    resultDialog.dialog(true, "Success create group " + data.name);
+		    $scope.initGroupsList();
 		} else if (data.error) {
 		    resultDialog.dialog(false, data.error);
 		} else {

@@ -9,19 +9,17 @@
 					<th>User id</th>
 					<th>User name</th>
 					<th>Profile</th>
-					<th></th>
+					<th>Delete</th>
 				</tr>
 			</thead>
 			<tr id="groupUser_{{user.userId}}"
 				data-ng-repeat="user in group.users">
 				<td>{{user.userId}}</td>
 				<td>{{user.fullName}}</td>
-				<td><a
-					href="${pageContext.request.contextPath}/profile/view/${user.userId}"
-					class="btn btn-info">Profile </a></td>
+				<td><a class="btn btn-info" href="#/profile/{{user.userId}}">Profile </a></td>
 				<td><a class="btn btn-info" data-ng-if="!user.groupAdmin"
 					ng-click="deleteUserFromGroup(group.groupId, user.userId)">Delete
-						User</a></td>
+						user</a></td>
 			<tr>
 		</table>
 	</div>
@@ -44,9 +42,7 @@
 				data-ng-repeat="friend in friendsNotInGroup">
 				<td>{{friend.userId}}</td>
 				<td>{{friend.fullName}}</td>
-				<td><a
-					href="${pageContext.request.contextPath}/profile/view/${friend.userId}"
-					class="btn btn-info">Profile</a></td>
+				<td><a class="btn btn-info" data-ng-click="viewProfile(friend.userId)">Profile</a></td>
 				<td><a class="btn btn-info"
 					ng-click="addUserToGroup(group.groupId, friend.userId)">{{'ADD_USER'
 						| translate}}</a></td>

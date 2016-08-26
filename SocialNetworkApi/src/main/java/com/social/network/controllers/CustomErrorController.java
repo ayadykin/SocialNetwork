@@ -26,7 +26,7 @@ public class CustomErrorController {
     @ResponseBody
     @ExceptionHandler({ Exception.class, ChatException.class, FriendException.class, UserException.class, GroupException.class })
     public Map<String, String> apiError(Exception e) {
-        logger.error(" -> apiError : {}", e.getMessage());
+        logger.error(" -> apiError : {}", e);
         Map<String, String> error = new HashMap<>();
         error.put("error", e.getMessage());
         return error;

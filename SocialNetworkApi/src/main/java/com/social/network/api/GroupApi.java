@@ -91,7 +91,7 @@ public class GroupApi {
 
     @ResponseBody
     @RequestMapping(value = "/{groupId}", method = RequestMethod.DELETE)
-    public RestResponse deleteGroup(@PathVariable("groupId") long groupId) {
-        return new RestResponse().convert(() -> groupServiceFacade.deleteGroup(groupId));
+    public GroupDto deleteGroup(@PathVariable("groupId") long groupId) {
+        return groupServiceFacade.deleteGroup(groupId);
     }
 }

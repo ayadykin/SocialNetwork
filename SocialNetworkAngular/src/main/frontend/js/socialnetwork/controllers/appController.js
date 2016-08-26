@@ -2,7 +2,7 @@ angular.module('socialNetworkControllers').controller('AppController',
 	function($q, $scope, $rootScope, $route, config, $log, $http, $locale, $translate) {
 
 	    $scope.notificationOptions = {};
-	    $scope.notificationOptions.show = true;
+	    $scope.notificationOptions.show = false;
 
 	    initRoutes($route);
 
@@ -20,4 +20,9 @@ angular.module('socialNetworkControllers').controller('AppController',
 		    $log.error("AppController load lang :" + data);
 		});
 	    }
+
+	    $scope.$on('ErrorHandler', function(event, data) {
+		$scope.notificationOptions = data;
+		event.stopPropagation();
+	    });
 	});

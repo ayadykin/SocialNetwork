@@ -1,8 +1,10 @@
 angular.module('socialNetworkControllers').controller('FriendController', function($scope, $q, FriendRest, $log) {
 
-    $q.all([ FriendRest.get().$promise ]).then(function(response) {
-	$scope.friends = [];
-	$scope.friends = response[0];
+    $scope.friends = [];
+
+    FriendRest.get(function(friends) {
+	$log.debug('init friends list');
+	$scope.friends = friends;
     });
 
     $scope.deleteFriend = function(friendId) {

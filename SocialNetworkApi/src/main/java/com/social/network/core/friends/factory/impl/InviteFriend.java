@@ -28,44 +28,41 @@ import com.social.network.domain.model.enums.FriendStatus;
 
 @Component
 public class InviteFriend extends FriendSrtategy {
-    private static final Logger logger = LoggerFactory.getLogger(InviteFriend.class);
+	private static final Logger logger = LoggerFactory.getLogger(InviteFriend.class);
 
-    @Autowired
-    protected InviteFriendMessage inviteFriendMessage;
-    @Autowired
-    private UserChatDao userChatDao;
+	@Autowired
+	protected InviteFriendMessage inviteFriendMessage;
+	@Autowired
+	private UserChatDao userChatDao;
 
-    @Override
-    @Transactional
-    public Message action(long userId) {
-        setUserId(userId);
+	@Override
+	@Transactional
+	public Message action(long userId) {
+		setUserId(userId);
 
-        createFriendValidation(loggedUser, invitee);
-        Set<User> usersList = new HashSet<>();
-        usersList.add(loggedUser);
-        usersList.add(invitee);
-        // Create friend
-        Chat chat = chatDao.merge(new Chat(usersList));
+		createFriendValidation(loggedUser, invitee);
 
-        friendDao.merge(new Friend(chat, FriendStatus.INVITER, loggedUser, invitee));
-        friendDao.merge(new Friend(chat, FriendStatus.INVITEE, invitee, loggedUser));
+		// Create friend
+		Chat chat = chatDao.merge(new Chat());
 
-        // Set chat name
-        UserChat loggedUserChat = userChatDao.findByChatAndUser(chat.getChatId(), loggedUser.getUserId());
-        loggedUserChat.setChatName(invitee.getUserFullName());
-        UserChat inviteeUserChat = userChatDao.findByChatAndUser(chat.getChatId(), invitee.getUserId());
-        inviteeUserChat.setChatName(loggedUser.getUserFullName());
+		friendDao.merge(new Friend(chat, FriendStatus.INVITER, loggedUser, invitee));
+		friendDao.merge(new Friend(chat, FriendStatus.INVITEE, invitee, loggedUser));
 
-        return messageBuilder.setMessageBuilder(inviteFriendMessage).createOneParamMessage(INVITATION_MESSAGE, loggedUser, chat);
-    }
+		// Set chat name
+		userChatDao.save(new UserChat(chat, loggedUser, invitee.getUserFullName()));
+		userChatDao.save(new UserChat(chat, invitee, loggedUser.getUserFullName()));
 
-    private void createFriendValidation(User inviter, User invitee) {
-        logger.debug(" createFriendValidation :");
-        Friend friendEntity = friendDao.findByFriendAndOwner(invitee, inviter);
+		return messageBuilder.setMessageBuilder(inviteFriendMessage).createOneParamMessage(INVITATION_MESSAGE,
+				loggedUser, chat);
+	}
 
-        if (Objects.nonNull(friendEntity)) {
-            throwInviteStatusException(friendEntity.getFriendStatus());
-        }
-    }
+	private void createFriendValidation(User inviter, User invitee) {
+		logger.debug(" createFriendValidation :");
+		Friend friendEntity = friendDao.findByFriendAndOwner(invitee, inviter);
+
+		if (Objects.nonNull(friendEntity)) {
+			throwInviteStatusException(friendEntity.getFriendStatus());
+		}
+	}
 
 }

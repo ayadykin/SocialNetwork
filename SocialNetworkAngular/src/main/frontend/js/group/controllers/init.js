@@ -10,5 +10,11 @@ angular.module('socialNetworkControllers').controller('GroupController',
 		$scope.groups = groups;
 		$scope.initGroupsList();
 		$scope.isLoad = true;
+	    }, function(data) {
+		sendError(data);
 	    });
+
+	    function sendError(data) {
+		ErrorHandler.notify($scope, data);
+	    }
 	});

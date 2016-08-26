@@ -16,8 +16,9 @@ angular.module('socialNetworkControllers').controller('SigninController',
 		    j_password : $scope.password
 		}).$promise.then(function(data) {
 
-		    if (data.login == 'SUCCESS') {
+		    if (data.userId) {
 			$rootScope.authenticated = true;
+			$rootScope.userId = data.userId;
 			$location.path("/home");
 			$scope.error = false;
 		    } else {

@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.social.network.domain.model.enums.Period;
+import com.social.network.dto.ChatDto;
 import com.social.network.dto.MessageDto;
 import com.social.network.exceptions.chat.EmptyMessageException;
 import com.social.network.facade.ChatServiceFacade;
@@ -32,6 +34,20 @@ public class ChatApi {
     private ChatServiceFacade chatFacade;
     @Autowired
     private RedisService redisService;
+
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET)
+    public List<ChatDto> getChatsList() {
+        // mav.addObject(USERID_ID_ATTRIBUTE, userService.getLoggedUserId());
+        return chatFacade.getChatsList();
+    }
+
+    @RequestMapping(value = "/{chatId}", method = RequestMethod.GET)
+    public List<MessageDto> getFilteredMessages(@PathVariable("chatId") long chatId) {
+
+        // mav.addObject(CHATS_LIST_ATTRIBUTE, chatService.getChatsList());
+        return chatFacade.getChatMesasges(chatId, Period.ALL);
+    }
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.POST)

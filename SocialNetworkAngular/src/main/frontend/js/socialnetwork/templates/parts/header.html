@@ -29,7 +29,11 @@
 
 		</ul>
 	</div>
-	<div class="alert-message-at-bottom "
-		data-ng-include="'templates/parts/notification.html'"
-		data-ng-show="notificationOptions.show">{{notificationOptions.show}}</div>
+
+	<!-- Error message block -->
+	<div class="alert-message-at-bottom error"
+		data-ng-show="notificationOptions.message">
+		<span>{{notificationOptions.message}}</span>
+		<div class="close-btn" close-block></div>
+	</div>
 </div>

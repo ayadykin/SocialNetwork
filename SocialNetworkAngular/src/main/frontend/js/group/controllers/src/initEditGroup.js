@@ -21,7 +21,7 @@ $scope.initEditGroup = function(groupId) {
 	    groupId : groupId,
 	    userId : userId
 	}, function(data) {
-	    if (data.userId) {		
+	    if (data.userId) {
 		removeUserById($scope.friendsNotInGroup, userId);
 		$scope.group.users.push(data);
 		resultDialog.dialog(true);
@@ -52,5 +52,10 @@ $scope.initEditGroup = function(groupId) {
 		resultDialog.dialog(data.response);
 	    }
 	});
+    };
+
+    $scope.viewProfile = function(userId) {
+	$scope.profileId = userId;
+	$location.path("/profile");
     };
 };

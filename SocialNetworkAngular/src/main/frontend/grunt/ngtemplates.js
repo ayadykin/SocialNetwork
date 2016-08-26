@@ -20,6 +20,7 @@ module.exports = function () {
         mainViewer: getConfig('socialnetwork'),
         friendViewer: getConfig('friend'),
         groupViewer: getConfig('group'),
+        chatViewer: getConfig('chat'),
         profileViewer: getConfig('profile')
     };
 };

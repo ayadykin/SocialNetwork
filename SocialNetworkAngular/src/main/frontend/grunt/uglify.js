@@ -20,6 +20,11 @@ module.exports = function(grunt) {
 			'src' : [ deployDir + 'js/group/build/app.js' ],
 			'dest' : deployDir + 'js/group/build/app.min.js'
 		},
+		chatViewer : {
+			options : options,
+			'src' : [ deployDir + 'js/chat/build/app.js' ],
+			'dest' : deployDir + 'js/chat/build/app.min.js'
+		},
 		profileViewer : {
 			options : options,
 			'src' : [ deployDir + 'js/profile/build/app.js' ],

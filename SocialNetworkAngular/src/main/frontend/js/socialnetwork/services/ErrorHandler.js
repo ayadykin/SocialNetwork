@@ -1,22 +1,26 @@
-angular.module('socialNetworkServices').factory('ErrorHandler', function($translate, $log, $timeout, config) {
+angular.module('socialNetworkServices').factory('ErrorHandler', function($translate, $timeout, $log, config) {
     return {
-	result : function(result, type) {
-	    var message;
+	notify : function($scope, result) {
+	    var message, resp;
 
 	    if (result.error) {
 		message = result.error;
+		withTimeout();
 	    } else {
-		message = $translate.instant(service_Error);
-
+		message = $translate.instant('service_Error');
 	    }
+	    $log.error('error: ' + message);
 
-	    $timeout(function() {
-	    }, 3000);
-	    return {
-		type : type,
+	    $scope.$emit('ErrorHandler', {
 		message : message,
 		show : true
-	    };
+	    });
+
+	    function withTimeout() {
+		$timeout(function() {
+		    $scope.$emit('ErrorHandler', null);
+		}, 3000);
+	    }
 	}
     };
 });

@@ -9,6 +9,8 @@ angular.module('socialNetworkApp').constant('config', {
     addUserToGroupPath: "/SocialNetworkApi/group/add_user",
     leaveGroupPath: "/SocialNetworkApi/group/leave_group",
     
+    chatPath: "/SocialNetworkApi/chat",
+    
     signinPath: "/SocialNetworkApi/j_spring_security_check",
     signinInit: "/SocialNetworkApi/signin",
     

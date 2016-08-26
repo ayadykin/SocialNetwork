@@ -30,6 +30,7 @@ module.exports = function(grunt) {
 			    [
 				    '../webapp/js/friend/build/app.js',
 				    '../webapp/js/group/build/app.js',
+				    '../webapp/js/chat/build/app.js',
 				    '../webapp/js/profile/build/app.js' ])),
 	    dest : '../webapp/js/socialnetwork/build/app.js'
 	},
@@ -59,6 +60,9 @@ module.exports = function(grunt) {
 		'../webapp/js/group/controllers/build/ctrl.js' : [
 			'js/group/controllers/init.js',
 			'js/group/controllers/src/*.js' ],
+		'../webapp/js/chat/controllers/build/ctrl.js' : [
+			'js/chat/controllers/init.js',
+			'js/chat/controllers/src/*.js' ],
 		'../webapp/js/profile/controllers/build/ctrl.js' : [
 			'js/profile/controllers/init.js',
 			'js/profile/controllers/src/*.js' ]
@@ -73,6 +77,11 @@ module.exports = function(grunt) {
 	    src : getModuleTree('group').concat(
 		    [ '!js/group/controllers/**/*.js', '../webapp/js/group/controllers/build/ctrl.js' ]),
 	    dest : '../webapp/js/group/build/app.js'
+	},
+	chatViewer : {
+	    src : getModuleTree('chat').concat(
+		    [ '!js/chat/controllers/**/*.js', '../webapp/js/chat/controllers/build/ctrl.js' ]),
+	    dest : '../webapp/js/chat/build/app.js'
 	},
 	profileViewer : {
 	    src : getModuleTree('profile').concat(

@@ -32,13 +32,10 @@ $scope.initGroupsList = function() {
 		removeGroupById($scope.groups, groupId);
 		resultDialog.dialog(true, 'success_delete_group');
 	    } else if (data.error) {
-		$log.error('error remove group : ' + data.error);
-		// resultDialog.dialog(false, data.error);
-		$scope.notificationOptions = ErrorHandler.result(data, 'ERROR');
-		$log.error($scope.notificationOptions.show);
+		sendError(data);
 	    }
 	}, function(data) {
-	    $scope.notificationOptions = ErrorHandler.result(data, 'ERROR');
+	    sendError(data);
 	});
     };
 
@@ -50,4 +47,5 @@ $scope.initGroupsList = function() {
 	    $scope.pageNo--;
 	}
     };
+
 };

@@ -1,5 +1,5 @@
 var socialNetworkApp = angular.module('socialNetworkApp', [
-	'pascalprecht.translate',	
+	'pascalprecht.translate',
 	'ngLocale',
 	'ngRoute',
 	'ngCookies',
@@ -8,7 +8,7 @@ var socialNetworkApp = angular.module('socialNetworkApp', [
 	'socialNetworMockServerkApp',
 	'socialNetworkControllers',
 	'socialNetworkServices',
-	'socialNetworkFilters']);
+	'socialNetworkFilters' ]);
 
 angular.module('socialNetworkControllers', []);
 angular.module('socialNetworkServices', [ 'ngResource' ]);
@@ -18,6 +18,9 @@ socialNetworkApp.run(function run($http, $cookies) {
     $http.defaults.headers.common['X-XSRF-TOKEN'] = $cookies.get('XSRF-TOKEN');
 });
 
-socialNetworkApp.config(function($translateProvider) {
+socialNetworkApp.config(function($translateProvider, $routeProvider) {
     $translateProvider.useLoader('i18nLoader');
+    $routeProvider.when('/profile/:profileId', {
+	templateUrl : 'templates/pages/profile.html'
+    });
 });

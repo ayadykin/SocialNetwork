@@ -92,7 +92,7 @@ public class EntityToDtoMapper {
 
             Set<GroupUserDto> users = null;
             if (withUsers) {
-                users = convertUserToGroupUserDto(group.getChat().getUsers(), group.getAdminId());
+                users = null;//convertUserToGroupUserDto(group.getChat().getUsers(), group.getAdminId());
             }
 
             groupsDtoList.add(

@@ -5,7 +5,8 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"error_delete_group" : "Error delete group ",
 	"success_delete_group" : "Success delete group ",
 	"ADD_USER" : "Add user",
-	"FRIENDS" : "Friends"
+	"FRIENDS" : "Friends",
+	"service_Error" : "Service not available"
     });
 
     $httpBackend.whenGET('../i18n/no.properties').respond(function(method, url, obj) {
@@ -64,6 +65,13 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"users" : null,
 	"groupAdmin" : true,
 	"hidden" : false
+    }, {
+	"name" : "Mock test service error",
+	"chatId" : 5,
+	"groupId" : 4,
+	"users" : null,
+	"groupAdmin" : true,
+	"hidden" : false
     } ]);
 
     $httpBackend.whenGET('/SocialNetworkApi/group/1').respond({
@@ -109,12 +117,18 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"groupAdmin" : false
     });
 
-    $httpBackend.whenDELETE('/SocialNetworkApi/group/3').respond({
-	"error" : "errrrr"
+    // Delete group
+    $httpBackend.whenDELETE('/SocialNetworkApi/group/3').respond(function(method, url, obj) {
+
+	return [ 200, {
+	    "error" : 'Error delele grop'
+	} ]
     });
 
+    $httpBackend.whenDELETE('/SocialNetworkApi/group/4').respond(404, "HTTP ERROR");
+
     $httpBackend.whenDELETE('/SocialNetworkApi/group/1').respond({
-	"groupId" : 10
+	"groupId" : 1
     });
 
     $httpBackend.whenGET('/SocialNetworkApi/group/friends_not_in_group/1').respond([ {
@@ -140,11 +154,46 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
     } ]);
 
     /**
+     * Chat mock
+     */
+    $httpBackend.whenGET('/SocialNetworkApi/chat').respond([ {
+	"name" : "Andrei P",
+	"chatId" : 1
+    }, {
+	"name" : "Dima D",
+	"chatId" : 2
+    } ]);
+
+    $httpBackend.whenGET('/SocialNetworkApi/chat/1').respond([ {
+	"chatId" : 1,
+	"messageId" : 1,
+	"text" : "Andrey Y would like to add you on Social Network.",
+	"date" : "2016-08-2518:53:25",
+	"ownerId" : 1,
+	"ownerName" : "Andrey Y",
+	"hidden" : false,
+	"messageInviteStatus" : "SYSTEM"
+    }, {
+	"chatId" : 1,
+	"messageId" : 4,
+	"text" : "Andrey P has shared contact details.",
+	"date" : "2016-08-25 18:53:26",
+	"ownerId" : 2,
+	"ownerName" : "Andrey P",
+	"hidden" : false,
+	"messageInviteStatus" : "SYSTEM"
+    } ]);
+    /**
      * Profile mock
      */
 
     $httpBackend.whenGET('/SocialNetworkApi/profile').respond({
 	"firstName" : "Andrei Y"
+    });
+
+    $httpBackend.whenGET('/SocialNetworkApi/profile/2').respond({
+	"firstName" : "Andrei",
+	"lastName" : "D"
     });
 
     $httpBackend.whenPOST('/SocialNetworkApi/profile').respond({
