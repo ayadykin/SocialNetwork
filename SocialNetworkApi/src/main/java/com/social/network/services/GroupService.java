@@ -69,7 +69,7 @@ public interface GroupService {
      * @param groupId
      * @return information messag
      */
-    Message deleteGroup(long groupId);
+    GroupModel deleteGroup(long groupId);
 
     /**
      * This method is used to get user friends that isn't in group

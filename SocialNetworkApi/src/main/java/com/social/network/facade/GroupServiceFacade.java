@@ -1,6 +1,7 @@
 package com.social.network.facade;
 
 import static com.social.network.utils.Constants.ADD_USER_TO_GROUP_MESSAGE;
+import static com.social.network.utils.Constants.DELETE_GROUP_MESSAGE;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +93,7 @@ public class GroupServiceFacade {
 
         Chat chat = groupModel.getGroup().getChat();
         User invitedUser = groupModel.getInvitedUser();
-        
+
         // Create message
         Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE,
                 invitedUser, groupModel.getLoggedUser(), chat);
@@ -105,6 +106,7 @@ public class GroupServiceFacade {
     public boolean deleteUserFromGroup(long groupId, long userId) {
 
         Message message = groupService.deleteUserFromGroup(groupId, userId);
+
         sendMessageToRedis(message, userId);
         return true;
     }
@@ -119,11 +121,15 @@ public class GroupServiceFacade {
     }
 
     @Transactional
-    public boolean deleteGroup(long groupId) {
+    public GroupDto deleteGroup(long groupId) {
         long userId = userService.getLoggedUserId();
-        Message message = groupService.deleteGroup(groupId);
+        GroupModel groupModel = groupService.deleteGroup(groupId);
+
+        // Create message
+        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(DELETE_GROUP_MESSAGE,
+                groupModel.getLoggedUser(), groupModel.getGroup().getChat());
         sendMessageToRedis(message, userId);
-        return true;
+        return EntityToDtoMapper.convertGroupToGroupsDto(groupModel.getGroup(), userId, false);
     }
 
     private boolean sendMessageToRedis(Message message, long userId) {

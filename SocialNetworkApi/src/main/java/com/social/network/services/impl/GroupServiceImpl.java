@@ -2,10 +2,10 @@ package com.social.network.services.impl;
 
 import static com.social.network.utils.Constants.ADD_USER_TO_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.CREATE_GROUP_MESSAGE;
-import static com.social.network.utils.Constants.DELETE_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.DELETE_USER_FROM_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.LEAVE_GROUP_MESSAGE;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -25,6 +25,7 @@ import com.social.network.domain.dao.ChatDao;
 import com.social.network.domain.dao.GroupDao;
 import com.social.network.domain.dao.UserChatDao;
 import com.social.network.domain.model.Chat;
+import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.Group;
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.User;
@@ -98,9 +99,11 @@ public class GroupServiceImpl implements GroupService {
         if (Objects.nonNull(userIds)) {
             int size = userIds.length;
             for (int i = 0; i < size; ++i) {
-                User user = userService.getUserById(Long.valueOf(userIds[i]));
-                isYourFriend(loggedUser, user);
-                usersList.add(user);
+                if (Objects.nonNull(userIds[i])) {
+                    User user = userService.getUserById(Long.valueOf(userIds[i]));
+                    isYourFriend(loggedUser, user);
+                    usersList.add(user);
+                }
             }
         }
 
@@ -199,7 +202,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     @Transactional
-    public Message deleteGroup(long groupId) {
+    public GroupModel deleteGroup(long groupId) {
         // Get loggedUser
         User loggedUser = userService.getLoggedUserEntity();
         logger.debug("-> deleteGroup : groupId: {}, userId: {}", groupId, loggedUser.getUserId());
@@ -211,12 +214,8 @@ public class GroupServiceImpl implements GroupService {
 
         Chat chat = group.getChat();
         chat.hiddeChat();
-
-        // Create message
-        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(DELETE_GROUP_MESSAGE, loggedUser,
-                chat);
-
-        return message;
+        group.hiddeGroup();
+        return new GroupModel(null, loggedUser, group);
     }
 
     @Override
@@ -232,11 +231,11 @@ public class GroupServiceImpl implements GroupService {
 
         Set<User> groupUsers = group.getChat().getUsers();
 
-        logger.debug("-> getFriendsNotInGroup: start stream filter");
+        logger.debug("-> getFriendsNotInGroup: start stream filter groupUsers : {}", groupUsers);
 
         List<User> users = loggedUser.getFriends().stream()
-                .filter(p -> p.getFriend() != groupUsers.stream().filter(g -> g.getUserId() != p.getUser().getUserId()).iterator().next()
-                        && p.getFriendStatus() == FriendStatus.ACCEPTED)
+                .filter(p -> p.getFriend() != groupUsers.stream().filter(g -> g.getUserId() != p.getUser().getUserId())
+                        .iterator().next() && p.getFriendStatus() == FriendStatus.ACCEPTED)
                 .map(f -> f.getFriend()).collect(Collectors.toList());
 
         logger.debug("-> getFriendsNotInGroup: end stream filter");
