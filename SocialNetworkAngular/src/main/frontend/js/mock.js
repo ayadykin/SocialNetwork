@@ -1,5 +1,9 @@
 angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($httpBackend) {
     // 'ngMockE2E'
+
+    /**
+     * Lang
+     */
     $httpBackend.whenGET('../i18n/en.properties').respond({
 	"code" : "en",
 	"error_delete_group" : "Error delete group ",
@@ -36,10 +40,14 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"FRIENDS" : "Друзья"
     });
 
+    /**
+     * Signin
+     */
     $httpBackend.whenGET('/SocialNetworkApi/signin').respond({});
     $httpBackend.whenPOST('/SocialNetworkApi/j_spring_security_check?j_password=user1&j_username=user1').respond({
-	"login" : 'SUCCESS'
+	"userId" : 1
     });
+
     /**
      * Group mock
      */
@@ -163,8 +171,13 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"name" : "Dima D",
 	"chatId" : 2
     } ]);
+    
+    $httpBackend.whenGET('/SocialNetworkApi/chat/3').respond({
+	"name" : "new Chat P",
+	"chatId" : 3
+    });
 
-    $httpBackend.whenGET('/SocialNetworkApi/chat/1').respond([ {
+    $httpBackend.whenGET('/SocialNetworkApi/chat/getMessages/1').respond([ {
 	"chatId" : 1,
 	"messageId" : 1,
 	"text" : "Andrey Y would like to add you on Social Network.",
@@ -181,8 +194,40 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"ownerId" : 2,
 	"ownerName" : "Andrey P",
 	"hidden" : false,
-	"messageInviteStatus" : "SYSTEM"
+	"messageInviteStatus" : "INVITE"
+    }, {
+	"chatId" : 1,
+	"messageId" : 5,
+	"text" : "",
+	"date" : "2016-08-25 18:53:26",
+	"ownerId" : 1,
+	"ownerName" : "Andrey P",
+	"hidden" : true,
+	"messageInviteStatus" : null
     } ]);
+
+    $httpBackend.whenGET('/SocialNetworkApi/chat/getMessage/0').respond( {
+	"chatId" : 3,
+	"messageId" : 7,
+	"text" : "new chat.",
+	"date" : "2016-08-25 18:53:26",
+	"ownerId" : 1,
+	"ownerName" : "Andrey P",
+	"hidden" : false,
+	"messageInviteStatus" : null
+    });
+
+    $httpBackend.whenGET('/SocialNetworkApi/chat/getMessage/1').respond({
+	"chatId" : 1,
+	"messageId" : 6,
+	"text" : "Hi.",
+	"date" : "2016-08-25 18:53:26",
+	"ownerId" : 1,
+	"ownerName" : "Andrey P",
+	"hidden" : false,
+	"messageInviteStatus" : null
+    });
+
     /**
      * Profile mock
      */

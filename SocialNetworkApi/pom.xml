@@ -26,7 +26,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.social.network.domain</groupId>
-			<artifactId>SocialNetworkDomain</artifactId>
+			<artifactId>social.network.domain</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 

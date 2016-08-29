@@ -2,11 +2,14 @@ package com.social.network.facade;
 
 import static com.social.network.utils.Constants.ADD_USER_TO_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.DELETE_GROUP_MESSAGE;
+import static com.social.network.utils.Constants.DELETE_USER_FROM_GROUP_MESSAGE;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +37,8 @@ import com.social.network.utils.EntityToDtoMapper;
 @Service
 public class GroupServiceFacade {
 
+    private static final Logger logger = LoggerFactory.getLogger(GroupServiceFacade.class);
+
     @Autowired
     private GroupService groupService;
     @Autowired
@@ -55,6 +60,7 @@ public class GroupServiceFacade {
 
         // Send messages to redis
         for (Message message : messages) {
+            logger.debug(" createGroup  message {} ", message);
             sendMessageToRedis(message, userId);
         }
         return EntityToDtoMapper.convertGroupToGroupsDto(group, userId, false);
@@ -103,12 +109,19 @@ public class GroupServiceFacade {
     }
 
     @Transactional
-    public boolean deleteUserFromGroup(long groupId, long userId) {
+    public GroupUserDto deleteUserFromGroup(long groupId, long userId) {
 
-        Message message = groupService.deleteUserFromGroup(groupId, userId);
+        GroupModel groupModel = groupService.deleteUserFromGroup(groupId, userId);
+
+        Chat chat = groupModel.getGroup().getChat();
+        User removedUser = groupModel.getInvitedUser();
+
+        // Create message
+        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(DELETE_USER_FROM_GROUP_MESSAGE,
+                removedUser, groupModel.getLoggedUser(), chat);
 
         sendMessageToRedis(message, userId);
-        return true;
+        return new GroupUserDto(removedUser.getUserId(), removedUser.getUserFullName(), false);
     }
 
     @Transactional

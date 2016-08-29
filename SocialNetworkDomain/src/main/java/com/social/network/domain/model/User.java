@@ -1,7 +1,6 @@
 package com.social.network.domain.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -11,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
@@ -37,8 +35,9 @@ public class User implements Serializable {
     @OneToMany(mappedBy = "user")
     private Set<Friend> friends = new LinkedHashSet<>();
 
+    @OrderBy("chat.chatId")
     @OneToMany(mappedBy = "user")
-    private Set<UserChat> userChat = new HashSet<>();
+    private Set<UserChat> userChat = new LinkedHashSet<>();
 
     @Cascade(CascadeType.SAVE_UPDATE)
     @OneToOne(fetch = FetchType.LAZY)

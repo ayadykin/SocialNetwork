@@ -28,41 +28,40 @@ import com.social.network.domain.model.enums.FriendStatus;
 
 @Component
 public class InviteFriend extends FriendSrtategy {
-	private static final Logger logger = LoggerFactory.getLogger(InviteFriend.class);
+    private static final Logger logger = LoggerFactory.getLogger(InviteFriend.class);
 
-	@Autowired
-	protected InviteFriendMessage inviteFriendMessage;
-	@Autowired
-	private UserChatDao userChatDao;
+    @Autowired
+    protected InviteFriendMessage inviteFriendMessage;
+    @Autowired
+    private UserChatDao userChatDao;
 
-	@Override
-	@Transactional
-	public Message action(long userId) {
-		setUserId(userId);
+    @Override
+    @Transactional
+    public Message action(long userId) {
+        setUserId(userId);
 
-		createFriendValidation(loggedUser, invitee);
+        createFriendValidation(loggedUser, invitee);
 
-		// Create friend
-		Chat chat = chatDao.merge(new Chat());
+        // Create friend
+        Chat chat = chatDao.merge(new Chat());
 
-		friendDao.merge(new Friend(chat, FriendStatus.INVITER, loggedUser, invitee));
-		friendDao.merge(new Friend(chat, FriendStatus.INVITEE, invitee, loggedUser));
+        friendDao.merge(new Friend(chat, FriendStatus.INVITER, loggedUser, invitee));
+        friendDao.merge(new Friend(chat, FriendStatus.INVITEE, invitee, loggedUser));
 
-		// Set chat name
-		userChatDao.save(new UserChat(chat, loggedUser, invitee.getUserFullName()));
-		userChatDao.save(new UserChat(chat, invitee, loggedUser.getUserFullName()));
+        // Set chat name
+        chat.addUserChat(userChatDao.merge(new UserChat(chat, loggedUser, invitee.getUserFullName())));
+        chat.addUserChat(userChatDao.merge(new UserChat(chat, invitee, loggedUser.getUserFullName())));
 
-		return messageBuilder.setMessageBuilder(inviteFriendMessage).createOneParamMessage(INVITATION_MESSAGE,
-				loggedUser, chat);
-	}
+        return messageBuilder.setMessageBuilder(inviteFriendMessage).createOneParamMessage(INVITATION_MESSAGE, loggedUser, chat);
+    }
 
-	private void createFriendValidation(User inviter, User invitee) {
-		logger.debug(" createFriendValidation :");
-		Friend friendEntity = friendDao.findByFriendAndOwner(invitee, inviter);
+    private void createFriendValidation(User inviter, User invitee) {
+        logger.debug(" createFriendValidation :");
+        Friend friendEntity = friendDao.findByFriendAndOwner(invitee, inviter);
 
-		if (Objects.nonNull(friendEntity)) {
-			throwInviteStatusException(friendEntity.getFriendStatus());
-		}
-	}
+        if (Objects.nonNull(friendEntity)) {
+            throwInviteStatusException(friendEntity.getFriendStatus());
+        }
+    }
 
 }

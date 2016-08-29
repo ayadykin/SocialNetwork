@@ -53,7 +53,7 @@ public interface GroupService {
      * @param removedUserId
      * @return information message
      */
-    Message deleteUserFromGroup(long groupId, long removedUserId);
+    GroupModel deleteUserFromGroup(long groupId, long removedUserId);
 
     /**
      * This method is used to leave group. Admin can't leave group

@@ -137,7 +137,7 @@ public class Account implements Serializable, UserDetails {
 
     @Override
     public String toString() {
-        return "Account [accountId=" + accountId + ", email=" + email + ", password=" + password + ", role=" + role
+        return "Account [accountId=" + accountId + ", email=" + email + ", password= *****, role=" + role
                 + ", user=" + user + ", authorities=" + authorities + "]";
     }
 

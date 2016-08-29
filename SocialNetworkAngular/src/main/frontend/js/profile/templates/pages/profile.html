@@ -48,10 +48,10 @@
 
 				<label class="col-lg-3 control-label">Locale</label>
 				<div class="col-lg-9">
-					<select class="form-control" data-ng-model="profile.locale">
+					<select class="form-control" >
 
-						<option value="{{lang.code}}" selected="selected"
-							data-ng-repeat="lang in locales">{{lang}}</option>
+						<option value="{{lang.code}}" 
+							data-ng-repeat="lang in languaches">{{lang}}</option>
 						<!--c:forEach items="${profileDto.locales}" var="locale">
                                 <c:if test="${not empty locale.getDisplayCountry()}">
                                     <option value="${locale}">${locale.getDisplayCountry()}</option>

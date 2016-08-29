@@ -1,4 +1,4 @@
-package com.social.network.dto;
+package com.social.network.dto.chat;
 
 /**
  * Created by Yadykin Andrii May 18, 2016

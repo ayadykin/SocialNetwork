@@ -3,14 +3,16 @@ $scope.initEditGroup = function(groupId) {
     $scope.createGroupView = false;
     $scope.groupListView = false;
 
+    $scope.group = [];
+    $scope.group.users = [];
+    
     $q.all([ GroupRest.getFriendsNotInGroup({
 	groupId : groupId
     }).$promise, GroupRest.getGroupById({
 	groupId : groupId
     }).$promise ]).then(function(response) {
 	$log.info('initEditGroup');
-	$scope.friendsNotInGroup = [];
-	$scope.group = [];
+	$scope.friendsNotInGroup = [];	
 	$scope.friendsNotInGroup = response[0];
 	$scope.group = response[1];
     });

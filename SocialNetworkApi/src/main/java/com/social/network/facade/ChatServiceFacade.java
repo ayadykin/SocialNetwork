@@ -10,8 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.UserChat;
 import com.social.network.domain.model.enums.Period;
-import com.social.network.dto.ChatDto;
 import com.social.network.dto.MessageDto;
+import com.social.network.dto.chat.ChatDto;
 import com.social.network.services.ChatService;
 import com.social.network.services.MessageService;
 import com.social.network.services.RedisService;
@@ -48,6 +48,11 @@ public class ChatServiceFacade {
     }
 
     @Transactional
+    public ChatDto getChat(long chatId) {
+        return EntityToDtoMapper.convertChatToChatDto(chatService.getChat(chatId));
+    }
+
+    @Transactional
     public boolean sendMessage(String messageText, long chatId) {
         long userId = userService.getLoggedUserId();
 
@@ -60,7 +65,7 @@ public class ChatServiceFacade {
     public List<MessageDto> getChatMesasges(long chatId, Period filter) {
 
         long userId = userService.getLoggedUserId();
-        List<Message> messagesList = chatService.getChatMesasges(chatId, false, filter);
+        List<Message> messagesList = chatService.getChatMesasges(chatId, true, filter);
         // Fill MessageDto list
         List<MessageDto> messages = new ArrayList<>();
         for (Message message : messagesList) {

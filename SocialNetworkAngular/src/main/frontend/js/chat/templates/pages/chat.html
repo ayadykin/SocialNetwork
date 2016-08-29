@@ -1,8 +1,4 @@
 
-<script type="text/javascript">
-    //var loggedUserId = <%=request.getAttribute("loggedUserId")%>;
-    var chatId = 0;
-</script>
 <div ng-controller="ChatController">
 	<div class="row">
 		<div class="col-lg-4 pull-left">
@@ -14,7 +10,7 @@
 					<ul class="list-group" id="chatList">
 						<li class="list-group-item" data-ng-repeat="chat in chats"
 							data-ng-click="getChatMessages(chat.chatId)"><span
-							class="label label-default label-pill pull-right"></span>
+							class="label label-default label-pill pull-right">{{chat.newMessages}}</span>
 							<div>{{chat.name}}</div></li>
 					</ul>
 				</div>
@@ -34,74 +30,50 @@
 					</div>
 				</div>
 				<!-- Messages body container -->
-				<div class="panel-body tab-pane" id="messagesBody">
-					<div class="row" id="messageRow" data-ng-repeat="message in messages">
-						<div class="panel panel-margin panel-success" ng-class="{true: 'panel-success', false: 'panel-info'}[message.ownerId == userId]">
+				<div class="panel-body tab-pane" scroll-glue-bottom>
+					<div class="row" data-ng-repeat="message in messages">
+						<div class="panel panel-margin panel-success"
+							data-ng-class="{false: 'panel-success pull-left', true: 'panel-info pull-right'}[message.ownerId == userId]">
 							<div class="panel-heading">
-								<div class="name-margin" id="ownerName"></div>
-								<div class="pull-right remove-margin" id="deleteMessage"
-									style="display: none">
-									<h6>remove</h6>
-								</div>
-								<div class=" pull-right edit-margin" id="editMessage"
-									style="display: none">
-									<h6>edit</h6>
+								<div class="name-margin">{{message.ownerName}}</div>
+								<div data-ng-show="message.messageInviteStatus == null && message.ownerId == userId && !message.hidden">
+									<div class="pull-right remove-margin"
+										data-ng-click="deleteMessage(message.messageId)">
+										<h6>remove</h6>
+									</div>
+									<div class=" pull-right edit-margin"
+										data-ng-click="editMessage(message.messageId)">
+										<h6>edit</h6>
+									</div>
 								</div>
 							</div>
 							<div class="panel-body">
-								<div>{{message.text}}</div>
-								<div id="invitation_message" style="display: none">
-									<a class="btn btn-info" id="acceptInvitation">Accept</a> <a
-										class="btn btn-info" id="declineInvitation">Decline</a>
+								<div data-ng-class="{true: 'glyphicon glyphicon-trash'}[message.hidden]">{{message.text}}</div>
+								<div id="invitation_message"
+									data-ng-show="message.messageInviteStatus == 'INVITE' && message.ownerId != userId">
+									<a class="btn btn-info" data-ng-click="acceptInvitation()">Accept</a>
+									<a class="btn btn-info" data-ng-click="declineInvitation()">Decline</a>
 								</div>
 							</div>
-							<div class="panel-footer" id="messageDate"></div>
+							<div class="panel-footer">{{message.date}}</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class="panel panel-default">
+			<div class="panel panel-default" data-ng-show="chatId != 0">
 				<div class="panel-heading text-center">Comment</div>
-				<div class="">
-					<div class="form-group">
-						<textarea class="form-control" rows="5" id="messageValue"
-							name="text" required></textarea>
-					</div>
-					<div class="form-group">
-						<div class="col-lg-offset-10">
-							<a class="btn btn-info" onclick="sendMessage()">Send</a>
-						</div>
-					</div>
+				<div class="panel-body">
+					<textarea class="form-control" rows="5" data-ng-model="messageText"
+						name="text" required></textarea>
+				</div>
+				<div class="panel-footer">
+					<a class="btn btn-info" data-ng-click="sendMessage()">Send</a>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
 
-<!-- Message template -->
-<div class="row" id="messageRow" style="display: none">
-	<div class="panel panel-margin" id="message">
-		<div class="panel-heading">
-			<div class="name-margin" id="ownerName"></div>
-			<div class="pull-right remove-margin" id="deleteMessage"
-				style="display: none">
-				<h6>remove</h6>
-			</div>
-			<div class=" pull-right edit-margin" id="editMessage"
-				style="display: none">
-				<h6>edit</h6>
-			</div>
-		</div>
-		<div class="panel-body">
-			<div id="messageText"></div>
-			<div id="invitation_message" style="display: none">
-				<a class="btn btn-info" id="acceptInvitation">Accept</a> <a
-					class="btn btn-info" id="declineInvitation">Decline</a>
-			</div>
-		</div>
-		<div class="panel-footer" id="messageDate"></div>
-	</div>
-</div>
 <!-- Deleted message template -->
 <div class="row" id="deletedMessageRow" style="display: none">
 	<div class="panel panel-margin" id="message">

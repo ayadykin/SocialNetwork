@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.social.network.services.UserService;
+import com.social.network.utils.RestResponse;
 
 /**
  * Created by Yadykin Andrii Aug 4, 2016
@@ -22,21 +23,8 @@ public class SigninApi {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
-    public SigninResponse getToken() {
-        return new SigninResponse().setUserId(userService.getLoggedUserId());
+    public RestResponse getToken() {
+        return new RestResponse().convert(() -> true);
     }
 
-    private class SigninResponse {
-        private long userId;
-
-        public long getUserId() {
-            return userId;
-        }
-
-        public SigninResponse setUserId(long userId) {
-            this.userId = userId;
-            return this;
-        }
-
-    }
 }

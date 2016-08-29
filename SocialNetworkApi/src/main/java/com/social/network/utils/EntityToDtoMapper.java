@@ -14,10 +14,10 @@ import com.social.network.domain.model.Message;
 import com.social.network.domain.model.SystemMessage;
 import com.social.network.domain.model.User;
 import com.social.network.domain.model.UserChat;
-import com.social.network.dto.ChatDto;
 import com.social.network.dto.FriendDto;
 import com.social.network.dto.GroupDto;
 import com.social.network.dto.MessageDto;
+import com.social.network.dto.chat.ChatDto;
 import com.social.network.dto.group.GroupUserDto;
 import com.social.network.exceptions.chat.ConvertMessageException;
 
@@ -50,7 +50,7 @@ public class EntityToDtoMapper {
         // Get hidden message flag
         if (message.getHidden().isHidden()) {
             messageDto.setHidden(true);
-            messageDto.setText("");
+            messageDto.setText("This message has been removed.");
         }
 
         logger.debug("end convertMessageToMessageDto : messageDto = {}", messageDto);
@@ -67,9 +67,9 @@ public class EntityToDtoMapper {
                 friend.getChat().getChatId());
     }
 
-    public static Set<GroupUserDto> convertUserToGroupUserDto(Set<User> users, long adminId) {
+    public static Set<GroupUserDto> convertUserToGroupUserDto(Set<UserChat> users, long adminId) {
         Set<GroupUserDto> usersList = new LinkedHashSet<>();
-        for (User user : users) {
+        for (UserChat user : users) {
             boolean isAdmin = user.getUserId() == adminId;
             if (isAdmin) {
                 usersList.add(new GroupUserDto(user.getUserId(), user.getUserFullName(), isAdmin));
@@ -92,7 +92,7 @@ public class EntityToDtoMapper {
 
             Set<GroupUserDto> users = null;
             if (withUsers) {
-                users = null;//convertUserToGroupUserDto(group.getChat().getUsers(), group.getAdminId());
+                users = convertUserToGroupUserDto(group.getChat().getUserChat(), group.getAdminId());
             }
 
             groupsDtoList.add(

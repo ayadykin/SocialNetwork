@@ -36,10 +36,6 @@ public class AcceptFriend extends FriendSrtategy {
         inviterFriend.setFriendStatus(FriendStatus.ACCEPTED);
         inviteeFriend.setFriendStatus(FriendStatus.ACCEPTED);
 
-        Set<User> usersList = new HashSet<>();
-        usersList.add(loggedUser);
-        usersList.add(invitee);
-
         return messageBuilder.setMessageBuilder(friendAnswerMessage).createOneParamMessage(ACCEPT_INVITATION_MESSAGE, loggedUser,
                 inviteeFriend.getChat());
     }

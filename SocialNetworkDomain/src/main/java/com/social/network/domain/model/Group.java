@@ -24,17 +24,16 @@ import com.social.network.domain.util.Constants;
 
 @Entity
 @Table(name = "groups")
-@NamedQuery(name = Constants.FIND_GROUP_BY_OWNER, 
-query = "select g from Group g join g.chat.userChat u where u.user = :user order by groupId")
+@NamedQuery(name = Constants.FIND_GROUP_BY_OWNER, query = "select g from Group g join g.chat.userChat u where u.user = :user order by groupId")
 public class Group implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long groupId;
-    
+
     @Embedded
     private HiddenLabel hidden;
-    
+
     @OneToOne
     @JoinColumn(name = "chat_id")
     private Chat chat;
@@ -53,6 +52,10 @@ public class Group implements Serializable {
         this.groupName = groupName;
         this.adminId = adminId;
         this.hidden = new HiddenLabel();
+    }
+
+    public void hiddeGroup() {
+        this.hidden.setHidden(true);
     }
 
     public long getGroupId() {

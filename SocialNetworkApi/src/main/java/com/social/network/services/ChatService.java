@@ -21,6 +21,8 @@ public interface ChatService {
      * @return list of chats
      */
     Set<UserChat> getChatsList();
+    
+    UserChat getChat(long chatId);
 
     /**
      * Get filtered by period messages for chat

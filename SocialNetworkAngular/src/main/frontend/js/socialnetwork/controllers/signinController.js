@@ -26,7 +26,7 @@ angular.module('socialNetworkControllers').controller('SigninController',
 			$location.path("/signin");
 			$scope.error = true;
 		    }
-		    $log.info("login : " + data.login);
+		    $log.info("login userId : " + data.userId);
 		});
 	    };
 	});

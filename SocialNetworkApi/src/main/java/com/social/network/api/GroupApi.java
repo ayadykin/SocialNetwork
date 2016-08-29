@@ -21,7 +21,6 @@ import com.social.network.dto.GroupDto;
 import com.social.network.dto.group.CreateGroupDto;
 import com.social.network.dto.group.GroupUserDto;
 import com.social.network.facade.GroupServiceFacade;
-import com.social.network.utils.RestResponse;
 import com.social.network.utils.ResultToResponseWrapper;
 
 /**
@@ -78,9 +77,8 @@ public class GroupApi {
 
     @ResponseBody
     @RequestMapping(value = DELETE_USER, method = RequestMethod.PUT)
-    public RestResponse deleteUser(@RequestBody GroupUserDto groupUserDto) {
-        return new RestResponse()
-                .convert(() -> groupServiceFacade.deleteUserFromGroup(groupUserDto.getGroupId(), groupUserDto.getUserId()));
+    public GroupUserDto deleteUser(@RequestBody GroupUserDto groupUserDto) {
+        return groupServiceFacade.deleteUserFromGroup(groupUserDto.getGroupId(), groupUserDto.getUserId());
     }
 
     @ResponseBody

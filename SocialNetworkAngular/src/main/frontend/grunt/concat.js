@@ -25,6 +25,7 @@ module.exports = function(grunt) {
 		    'bower_components/angular-route/angular-route.js',
 		    'bower_components/angular-resource/angular-resource.js',
 		    'bower_components/angular-translate/angular-translate.js',
+		    'bower_components/angular-scroll-glue/src/scrollglue.js',
 		    'bower_components/angular-cookies/angular-cookies.js' ].concat(getModuleTree('socialnetwork')
 		    .concat(
 			    [

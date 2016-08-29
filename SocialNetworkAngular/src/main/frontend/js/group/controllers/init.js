@@ -4,7 +4,7 @@ angular.module('socialNetworkControllers').controller('GroupController',
 	    $scope.pageNo = 0;
 	    $scope.pageSize = 10;
 	    $scope.groups = [];
-
+	    
 	    GroupRest.query(function(groups) {
 		$log.info('init groups list');
 		$scope.groups = groups;

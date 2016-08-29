@@ -5,21 +5,23 @@ import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
-import org.springframework.web.servlet.ModelAndView;
 
 import com.social.network.domain.model.enums.Period;
-import com.social.network.dto.ChatDto;
 import com.social.network.dto.MessageDto;
+import com.social.network.dto.chat.ChatDto;
+import com.social.network.dto.chat.EditMessageDto;
+import com.social.network.dto.chat.SendMessageDto;
 import com.social.network.exceptions.chat.EmptyMessageException;
 import com.social.network.facade.ChatServiceFacade;
 import com.social.network.services.RedisService;
-import com.social.network.utils.ResultToResponseWrapper;
+import com.social.network.utils.RestResponse;
 
 /**
  * Created by Yadykin Andrii Jul 22, 2016
@@ -38,14 +40,18 @@ public class ChatApi {
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
     public List<ChatDto> getChatsList() {
-        // mav.addObject(USERID_ID_ATTRIBUTE, userService.getLoggedUserId());
         return chatFacade.getChatsList();
     }
 
+    @ResponseBody
     @RequestMapping(value = "/{chatId}", method = RequestMethod.GET)
-    public List<MessageDto> getFilteredMessages(@PathVariable("chatId") long chatId) {
+    public ChatDto getChat(@PathVariable("chatId") long chatId) {
+        return chatFacade.getChat(chatId);
+    }
 
-        // mav.addObject(CHATS_LIST_ATTRIBUTE, chatService.getChatsList());
+    @ResponseBody
+    @RequestMapping(value = "/getMessages/{chatId}", method = RequestMethod.GET)
+    public List<MessageDto> getFilteredMessages(@PathVariable("chatId") long chatId) {
         return chatFacade.getChatMesasges(chatId, Period.ALL);
     }
 
@@ -57,24 +63,24 @@ public class ChatApi {
 
     @ResponseBody
     @RequestMapping(value = "/sendMessage", method = RequestMethod.POST)
-    public String sendMessageToChat(@RequestParam() String message, @RequestParam("chatId") long chatId) {
-        if (message.isEmpty()) {
+    public RestResponse sendMessageToChat(@RequestBody SendMessageDto sendMessageDto) {
+        if (sendMessageDto.getMessage().isEmpty()) {
             throw new EmptyMessageException("Message must not be empty");
         }
 
-        return ResultToResponseWrapper.convert(() -> chatFacade.sendMessage(message, chatId));
+        return new RestResponse().convert(() -> chatFacade.sendMessage(sendMessageDto.getMessage(), sendMessageDto.getChatId()));
     }
 
     @ResponseBody
     @RequestMapping(value = "/editMessage", method = RequestMethod.POST)
-    public String editMessage(@RequestParam("messageId") long messageId, @RequestParam("message") String message) {
-        return ResultToResponseWrapper.convert(() -> chatFacade.editMessage(messageId, message));
+    public RestResponse editMessage(@RequestBody EditMessageDto editMessageDto) {
+        return new RestResponse().convert(() -> chatFacade.editMessage(editMessageDto.getMessageId(), editMessageDto.getMessage()));
     }
 
     @ResponseBody
-    @RequestMapping(value = "/deleteMessage", method = RequestMethod.POST)
-    public String deleteMessage(@RequestParam("messageId") long messageId, @RequestParam("messageChatId") long messageChatId) {
-        return ResultToResponseWrapper.convert(() -> chatFacade.deleteMessage(messageId));
+    @RequestMapping(value = "/deleteMessage/{messageId}", method = RequestMethod.DELETE)
+    public RestResponse deleteMessage(@PathVariable("messageId") long messageId) {
+        return new RestResponse().convert(() -> chatFacade.deleteMessage(messageId));
     }
 
     @ResponseBody

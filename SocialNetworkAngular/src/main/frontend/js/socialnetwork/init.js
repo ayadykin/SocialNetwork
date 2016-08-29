@@ -5,12 +5,13 @@ var socialNetworkApp = angular.module('socialNetworkApp', [
 	'ngCookies',
 	'ui.bootstrap',
 	'ngAnimate',
-	'socialNetworMockServerkApp',
+	//'socialNetworMockServerkApp',
 	'socialNetworkControllers',
 	'socialNetworkServices',
-	'socialNetworkFilters' ]);
+	'socialNetworkFilters',
+	'templates']);
 
-angular.module('socialNetworkControllers', []);
+angular.module('socialNetworkControllers', ['luegg.directives']);
 angular.module('socialNetworkServices', [ 'ngResource' ]);
 angular.module('socialNetworkFilters', []);
 
@@ -20,6 +21,7 @@ socialNetworkApp.run(function run($http, $cookies) {
 
 socialNetworkApp.config(function($translateProvider, $routeProvider) {
     $translateProvider.useLoader('i18nLoader');
+    
     $routeProvider.when('/profile/:profileId', {
 	templateUrl : 'templates/pages/profile.html'
     });

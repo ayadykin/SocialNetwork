@@ -39,7 +39,7 @@ import com.social.network.validation.DaoValidation;
 @Service
 public class ChatServiceImpl implements ChatService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ChatService.class);
+    private final static Logger logger = LoggerFactory.getLogger(ChatService.class);
     @Autowired
     private ChatDao chatDao;
     @Autowired
@@ -58,6 +58,15 @@ public class ChatServiceImpl implements ChatService {
         logger.debug("->getChatsList for user : {}", loggedUser.getUserId());
 
         return loggedUser.getUserChat();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserChat getChat(long chatId) {
+        User loggedUser = userService.getLoggedUserEntity();
+        logger.debug("->getChat chatId : {}", chatId);
+
+        return userChatDao.findByChatAndUser(chatId, loggedUser.getUserId());
     }
 
     @Override
