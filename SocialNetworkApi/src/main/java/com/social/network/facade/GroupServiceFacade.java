@@ -15,8 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.core.GroupModel;
-import com.social.network.core.message.builder.MessageBuilder;
 import com.social.network.core.message.builder.system.impl.GroupMessage;
+import com.social.network.core.message.text.impl.MessageTextBuilderImpl;
 import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Group;
 import com.social.network.domain.model.Message;
@@ -46,7 +46,7 @@ public class GroupServiceFacade {
     @Autowired
     private UserService userService;
     @Autowired
-    private MessageBuilder messageBuilder;
+    private MessageTextBuilderImpl messageBuilder;
     @Autowired
     private GroupMessage groupMessageBuilder;
 
@@ -101,7 +101,7 @@ public class GroupServiceFacade {
         User invitedUser = groupModel.getInvitedUser();
 
         // Create message
-        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE,
+        Message message = messageBuilder.setMessageStrategyBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE,
                 invitedUser, groupModel.getLoggedUser(), chat);
 
         sendMessageToRedis(message, userId);
@@ -117,7 +117,7 @@ public class GroupServiceFacade {
         User removedUser = groupModel.getInvitedUser();
 
         // Create message
-        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(DELETE_USER_FROM_GROUP_MESSAGE,
+        Message message = messageBuilder.setMessageStrategyBuilder(groupMessageBuilder).createTwoParamsMessage(DELETE_USER_FROM_GROUP_MESSAGE,
                 removedUser, groupModel.getLoggedUser(), chat);
 
         sendMessageToRedis(message, userId);
@@ -139,7 +139,7 @@ public class GroupServiceFacade {
         GroupModel groupModel = groupService.deleteGroup(groupId);
 
         // Create message
-        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(DELETE_GROUP_MESSAGE,
+        Message message = messageBuilder.setMessageStrategyBuilder(groupMessageBuilder).createOneParamMessage(DELETE_GROUP_MESSAGE,
                 groupModel.getLoggedUser(), groupModel.getGroup().getChat());
         sendMessageToRedis(message, userId);
         return EntityToDtoMapper.convertGroupToGroupsDto(groupModel.getGroup(), userId, false);

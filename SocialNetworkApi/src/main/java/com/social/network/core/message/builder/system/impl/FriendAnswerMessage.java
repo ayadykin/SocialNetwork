@@ -28,7 +28,7 @@ public class FriendAnswerMessage extends SystemMessageStrategy {
 
     @Override
     @Transactional
-    public Message createMessage(String messageTemplate, String[] params, User publisher, Chat chat) {
+    public Message createMessage(String messageTemplate,  User publisher, Chat chat) {
         logger.debug("-> createMessage chatId : " + chat.getChatId());
 
         SystemMessage systemMessage = (SystemMessage) chat.getMessages().iterator().next();
@@ -39,7 +39,7 @@ public class FriendAnswerMessage extends SystemMessageStrategy {
             throw new MessageException("SystemMessage doesn't exist ");
         }
 
-        return messageSourceBuilder.createMessage(messageTemplate, params, publisher, chat, SystemMessageStatus.SYSTEM);
+        return messageSourceBuilder.createMessage(messageTemplate, publisher, chat, SystemMessageStatus.SYSTEM);
     }
 
 }

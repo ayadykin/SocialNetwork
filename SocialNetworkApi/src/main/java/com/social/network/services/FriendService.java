@@ -3,7 +3,6 @@ package com.social.network.services;
 import java.util.Set;
 
 import com.social.network.domain.model.Friend;
-import com.social.network.domain.model.Message;
 import com.social.network.domain.model.User;
 import com.social.network.domain.model.enums.FriendStatus;
 
@@ -15,45 +14,45 @@ import com.social.network.domain.model.enums.FriendStatus;
 
 public interface FriendService {
 
-    /**
-     * Get list of user's friends
-     * 
-     * @return set of friends
-     */
-    Set<Friend> getFriends();
+	/**
+	 * Get list of user's friends
+	 * 
+	 * @return set of friends
+	 */
+	Set<Friend> getFriends();
 
-    /**
-     * Invite friend
-     * 
-     * @param userId
-     * @return
-     */
-    Message inviteFriend(long userId);
+	/**
+	 * Invite friend
+	 * 
+	 * @param userId
+	 * @return
+	 */
+	Friend inviteFriend(long userId);
 
-    /**
-     * Accept user's invitation
-     * 
-     * @param userId
-     * @return boolean
-     */
-    Message acceptInvitation(long userId);
+	/**
+	 * Accept user's invitation
+	 * 
+	 * @param userId
+	 * @return boolean
+	 */
+	Friend acceptInvitation(long userId);
 
-    /**
-     * Decline user's invitation
-     * 
-     * @param userId
-     * @return boolean
-     */
-    Message declineInvitation(long userId);
+	/**
+	 * Decline user's invitation
+	 * 
+	 * @param userId
+	 * @return boolean
+	 */
+	Friend declineInvitation(long userId);
 
-    /**
-     * Delete friend from friend's list
-     * 
-     * @param friendId
-     * @return boolean
-     */
-    boolean deleteFriend(long friendId);
+	/**
+	 * Delete friend from friend's list
+	 * 
+	 * @param friendId
+	 * @return boolean
+	 */
+	boolean deleteFriend(long friendId);
 
-    Friend validateFriendByStatus(User friend, User owner, FriendStatus status);
+	Friend validateFriendByStatus(User friend, User owner, FriendStatus status);
 
 }

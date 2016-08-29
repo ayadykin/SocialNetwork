@@ -2,6 +2,7 @@ package com.social.network.services.impl;
 
 import static com.social.network.utils.Constants.ADD_USER_TO_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.CREATE_GROUP_MESSAGE;
+import static com.social.network.utils.Constants.INVITATION_MESSAGE;
 import static com.social.network.utils.Constants.LEAVE_GROUP_MESSAGE;
 
 import java.util.HashSet;
@@ -17,8 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.core.GroupModel;
-import com.social.network.core.message.builder.MessageBuilder;
 import com.social.network.core.message.builder.system.impl.GroupMessage;
+import com.social.network.core.message.text.impl.MessageTextBuilderImpl;
 import com.social.network.domain.dao.ChatDao;
 import com.social.network.domain.dao.GroupDao;
 import com.social.network.domain.dao.UserChatDao;
@@ -54,7 +55,7 @@ public class GroupServiceImpl implements GroupService {
     @Autowired
     private FriendService friendService;
     @Autowired
-    private MessageBuilder messageBuilder;
+    private MessageTextBuilderImpl messageBuilder;
     @Autowired
     private GroupMessage groupMessageBuilder;
 
@@ -118,10 +119,12 @@ public class GroupServiceImpl implements GroupService {
             chat.addUserChat(userChatDao.merge(new UserChat(chat, user, name)));
 
             if (user.getUserId() == loggedUser.getUserId()) {
-                chat.addMessage(
-                        messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(CREATE_GROUP_MESSAGE, user, chat));
+            	String messageText = messageTextBuilder.createOneParamMessage(INVITATION_MESSAGE, friend.getUser().getFirstName());
+
+            	chat.addMessage(
+                        messageBuilder.setMessageStrategyBuilder(groupMessageBuilder).createOneParamMessage(CREATE_GROUP_MESSAGE, user, chat));
             } else {
-                chat.addMessage(messageBuilder.setMessageBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE,
+                chat.addMessage(messageBuilder.setMessageStrategyBuilder(groupMessageBuilder).createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE,
                         user, user, chat));
             }
         }
@@ -182,7 +185,7 @@ public class GroupServiceImpl implements GroupService {
         Chat chat = group.getChat();
 
         // Create message
-        Message message = messageBuilder.setMessageBuilder(groupMessageBuilder).createOneParamMessage(LEAVE_GROUP_MESSAGE, loggedUser,
+        Message message = messageBuilder.setMessageStrategyBuilder(groupMessageBuilder).createOneParamMessage(LEAVE_GROUP_MESSAGE, loggedUser,
                 chat);
 
         userChatDao.removeUserFromChat(chat, loggedUser);

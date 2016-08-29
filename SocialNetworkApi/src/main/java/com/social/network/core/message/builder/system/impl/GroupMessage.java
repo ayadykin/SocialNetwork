@@ -19,8 +19,8 @@ public class GroupMessage extends SystemMessageStrategy {
 
     @Override
     @Transactional
-    public Message createMessage(String messageTemplate, String[] params, User publisher, Chat chat) {
-        return messageSourceBuilder.createMessage(messageTemplate, params, publisher, chat, SystemMessageStatus.SYSTEM);
+    public Message createMessage(String messageTemplate, User publisher, Chat chat) {
+        return messageSourceBuilder.createMessage(messageTemplate, publisher, chat, SystemMessageStatus.SYSTEM);
     }
 
 }

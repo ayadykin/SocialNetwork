@@ -1,5 +1,9 @@
 package com.social.network.facade;
 
+import static com.social.network.utils.Constants.ACCEPT_INVITATION_MESSAGE;
+import static com.social.network.utils.Constants.DECLINE_INVITATION_MESSAGE;
+import static com.social.network.utils.Constants.INVITATION_MESSAGE;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.social.network.core.message.builder.system.impl.FriendAnswerMessage;
+import com.social.network.core.message.builder.system.impl.InviteFriendMessage;
+import com.social.network.core.message.text.MessageTextBuilder;
 import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.Message;
 import com.social.network.dto.FriendDto;
@@ -22,51 +29,72 @@ import com.social.network.utils.EntityToDtoMapper;
 
 @Service
 public class FriendServiceFacade {
-    @Autowired
-    private FriendService friendService;
-    @Autowired
-    private RedisService redisService;
+	@Autowired
+	private FriendService friendService;
+	@Autowired
+	private RedisService redisService;
+	@Autowired
+	protected InviteFriendMessage inviteFriendMessage;
+	@Autowired
+	private FriendAnswerMessage friendAnswerMessage;
+	@Autowired
+	private MessageTextBuilder messageTextBuilder;
+	
+	@Transactional
+	public List<FriendDto> getFriends() {
+		List<FriendDto> friendsDto = new ArrayList<>();
+		for (Friend friend : friendService.getFriends()) {
+			friendsDto.add(EntityToDtoMapper.convertFriendToFriendDto(friend));
+		}
+		return friendsDto;
+	}
 
-    @Transactional
-    public List<FriendDto> getFriends() {
-        List<FriendDto> friendsDto = new ArrayList<>();
-        for (Friend friend : friendService.getFriends()) {
-            friendsDto.add(EntityToDtoMapper.convertFriendToFriendDto(friend));
-        }
-        return friendsDto;
-    }
+	@Transactional
+	public boolean inviteFriend(long userId) {
+		// Invite friend
+		Friend friend = friendService.inviteFriend(userId);
+		
+		String messageText = messageTextBuilder.createOneParamMessage(INVITATION_MESSAGE, friend.getUser().getFirstName());
 
-    @Transactional
-    public boolean inviteFriend(long userId) {
-        // Invite friend
-        Message message = friendService.inviteFriend(userId);
-        // Send message to redis
-        return sendMessageToRedis(message, userId);
-    }
+		Message message = inviteFriendMessage.createMessage(messageText, friend.getUser(), friend.getChat());
 
-    @Transactional
-    public boolean acceptInvitation(long userId) {
-        // Accept invitation
-        Message message = friendService.acceptInvitation(userId);
-        // Send message to redis
-        return sendMessageToRedis(message, userId);
-    }
+		// Send message to redis
+		return sendMessageToRedis(message, userId);
+	}
 
-    @Transactional
-    public boolean declineInvitation(long userId) {
-        // Decline invitation
-        Message message = friendService.declineInvitation(userId);
-        // Send message to redis
-        return sendMessageToRedis(message, userId);
-    }
+	@Transactional
+	public boolean acceptInvitation(long userId) {
+		// Accept invitation
+		Friend friend = friendService.acceptInvitation(userId);
 
-    @Transactional
-    public boolean deleteFriend(long friendId) {
-        return friendService.deleteFriend(friendId);
-    }
+		String messageText = messageTextBuilder.createOneParamMessage(ACCEPT_INVITATION_MESSAGE, friend.getUser().getFirstName());
 
-    private boolean sendMessageToRedis(Message message, long userId) {
-        MessageDto messageDto = EntityToDtoMapper.convertMessageToMessageDto(message, userId);
-        return redisService.sendMessageToRedis(messageDto);
-    }
+		Message message = friendAnswerMessage.createMessage(messageText, friend.getUser(), friend.getChat());
+		
+		// Send message to redis
+		return sendMessageToRedis(message, userId);
+	}
+
+	@Transactional
+	public boolean declineInvitation(long userId) {
+		// Decline invitation
+		Friend friend = friendService.declineInvitation(userId);
+
+		String messageText = messageTextBuilder.createOneParamMessage(DECLINE_INVITATION_MESSAGE, friend.getUser().getFirstName());
+
+		Message message = friendAnswerMessage.createMessage(messageText, friend.getUser(), friend.getChat());
+		
+		// Send message to redis
+		return sendMessageToRedis(message, userId);
+	}
+
+	@Transactional
+	public boolean deleteFriend(long friendId) {
+		return friendService.deleteFriend(friendId);
+	}
+
+	private boolean sendMessageToRedis(Message message, long userId) {
+		MessageDto messageDto = EntityToDtoMapper.convertMessageToMessageDto(message, userId);
+		return redisService.sendMessageToRedis(messageDto);
+	}
 }

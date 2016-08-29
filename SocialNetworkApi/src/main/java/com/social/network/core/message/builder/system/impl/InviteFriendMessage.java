@@ -20,7 +20,7 @@ public class InviteFriendMessage extends SystemMessageStrategy {
     
     @Override
     @Transactional
-    public Message createMessage(String messageTemplate, String[] params, User publisher, Chat chat) {
-        return messageSourceBuilder.createMessage(messageTemplate, params, publisher, chat, SystemMessageStatus.INVITE);
+    public Message createMessage(String messageText, User publisher, Chat chat) {
+        return messageSourceBuilder.createMessage(messageText, publisher, chat, SystemMessageStatus.INVITE);
     }
 }
