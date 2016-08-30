@@ -5,17 +5,31 @@ $scope.initEditGroup = function(groupId) {
 
     $scope.group = [];
     $scope.group.users = [];
-    
-    $q.all([ GroupRest.getFriendsNotInGroup({
-	groupId : groupId
-    }).$promise, GroupRest.getGroupById({
+
+    $q.all([ FriendRest.get().$promise, GroupRest.getGroupById({
 	groupId : groupId
     }).$promise ]).then(function(response) {
 	$log.info('initEditGroup');
-	$scope.friendsNotInGroup = [];	
-	$scope.friendsNotInGroup = response[0];
+	$scope.friends = [];
+	$scope.friends = response[0];
 	$scope.group = response[1];
+
+	$scope.friendsNotInGroup = [];
+
+	createUserFromFriend($scope.friends, $scope.group.users);
     });
+
+    function createUserFromFriend(friends, groupUsers) {
+	angular.forEach(friends, function(value1, key1) {
+	    $log.debug(' createUserFromFriend id ' + value1.userId + '-' + value1.status);
+	    angular.forEach(groupUsers, function(value2, key2) {
+		if (value1.userId === value2.userId || value1.status !== 'ACCEPTED') {
+		    friends.splice(key1, 1);
+		}
+	    });
+	});
+	$scope.friendsNotInGroup = friends;
+    }
 
     $scope.addUserToGroup = function(groupId, userId) {
 	$log.info('add user to groupId : ' + groupId);
@@ -26,7 +40,7 @@ $scope.initEditGroup = function(groupId) {
 	    if (data.userId) {
 		removeUserById($scope.friendsNotInGroup, userId);
 		$scope.group.users.push(data);
-		resultDialog.dialog(true);
+		resultDialog.dialog(true, "Success add user with userId : " + userId);
 	    }
 	});
     };

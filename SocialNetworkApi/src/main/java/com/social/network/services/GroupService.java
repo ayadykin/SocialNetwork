@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.social.network.core.GroupModel;
 import com.social.network.domain.model.Group;
-import com.social.network.domain.model.Message;
-import com.social.network.domain.model.User;
 
 /**
  * Created by Yadykin Andrii May 12, 2016
@@ -61,7 +59,7 @@ public interface GroupService {
      * @param groupId
      * @return information message
      */
-    Message leaveGroup(long groupId);
+    GroupModel leaveGroup(long groupId);
 
     /**
      * This method is used to delete group
@@ -71,11 +69,4 @@ public interface GroupService {
      */
     GroupModel deleteGroup(long groupId);
 
-    /**
-     * This method is used to get user friends that isn't in group
-     *
-     * @param groupId
-     * @return List<FriendDto>
-     */
-    List<User> getFriendsNotInGroup(long groupId);
 }

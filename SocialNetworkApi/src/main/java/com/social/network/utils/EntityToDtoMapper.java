@@ -12,7 +12,6 @@ import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.Group;
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.SystemMessage;
-import com.social.network.domain.model.User;
 import com.social.network.domain.model.UserChat;
 import com.social.network.dto.FriendDto;
 import com.social.network.dto.GroupDto;
@@ -29,19 +28,23 @@ import com.social.network.exceptions.chat.ConvertMessageException;
 public class EntityToDtoMapper {
 
     private static final Logger logger = LoggerFactory.getLogger(EntityToDtoMapper.class);
-
-    public static MessageDto convertMessageToMessageDto(Message message, long userId) {
-        logger.debug("strart convertMessageToMessageDto : message = {}, userId = {}", message, userId);
+    
+    public static MessageDto convertMessageToMessageDto(Message message) {
+        logger.debug("strart convertMessageToMessageDto : message = {} ", message);
 
         // Validate chat
-        long chatId = message.getChatId();
-        if (chatId <= 0) {
-            throw new ConvertMessageException("Can't convert message without chat id");
+        long chatId = 0;
+        if (message.getChat().size() == 1) {
+            chatId = message.getChat().iterator().next().getChatId();
         }
+
+       /* if (chatId <= 0) {
+            throw new ConvertMessageException("Can't convert message without chat id");
+        }*/
         // Get message's owner name
         String ownerName = message.getPublisher().getUserFullName();
-        MessageDto messageDto = new MessageDto(message.getChatId(), message.getMessageId(), message.getText(), message.getCreateDate(),
-                ownerName, message.getPublisherId());
+        MessageDto messageDto = new MessageDto(chatId, message.getMessageId(), message.getText(), message.getCreateDate(), ownerName,
+                message.getPublisherId());
 
         // Get invitation message flag
         if (message instanceof SystemMessage) {
@@ -63,8 +66,8 @@ public class EntityToDtoMapper {
 
     public static FriendDto convertFriendToFriendDto(Friend friend) {
         logger.debug(" convertFriendToFriendDto ");
-        return new FriendDto(friend.getFriendId(), friend.getFriendName(), friend.getFriendStatus(),
-                friend.getChat().getChatId());
+        return new FriendDto(friend.getFriendName(), friend.getFriendStatus(), friend.getChat().getChatId(),
+                friend.getFriend().getUserId());
     }
 
     public static Set<GroupUserDto> convertUserToGroupUserDto(Set<UserChat> users, long adminId) {
@@ -88,15 +91,14 @@ public class EntityToDtoMapper {
         logger.debug(" convertGroupsToGroupsDto groups size {} ", groups.size());
         Set<GroupDto> groupsDtoList = new LinkedHashSet<>();
         for (Group group : groups) {
-            boolean isAdmin = loggedUserId == group.getAdminId();
+            boolean isAdmin = loggedUserId == group.getAdmin().getUserId();
 
             Set<GroupUserDto> users = null;
             if (withUsers) {
-                users = convertUserToGroupUserDto(group.getChat().getUserChat(), group.getAdminId());
+                users = convertUserToGroupUserDto(group.getChat().getUserChat(), group.getAdmin().getUserId());
             }
 
-            groupsDtoList.add(
-                    new GroupDto(group.getGroupName(), group.getGroupId(), group.getChatId(), users, isAdmin, group.getHidden()));
+            groupsDtoList.add(new GroupDto(group.getGroupName(), group.getGroupId(), group.getChatId(), users, isAdmin, group.getHidden()));
         }
         logger.debug(" convertGroupsToGroupsDto groups {} ", groupsDtoList);
         return groupsDtoList;

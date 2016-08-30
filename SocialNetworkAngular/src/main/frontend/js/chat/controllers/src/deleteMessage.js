@@ -1,6 +1,6 @@
 $scope.deleteMessage = function(messageId) {
 
-    $log.debug('deleteMessage messageId :' + messageId);
+    $log.info('deleteMessage messageId :' + messageId);
     
     ChatRest.deleteMessage({
 	messageId : messageId

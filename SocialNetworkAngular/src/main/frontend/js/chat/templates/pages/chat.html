@@ -67,7 +67,11 @@
 						name="text" required></textarea>
 				</div>
 				<div class="panel-footer">
-					<a class="btn btn-info" data-ng-click="sendMessage()">Send</a>
+					<a class="btn btn-info pull-right" data-ng-click="sendMessage()">Send</a>
+					
+					<label class="col-sm-1 control-label">Public</label>
+					<input type="checkbox" data-ng-model="publicMessage"
+                        data-ng-false-value="false" data-ng-true-value="true" />
 				</div>
 			</div>
 		</div>

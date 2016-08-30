@@ -41,16 +41,17 @@ public class Group implements Serializable {
     @NotNull
     private String groupName;
 
-    @NotNull
-    private long adminId;
+    @OneToOne
+    @JoinColumn(name = "admin_id")
+    private User admin;
 
     public Group() {
     }
 
-    public Group(Chat chat, String groupName, long adminId) {
+    public Group(Chat chat, String groupName, User admin) {
         this.chat = chat;
         this.groupName = groupName;
-        this.adminId = adminId;
+        this.admin = admin;
         this.hidden = new HiddenLabel();
     }
 
@@ -90,12 +91,12 @@ public class Group implements Serializable {
         this.groupName = groupName;
     }
 
-    public long getAdminId() {
-        return adminId;
+    public User getAdmin() {
+        return admin;
     }
 
-    public void setAdminId(long adminId) {
-        this.adminId = adminId;
+    public void setAdmin(User admin) {
+        this.admin = admin;
     }
 
     public boolean getHidden() {

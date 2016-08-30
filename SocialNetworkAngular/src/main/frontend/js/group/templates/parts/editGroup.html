@@ -41,10 +41,10 @@
 			<tr id="groupFriend_{{friend.userId}}"
 				data-ng-repeat="friend in friendsNotInGroup">
 				<td>{{friend.userId}}</td>
-				<td>{{friend.fullName}}</td>
+				<td>{{friend.name}}</td>
 				<td><a class="btn btn-info" data-ng-click="viewProfile(friend.userId)">Profile</a></td>
 				<td><a class="btn btn-info"
-					ng-click="addUserToGroup(group.groupId, friend.userId)">{{'ADD_USER'
+					data-ng-click="addUserToGroup(group.groupId, friend.userId)">{{'ADD_USER'
 						| translate}}</a></td>
 			</tr>
 		</table>

@@ -150,16 +150,17 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
      */
 
     $httpBackend.whenGET('/SocialNetworkApi/friend').respond([ {
-	"friendId" : 4,
+	"userId" : 4,
 	"name" : "Dima D",
 	"status" : "INVITED",
 	"chatId" : 2
     }, {
-	"friendId" : 5,
+	"userId" : 5,
 	"name" : "Dima R",
 	"status" : "ACCEPTED",
-	"chatId" : 2
+	"chatId" : 1
     } ]);
+    $httpBackend.whenDELETE('/SocialNetworkApi/friend/5').respond();
 
     /**
      * Chat mock
@@ -171,7 +172,7 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"name" : "Dima D",
 	"chatId" : 2
     } ]);
-    
+
     $httpBackend.whenGET('/SocialNetworkApi/chat/3').respond({
 	"name" : "new Chat P",
 	"chatId" : 3
@@ -206,7 +207,7 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"messageInviteStatus" : null
     } ]);
 
-    $httpBackend.whenGET('/SocialNetworkApi/chat/getMessage/0').respond( {
+    $httpBackend.whenGET('/SocialNetworkApi/chat/getMessage/0').respond({
 	"chatId" : 3,
 	"messageId" : 7,
 	"text" : "new chat.",

@@ -68,7 +68,8 @@ public class ChatApi {
             throw new EmptyMessageException("Message must not be empty");
         }
 
-        return new RestResponse().convert(() -> chatFacade.sendMessage(sendMessageDto.getMessage(), sendMessageDto.getChatId()));
+        return new RestResponse().convert(
+                () -> chatFacade.sendMessage(sendMessageDto.getMessage(), sendMessageDto.getChatId(), sendMessageDto.getPublicMessage()));
     }
 
     @ResponseBody

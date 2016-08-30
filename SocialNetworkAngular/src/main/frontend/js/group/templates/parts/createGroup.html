@@ -7,7 +7,13 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Group Name</label>
 				<div class="col-sm-7">
-					<input type="text" data-ng-model="groupName.text" class="form-control" />
+					<input type="text" data-ng-model="group.name"
+						class="form-control" />
+				</div>
+				<label class="col-sm-3 control-label">Public</label>
+				<div class="col-sm-1">
+					<input type="checkbox" data-ng-model="group.type"
+						data-ng-false-value="false" data-ng-true-value="true" />
 				</div>
 			</div>
 			<div class="form-group text-center">
@@ -28,7 +34,7 @@
 					</tr>
 					<tr id="friend_" data-ng-repeat="friend in friends">
 						<td><input type="checkbox" data-ng-model="friendsId[$index]"
-							ng-false-value="undefined" ng-true-value="{{friend.friendId}}" /></td>
+							data-ng-false-value="undefined" data-ng-true-value="{{friend.userId}}" /></td>
 						<td>{{friend.friendId}}</td>
 						<td>{{friend.name}}</td>
 						<td>{{friend.status}}</td>
@@ -39,8 +45,8 @@
 	</div>
 	<div class="panel-footer">
 		<div class="col-lg-offset-5">
-			<a class="btn btn-default" ng-click="initGroupsList()">Back</a> 
-			<a class="btn btn-default" ng-click="saveGroup()">Save</a>
+			<a class="btn btn-default" ng-click="initGroupsList()">Back</a> <a
+				class="btn btn-default" ng-click="saveGroup()">Save</a>
 		</div>
 	</div>
 </div>

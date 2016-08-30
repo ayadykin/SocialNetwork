@@ -51,6 +51,7 @@ public class Constants {
      * Group message constant
      */
     public final static String CREATE_GROUP_MESSAGE = "crearte.group.message";
+    public final static String CREATE_PUBLIC_GROUP_MESSAGE = "crearte.public.group.message";
     public final static String ADD_USER_TO_GROUP_MESSAGE = "group.added.message";
     public final static String DELETE_USER_FROM_GROUP_MESSAGE = "delete.from.group.message";
     public final static String LEAVE_GROUP_MESSAGE = "leave.group.message";

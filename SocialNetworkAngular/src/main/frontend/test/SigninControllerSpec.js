@@ -20,7 +20,7 @@ describe('SigninController', function() {
 	httpMock.expectGET(config.signinInit).respond();
 
 	scope.login();
-	httpMock.expectPOST(config.signinPath).respond("{\"login\" : \"SUCCESS\"}");
+	httpMock.expectPOST(config.signinPath).respond("{\"userId\" : 1 }");
 
 	httpMock.flush();
 	scope.$apply();

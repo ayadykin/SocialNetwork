@@ -17,14 +17,12 @@ import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.User;
 import com.social.network.domain.model.UserChat;
 import com.social.network.domain.model.enums.FriendStatus;
-import com.social.network.exceptions.friend.DeleteFriendException;
 import com.social.network.exceptions.friend.FriendNotExistException;
 import com.social.network.exceptions.friend.InviteAcceptedException;
 import com.social.network.exceptions.friend.InviteDeclinedException;
 import com.social.network.exceptions.friend.InviteException;
 import com.social.network.services.FriendService;
 import com.social.network.services.UserService;
-import com.social.network.validation.DaoValidation;
 
 /**
  * Created by Yadykin Andrii May 16, 2016
@@ -34,158 +32,144 @@ import com.social.network.validation.DaoValidation;
 @Service
 public class FriendServiceImpl implements FriendService {
 
-	private static final Logger logger = LoggerFactory.getLogger(FriendService.class);
+    private static final Logger logger = LoggerFactory.getLogger(FriendService.class);
 
-	@Autowired
-	private UserChatDao userChatDao;
-	@Autowired
-	private ChatDao chatDao;
-	@Autowired
-	private FriendDao friendDao;
-	@Autowired
-	private UserService userService;
+    @Autowired
+    private UserChatDao userChatDao;
+    @Autowired
+    private ChatDao chatDao;
+    @Autowired
+    private FriendDao friendDao;
+    @Autowired
+    private UserService userService;
 
-	@Override
-	@Transactional(readOnly = true)
-	public Set<Friend> getFriends() {
-		logger.debug(" getFriends  ");
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Friend> getFriends() {
+        logger.debug(" getFriends  ");
 
-		return userService.getLoggedUserEntity().getFriends();
-	}
+        return userService.getLoggedUserEntity().getFriends();
+    }
 
-	@Override
-	@Transactional
-	public Friend inviteFriend(long userId) {
-		logger.debug(" inviteFriend  userId : {}", userId);
+    @Override
+    @Transactional
+    public Friend inviteFriend(long userId) {
+        logger.debug(" inviteFriend  userId : {}", userId);
 
-		User loggedUser = userService.getLoggedUserEntity();
-		User invitee = userService.getUserById(userId);
+        User loggedUser = userService.getLoggedUserEntity();
+        User invitee = userService.getUserById(userId);
 
-		createFriendValidation(loggedUser, invitee);
+        createFriendValidation(loggedUser, invitee);
 
-		// Create friend
-		Chat chat = chatDao.merge(new Chat());
+        // Create friend
+        Chat chat = chatDao.merge(new Chat());
 
-		Friend friend = friendDao.merge(new Friend(chat, FriendStatus.INVITER, loggedUser, invitee));
-		friendDao.merge(new Friend(chat, FriendStatus.INVITEE, invitee, loggedUser));
+        Friend friend = friendDao.merge(new Friend(chat, FriendStatus.INVITER, loggedUser, invitee));
+        friendDao.merge(new Friend(chat, FriendStatus.INVITEE, invitee, loggedUser));
 
-		// Set chat name
-		chat.addUserChat(userChatDao.merge(new UserChat(chat, loggedUser, invitee.getUserFullName())));
-		chat.addUserChat(userChatDao.merge(new UserChat(chat, invitee, loggedUser.getUserFullName())));
+        // Set chat name
+        chat.addUserChat(userChatDao.merge(new UserChat(chat, loggedUser, invitee.getUserFullName())));
+        chat.addUserChat(userChatDao.merge(new UserChat(chat, invitee, loggedUser.getUserFullName())));
 
-		return friend;
-	}
+        return friend;
+    }
 
-	@Override
-	@Transactional
-	public Friend acceptInvitation(long userId) {
-		logger.debug(" acceptInvite : userId = {}", userId);
+    @Override
+    @Transactional
+    public Friend acceptInvitation(long userId) {
+        logger.debug(" acceptInvite : userId = {}", userId);
 
-		return friendAnswer(userId, FriendStatus.ACCEPTED);
-	}
+        return friendAnswer(userId, FriendStatus.ACCEPTED);
+    }
 
-	@Override
-	@Transactional
-	public Friend declineInvitation(long userId) {
-		logger.debug(" declineInvite : userId = {}", userId);
+    @Override
+    @Transactional
+    public Friend declineInvitation(long userId) {
+        logger.debug(" declineInvite : userId = {}", userId);
 
-		return friendAnswer(userId, FriendStatus.DECLINED);
-	}
+        return friendAnswer(userId, FriendStatus.DECLINED);
+    }
 
-	@Override
-	@Transactional
-	public boolean deleteFriend(long friendId) {
-		// Get loggedUser
-		User loggedUser = userService.getLoggedUserEntity();
-		logger.debug(" deleteFriend : userId = {}, friendId = {} ", loggedUser.getUserId(), friendId);
+    @Override
+    @Transactional
+    public boolean deleteFriend(long userId) {
+        // Get loggedUser
+        User loggedUser = userService.getLoggedUserEntity();
+        User invitee = userService.getUserById(userId);
 
-		Friend friend = DaoValidation.friendExistValidation(friendDao, friendId);
+        logger.debug(" deleteFriend : userId = {}, friendId = {} ", loggedUser.getUserId(), userId);
 
-		if (friend.getFriendStatus() == FriendStatus.ACCEPTED
-				&& friend.getUser().getUserId() == loggedUser.getUserId()) {
-			friend.getChat().hiddeChat();
-			// Update status
-			friend.setFriendStatus(FriendStatus.DELETED);
-		} else {
-			throw new DeleteFriendException("Error delete friend id = " + friendId);
-		}
+        Friend inviterFriend = validateFriendByStatus(loggedUser, invitee, FriendStatus.ACCEPTED);
+        Friend inviteeFriend = validateFriendByStatus(invitee, loggedUser, FriendStatus.ACCEPTED);
 
-		// Delete my friend
-		boolean deleteMyFriend = false;
-		for (Friend myFriend : friend.getFriend().getFriends()) {
-			if (myFriend.getFriend().getUserId() == loggedUser.getUserId()
-					&& myFriend.getFriendStatus() == FriendStatus.ACCEPTED) {
-				myFriend.setFriendStatus(FriendStatus.DELETED);
-				deleteMyFriend = true;
-				break;
-			}
-		}
-		if (!deleteMyFriend) {
-			throw new DeleteFriendException("Error delete my friend ");
-		}
+        // Update status
+        inviterFriend.setFriendStatus(FriendStatus.DELETED);
+        inviteeFriend.setFriendStatus(FriendStatus.DELETED);
 
-		return true;
-	}
+        //throw new DeleteFriendException("Error delete my friend ");
 
-	@Override
-	@Transactional(readOnly = true)
-	public Friend validateFriendByStatus(User invitee, User inviter, FriendStatus status) {
-		logger.debug(" validateFriendByStatus status {} :", status);
+        return true;
+    }
 
-		Friend friendEntity = friendDao.findByFriendAndOwner(invitee, inviter);
+    @Override
+    @Transactional(readOnly = true)
+    public Friend validateFriendByStatus(User invitee, User inviter, FriendStatus status) {
+        logger.debug(" validateFriendByStatus status {} :", status);
 
-		if (Objects.isNull(friendEntity)) {
-			throw new FriendNotExistException("Friend not exist !");
-		}
+        Friend friendEntity = friendDao.findByFriendAndOwner(invitee, inviter);
 
-		FriendStatus friendStatus = friendEntity.getFriendStatus();
+        if (Objects.isNull(friendEntity)) {
+            throw new FriendNotExistException("Friend not exist !");
+        }
 
-		if (friendStatus == status) {
-			return friendEntity;
-		}
+        FriendStatus friendStatus = friendEntity.getFriendStatus();
 
-		throwInviteStatusException(friendStatus);
-		return null;
+        if (friendStatus == status) {
+            return friendEntity;
+        }
 
-	}
+        throwInviteStatusException(friendStatus);
+        return null;
 
-	private void throwInviteStatusException(FriendStatus status) {
-		logger.debug(" throwFriendStatusException status : {}", status);
-		switch (status) {
-		case ACCEPTED:
-			throw new InviteAcceptedException("Invite accepted");
-		case DECLINED:
-			throw new InviteDeclinedException("Invite declined");
-		case INVITER:
-		case INVITEE:
-			throw new InviteException("For status " + status + " you can 'Accept' or 'Decline' invitation!");
-		default:
-			throw new InviteException("Invite don't exist");
-		}
-	}
+    }
 
-	@Transactional
-	private Friend friendAnswer(long userId, FriendStatus friendStatus) {
-		User loggedUser = userService.getLoggedUserEntity();
-		User invitee = userService.getUserById(userId);
+    private void throwInviteStatusException(FriendStatus status) {
+        logger.debug(" throwFriendStatusException status : {}", status);
+        switch (status) {
+        case ACCEPTED:
+            throw new InviteAcceptedException("Invite accepted");
+        case DECLINED:
+            throw new InviteDeclinedException("Invite declined");
+        case INVITER:
+        case INVITEE:
+            throw new InviteException("For status " + status + " you can 'Accept' or 'Decline' invitation!");
+        default:
+            throw new InviteException("Invite don't exist");
+        }
+    }
 
-		Friend inviterFriend = validateFriendByStatus(loggedUser, invitee, FriendStatus.INVITEE);
-		Friend inviteeFriend = validateFriendByStatus(invitee, loggedUser, FriendStatus.INVITER);
+    @Transactional
+    private Friend friendAnswer(long userId, FriendStatus friendStatus) {
+        User loggedUser = userService.getLoggedUserEntity();
+        User invitee = userService.getUserById(userId);
 
-		// Update status
-		inviterFriend.setFriendStatus(friendStatus);
-		inviteeFriend.setFriendStatus(friendStatus);
+        Friend inviterFriend = validateFriendByStatus(loggedUser, invitee, FriendStatus.INVITEE);
+        Friend inviteeFriend = validateFriendByStatus(invitee, loggedUser, FriendStatus.INVITER);
 
-		return inviterFriend;
-	}
+        // Update status
+        inviterFriend.setFriendStatus(friendStatus);
+        inviteeFriend.setFriendStatus(friendStatus);
 
-	private void createFriendValidation(User inviter, User invitee) {
-		logger.debug(" createFriendValidation :");
-		Friend friendEntity = friendDao.findByFriendAndOwner(invitee, inviter);
+        return inviterFriend;
+    }
 
-		if (Objects.nonNull(friendEntity)) {
-			throwInviteStatusException(friendEntity.getFriendStatus());
-		}
-	}
+    private void createFriendValidation(User inviter, User invitee) {
+        logger.debug(" createFriendValidation :");
+        Friend friendEntity = friendDao.findByFriendAndOwner(invitee, inviter);
+
+        if (Objects.nonNull(friendEntity)) {
+            throwInviteStatusException(friendEntity.getFriendStatus());
+        }
+    }
 
 }

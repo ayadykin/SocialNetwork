@@ -12,6 +12,7 @@ public class CreateGroupDto implements Serializable {
 
     private String groupName;
     private String[] friendsId;
+    private boolean publicGroup;
 
     public String getGroupName() {
         return groupName;
@@ -29,9 +30,18 @@ public class CreateGroupDto implements Serializable {
         this.friendsId = friendsId;
     }
 
+    public boolean getPublicGroup() {
+        return publicGroup;
+    }
+
+    public void setPublicGroup(boolean publicGroup) {
+        this.publicGroup = publicGroup;
+    }
+
     @Override
     public String toString() {
-        return "CreateGroupDto [groupName=" + groupName + ", friendsId=" + Arrays.toString(friendsId) + "]";
+        return "CreateGroupDto [groupName=" + groupName + ", friendsId=" + Arrays.toString(friendsId) + ", publicGroup=" + publicGroup
+                + "]";
     }
 
 }

@@ -22,15 +22,11 @@ public class MessageTextBuilderImpl implements MessageTextBuilder {
 	public String createOneParamMessage(String messageTemplate, String firstParam) {
 		String[] arg = new String[] { firstParam };
 		return buildMessage(messageTemplate, arg);
-		// return systemMessageStrategy.createMessage(messageTemplate, arg,
-		// publisher, chat);
 	}
 
 	public String createTwoParamsMessage(String messageTemplate, String firstParam, String secondParam) {
 		String[] arg = new String[] { firstParam, secondParam };
 		return buildMessage(messageTemplate, arg);
-		// return systemMessageStrategy.createMessage(messageTemplate, arg,
-		// publisher, chat);
 	}
 
 	private String buildMessage(String messageTemplate, String[] arg) {

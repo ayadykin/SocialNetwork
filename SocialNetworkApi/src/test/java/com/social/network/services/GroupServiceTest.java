@@ -73,12 +73,12 @@ public class GroupServiceTest extends InitTest {
     @Test
     public void testAddUserToGroup() {
         
-        assertEquals(1, groupService.getGroup(group.getChatId()).getChat().getUsers().size());
+        assertEquals(1, groupService.getGroup(group.getChatId()).getChat().getUserChat().size());
         
         groupService.addUserToGroup(group.getChatId(), user20.getUserId());
         authService.signin(account20);
         
-        assertEquals(2, groupService.getGroup(group.getChatId()).getChat().getUsers().size());
+        assertEquals(2, groupService.getGroup(group.getChatId()).getChat().getUserChat().size());
     }
 
     @Test(expected = FriendNotExistException.class)
@@ -89,17 +89,17 @@ public class GroupServiceTest extends InitTest {
     @Test
     public void testDeleteUserFromGroup() {
         
-        assertEquals(1, groupService.getGroup(group.getChatId()).getChat().getUsers().size());
+        assertEquals(1, groupService.getGroup(group.getChatId()).getChat().getUserChat().size());
         
         groupService.addUserToGroup(group.getChatId(), user20.getUserId());
         
-        assertEquals(2, groupService.getGroup(group.getChatId()).getChat().getUsers().size());
+        assertEquals(2, groupService.getGroup(group.getChatId()).getChat().getUserChat().size());
 
         groupService.deleteUserFromGroup(group.getChatId(), user20.getUserId());
 
         clearSession();
         
-        assertEquals(1, groupService.getGroup(group.getChatId()).getChat().getUsers().size());
+        assertEquals(1, groupService.getGroup(group.getChatId()).getChat().getUserChat().size());
         assertEquals(1, groupService.getGroups().size());
         assertEquals(2, chatService.getChatsList().size());
         

@@ -80,7 +80,7 @@ public class Init {
         // createGroup
         authService.signin(account1);
         String[] usersIdList = { ((Long) user2.getUserId()).toString() };
-        GroupDto group = groupFacade.createGroup("test", null);
+        GroupDto group = groupFacade.createGroup("test", null, false);
 
          groupFacade.addUserToGroup(group.getGroupId(), user2.getUserId());
 

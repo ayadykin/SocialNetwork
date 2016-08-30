@@ -9,16 +9,18 @@
 					<tr>
 						<th>Friend name</th>
 						<th>Status</th>
-						<th></th>
-						<th></th>
+						<th>Chat</th>
+						<th>Delete</th>
 					</tr>
 				</thead>
 				<tr id="friend_" data-ng-repeat="friend in friends">
 					<td>{{friend.name}}</td>
 					<td>{{friend.status}}</td>
-					<td><a class="btn btn-info" data-ng-if="friend.status == 'ACCEPTED'"
-						ng-click='deleteFriend(friend.friendId)'>Delete</a></td>
-					<td></td>
+					<td><a class="btn btn-info"
+						data-ng-if="friend.status == 'ACCEPTED'" data-ng-click='goToChat(friend.chatId)'>Go to chat</a></td>
+					<td><a class="btn btn-info"
+						data-ng-if="friend.status == 'ACCEPTED'"
+						data-ng-click='deleteFriend(friend.friendId)'>Delete</a></td>
 				</tr>
 			</table>
 		</div>

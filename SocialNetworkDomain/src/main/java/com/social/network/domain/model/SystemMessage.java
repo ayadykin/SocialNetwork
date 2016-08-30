@@ -1,6 +1,7 @@
 package com.social.network.domain.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -24,6 +25,10 @@ public class SystemMessage extends Message implements Serializable {
 
     public SystemMessage() {
 
+    }
+    public SystemMessage(String text, User publisher, Set<Chat> chat, SystemMessageStatus systemMessageStatus) {
+        super(text, publisher, chat);
+        this.systemMessageStatus = systemMessageStatus;
     }
 
     public SystemMessage(String text, User publisher, Chat chat, SystemMessageStatus systemMessageStatus) {

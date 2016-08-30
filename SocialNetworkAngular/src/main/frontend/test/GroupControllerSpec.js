@@ -20,8 +20,10 @@ describe(
 		    '$scope' : scope
 		});
 
-		httpMock.expectGET(config.groupPath).respond(
-			'[{"name":"test","chatId":5,"groupId":1,"users":null,"groupAdmin":true,"hidden":false}]');
+		httpMock
+			.expectGET(config.groupPath)
+			.respond(
+				'[{"name":"test","chatId":5,"groupId":1,"users":[{"userId":1}, {"userId":2}],"groupAdmin":true,"hidden":false}]');
 
 		httpMock.flush();
 		// scope.$apply();
@@ -60,7 +62,6 @@ describe(
 
 		httpMock.flush();
 		scope.$apply();
-		
 
 		expect(scope.groups.length).toEqual(1);
 
@@ -93,7 +94,7 @@ describe(
 		expect(scope.friends.length).toEqual(1);
 		expect(scope.groups.length).toEqual(1);
 
-		scope.groupName.text = 'test';
+		scope.group.name = 'test';
 		scope.saveGroup();
 		httpMock.expectPOST(config.groupPath).respond(
 			'{"name":"test2","chatId":5,"groupId":4,"users":null,"groupAdmin":true,"hidden":false}');
@@ -112,16 +113,20 @@ describe(
 
 			scope.initEditGroup(1);
 
-			httpMock.expectGET(config.friendsNotInGroup + '/1').respond([ {
+			httpMock.expectGET(config.friendPath).respond([ {
 			    "userId" : 3,
 			    "fullName" : "Dima D",
 			    "groupAdmin" : false
+			}, {
+			    "userId" : 4
+			}, {
+			    "userId" : 2
 			} ]);
 
 			httpMock
 				.expectGET(config.groupPath + '/1')
 				.respond(
-					'{"name":"test","chatId":5,"groupId":1,"users":[{"userId" : 1,"fullName" : "Andrei Y","groupAdmin" : true}],"groupAdmin":true,"hidden":false}');
+					'{"name":"test","chatId":5,"groupId":1,"users":[{"userId" : 1,"fullName" : "Andrei Y","groupAdmin" : true}, {"userId" :2 }],"groupAdmin":true,"hidden":false}');
 
 			scope.addUserToGroup(1, 3);
 			httpMock.expectPOST(config.addUserToGroupPath).respond(
@@ -130,7 +135,7 @@ describe(
 			httpMock.flush();
 			// scope.$apply();
 
-			expect(scope.group.users.length).toEqual(2);
+			expect(scope.group.users.length).toEqual(3);
 		    });
 
 	});

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.social.network.core.message.FriendsNotification;
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.UserChat;
 import com.social.network.domain.model.enums.Period;
@@ -34,6 +35,8 @@ public class ChatServiceFacade {
     private MessageService messageService;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private FriendsNotification friendsNotification;
 
     @Transactional
     public List<ChatDto> getChatsList() {
@@ -53,23 +56,25 @@ public class ChatServiceFacade {
     }
 
     @Transactional
-    public boolean sendMessage(String messageText, long chatId) {
-        long userId = userService.getLoggedUserId();
+    public boolean sendMessage(String messageText, long chatId, boolean publicMessage) {
 
         Message message = chatService.sendMessage(messageText, chatId);
-
-        return sendMessageToRedis(message, userId);
+        
+        if (publicMessage) {
+            friendsNotification.notificate(messageText, message.getPublisher());
+        }
+        
+        return sendMessageToRedis(message);
     }
 
     @Transactional
     public List<MessageDto> getChatMesasges(long chatId, Period filter) {
 
-        long userId = userService.getLoggedUserId();
         List<Message> messagesList = chatService.getChatMesasges(chatId, true, filter);
         // Fill MessageDto list
         List<MessageDto> messages = new ArrayList<>();
         for (Message message : messagesList) {
-            MessageDto messageDto = EntityToDtoMapper.convertMessageToMessageDto(message, userId);
+            MessageDto messageDto = EntityToDtoMapper.convertMessageToMessageDto(message);
             messages.add(messageDto);
         }
         return messages;
@@ -77,24 +82,22 @@ public class ChatServiceFacade {
 
     @Transactional
     public boolean editMessage(long messageId, String newMessage) {
-        long userId = userService.getLoggedUserId();
 
         Message message = messageService.editMessage(messageId, newMessage);
 
-        return sendMessageToRedis(message, userId);
+        return sendMessageToRedis(message);
     }
 
     @Transactional
     public boolean deleteMessage(long messageId) {
-        long userId = userService.getLoggedUserId();
 
         Message message = messageService.deleteMessage(messageId);
 
-        return sendMessageToRedis(message, userId);
+        return sendMessageToRedis(message);
     }
 
-    private boolean sendMessageToRedis(Message message, long userId) {
-        MessageDto messageDto = EntityToDtoMapper.convertMessageToMessageDto(message, userId);
+    private boolean sendMessageToRedis(Message message) {
+        MessageDto messageDto = EntityToDtoMapper.convertMessageToMessageDto(message);
         return redisService.sendMessageToRedis(messageDto);
     }
 }

@@ -1,5 +1,7 @@
 package com.social.network.services.impl;
 
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +47,9 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
     @Transactional
     public Message createMessage(String messageText, User publisher, Chat chat) {
         logger.debug("createMessage :  messageText = {}, chat = {}", messageText, chat);
-        Message message = new Message(messageText, publisher, chat);
-        long messageId = messageDao.save(message);
+        Message message = messageDao.merge(new Message(messageText, publisher, chat));
 
-        addRecipients(chat, messageId);
+        addRecipients(chat.getUserChat(), message.getMessageId());
 
         return message;
     }
@@ -59,14 +60,31 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
         logger.debug("createMessage :  messageText = {}, chat = {}", messageText, chat);
         SystemMessage message = systemMessageDao.merge(new SystemMessage(messageText, publisher, chat, systemMessageStatus));
 
-        addRecipients(chat, message.getMessageId());
+        addRecipients(chat.getUserChat(), message.getMessageId());
 
         return message;
     }
 
+    @Override
     @Transactional
-    private void addRecipients(Chat chat, long messageId) {
-        for (UserChat user : chat.getUserChat()) {
+    public Message createMialing(String messageText, User publisher, Set<Chat> chats) {
+        SystemMessage message = systemMessageDao.merge(new SystemMessage(messageText, publisher, chats, SystemMessageStatus.SYSTEM));
+
+        long messageId = message.getMessageId();
+
+        for (Chat chat : chats) {
+            for (UserChat user : chat.getUserChat()) {
+                if (user.getUserId() != publisher.getUserId()) {
+                    recipientDao.save(new Recipient(user.getUser(), messageId));
+                }
+            }
+        }
+        return message;
+    }
+
+    @Transactional
+    private void addRecipients(Set<UserChat> users, long messageId) {
+        for (UserChat user : users) {
             recipientDao.save(new Recipient(user.getUser(), messageId));
         }
     }

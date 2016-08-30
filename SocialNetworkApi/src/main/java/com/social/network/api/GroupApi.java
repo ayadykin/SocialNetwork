@@ -4,7 +4,6 @@ import static com.social.network.utils.Constants.ADD_USER;
 import static com.social.network.utils.Constants.DELETE_USER;
 import static com.social.network.utils.Constants.LEAVE_GROUP;
 
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -20,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.social.network.dto.GroupDto;
 import com.social.network.dto.group.CreateGroupDto;
 import com.social.network.dto.group.GroupUserDto;
+import com.social.network.dto.group.UserGroupActionsDto;
 import com.social.network.facade.GroupServiceFacade;
 import com.social.network.utils.ResultToResponseWrapper;
 
@@ -47,7 +47,7 @@ public class GroupApi {
     @RequestMapping(method = RequestMethod.POST)
     public GroupDto createGroup(@RequestBody CreateGroupDto createGroupDto) {
         logger.debug(" createGroup createGroupDto : {} ", createGroupDto);
-        return groupServiceFacade.createGroup(createGroupDto.getGroupName(), createGroupDto.getFriendsId());
+        return groupServiceFacade.createGroup(createGroupDto.getGroupName(), createGroupDto.getFriendsId(), createGroupDto.getPublicGroup());
     }
 
     @ResponseBody
@@ -59,25 +59,18 @@ public class GroupApi {
     @ResponseBody
     @RequestMapping(value = "/edit/{groupId}", method = RequestMethod.GET)
     public GroupDto editGroup(@PathVariable("groupId") long groupId) {
-        // mav.addObject("friends", groupService.getFriendsNotInGroup(groupId));
         return groupServiceFacade.getGroup(groupId);
     }
 
     @ResponseBody
-    @RequestMapping(value = "/friends_not_in_group/{groupId}", method = RequestMethod.GET)
-    public List<GroupUserDto> getFriendsNotInGroup(@PathVariable("groupId") long groupId) {
-        return groupServiceFacade.getFriendsNotInGroup(groupId);
-    }
-
-    @ResponseBody
     @RequestMapping(value = ADD_USER, method = RequestMethod.POST)
-    public GroupUserDto addUserToGroup(@RequestBody GroupUserDto groupUserDto) {
+    public GroupUserDto addUserToGroup(@RequestBody UserGroupActionsDto groupUserDto) {
         return groupServiceFacade.addUserToGroup(groupUserDto.getGroupId(), groupUserDto.getUserId());
     }
 
     @ResponseBody
     @RequestMapping(value = DELETE_USER, method = RequestMethod.PUT)
-    public GroupUserDto deleteUser(@RequestBody GroupUserDto groupUserDto) {
+    public GroupUserDto deleteUser(@RequestBody UserGroupActionsDto groupUserDto) {
         return groupServiceFacade.deleteUserFromGroup(groupUserDto.getGroupId(), groupUserDto.getUserId());
     }
 

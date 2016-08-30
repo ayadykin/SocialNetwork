@@ -4,7 +4,8 @@ $scope.sendMessage = function() {
 
     ChatRest.sendMessage({
 	chatId : $scope.chatId,
-	message : $scope.messageText
+	message : $scope.messageText,
+	publicMessage : $scope.publicMessage
     }, function(data) {
 	$scope.messageText = '';
 

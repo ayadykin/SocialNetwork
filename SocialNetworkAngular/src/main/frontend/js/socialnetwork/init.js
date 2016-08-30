@@ -8,8 +8,7 @@ var socialNetworkApp = angular.module('socialNetworkApp', [
 	//'socialNetworMockServerkApp',
 	'socialNetworkControllers',
 	'socialNetworkServices',
-	'socialNetworkFilters',
-	'templates']);
+	'socialNetworkFilters' ]);
 
 angular.module('socialNetworkControllers', ['luegg.directives']);
 angular.module('socialNetworkServices', [ 'ngResource' ]);

@@ -2,21 +2,24 @@ $scope.initCreateGroup = function() {
     $scope.createGroupView = true;
     $scope.groupListView = false;
     $scope.editGroupView = false;
-
+    
+    $scope.group = {};
+    $scope.group.type = false;
+    
     FriendRest.get(function(friends) {
-	$log.debug('initCreateGroup');
+	$log.info('initCreateGroup');
 	$scope.friends = friends;
-	$scope.friendsId = [];
-	$scope.groupName = {};
+	$scope.friendsId = [];	
     });
 
     $scope.saveGroup = function() {
-	$log.info('Create group name : ' + $scope.groupName.text + ', friendId : ' + $scope.friendsId);
+	$log.info('Create group name : ' + $scope.group.text + ', friendId : ' + $scope.friendsId);
 
-	if ($scope.groupName.text) {
+	if ($scope.group.name) {
 	    GroupRest.save({
-		groupName : $scope.groupName.text,
-		friendsId : $scope.friendsId
+		groupName : $scope.group.name,
+		friendsId : $scope.friendsId,
+		publicGroup : $scope.group.type
 	    }, function(data) {
 		if (data.groupId) {
 		    $scope.groups.push(data);

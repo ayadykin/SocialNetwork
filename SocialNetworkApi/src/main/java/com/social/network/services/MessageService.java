@@ -1,5 +1,7 @@
 package com.social.network.services;
 
+import java.util.Set;
+
 import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.User;
@@ -16,6 +18,8 @@ public interface MessageService {
     
     Message createSystemMessage(String messageText, User publisher, Chat chat, SystemMessageStatus systemMessageStatus);
 
+    Message createMialing(String messageText, User publisher, Set<Chat> chat);
+    
     Message editMessage(long messageId, String newMessage);
 
     Message deleteMessage(long messageId);

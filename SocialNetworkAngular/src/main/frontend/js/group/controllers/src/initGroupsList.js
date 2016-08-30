@@ -38,6 +38,11 @@ $scope.initGroupsList = function() {
 	    sendError(data);
 	});
     };
+    
+    $scope.goToChat = function(chatId) {
+	chatIdProperty.setChatId(chatId);
+	$location.path('/chat');
+    };
 
     $scope.nextPage = function() {
 	$scope.pageNo++;

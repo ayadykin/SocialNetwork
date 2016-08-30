@@ -1,21 +1,27 @@
-angular.module('socialNetworkControllers').controller('ChatController',
-	function($scope, $rootScope, $q, ChatRest, $log, ErrorHandler, $timeout, $templateCache, $compile) {
+angular.module('socialNetworkControllers').controller(
+	'ChatController',
+	function($scope, $rootScope, $q, ChatRest, $log, ErrorHandler, $timeout, $templateCache, $compile,
+		chatIdProperty) {
 
 	    $scope.chats = [];
-	    $scope.chatId = 0;
 	    $scope.messages = [];
 	    var reload = true;
+	    $scope.chatId = chatIdProperty.getChatId();
 
 	    ChatRest.query(function(chats) {
-		$log.info('init chat list : ' + chats);
+		$log.debug('init chat list : ' + chats);
 		$scope.chats = chats;
+		if ($scope.chatId !== 0) {
+		    getChatMessages($scope.chatId);
+		}
+
 		getRedisChatMessages();
 	    }, function(error) {
 		sendError(error);
 	    });
 
 	    function getRedisChatMessages() {
-		$log.info('getRedisChatMessages : ' + $scope.chatId);
+		$log.debug('getRedisChatMessages : ' + $scope.chatId);
 		ChatRest.getMessage({
 		    chatId : $scope.chatId
 		}, function(message) {
@@ -38,7 +44,7 @@ angular.module('socialNetworkControllers').controller('ChatController',
 			angular.forEach($scope.chats, function(value, key) {
 			    if (value.chatId == message.chatId) {
 				var count = parseInt($scope.chats[key].newMessages);
-				$scope.chats[key].newMessages = isNaN(count) ? 1 : count++;
+				$scope.chats[key].newMessages = isNaN(count) ? 1 : ++count;
 				newChat = false;
 			    }
 			});

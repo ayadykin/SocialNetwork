@@ -2,6 +2,7 @@ package com.social.network.domain.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
@@ -43,7 +44,7 @@ public class Message implements Serializable {
     @NotNull
     @Column
     private String text;
-    
+
     @Embedded
     private CreationLabel createDate;
 
@@ -58,11 +59,10 @@ public class Message implements Serializable {
     private Set<Recipient> recipient;
 
     @NotNull
-    @ManyToOne
+    @ManyToMany
     @JoinTable(name = "chat_messages", joinColumns = { @JoinColumn(name = "messageId") }, inverseJoinColumns = {
             @JoinColumn(name = "chatId") })
-    private Chat chat;
-
+    private Set<Chat> chat = new LinkedHashSet<>();;
 
     public Message() {
 
@@ -71,20 +71,28 @@ public class Message implements Serializable {
     public Message(String text, User publisher, Chat chat) {
         this.text = text;
         this.publisher = publisher;
+        this.chat.add(chat);
+        this.createDate = new CreationLabel();
+        this.hidden = new HiddenLabel();
+    }
+    
+    public Message(String text, User publisher, Set<Chat> chat) {
+        this.text = text;
+        this.publisher = publisher;
         this.chat = chat;
         this.createDate = new CreationLabel();
         this.hidden = new HiddenLabel();
     }
 
-    public Chat getChat() {
+    public Set<Chat> getChat() {
         return chat;
     }
 
-    public long getChatId() {
-        return chat.getChatId();
+    public void addChat(Chat chat) {
+        this.chat.add(chat);
     }
 
-    public void setChat(Chat chat) {
+    public void setChat(Set<Chat> chat) {
         this.chat = chat;
     }
 
@@ -138,8 +146,8 @@ public class Message implements Serializable {
 
     @Override
     public String toString() {
-        return "Message [messageId=" + messageId + ", text=" + text + ", createDate=" + createDate + ", hidden="
-                + hidden + ", publisher=" + publisher + ", ]";
+        return "Message [messageId=" + messageId + ", text=" + text + ", createDate=" + createDate + ", hidden=" + hidden + ", publisher="
+                + publisher + ", ]";
     }
 
 }
