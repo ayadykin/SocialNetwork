@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.social.network.core.FriendModel;
 import com.social.network.domain.dao.ChatDao;
 import com.social.network.domain.dao.FriendDao;
 import com.social.network.domain.dao.UserChatDao;
@@ -53,7 +54,7 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     @Transactional
-    public Friend inviteFriend(long userId) {
+    public FriendModel inviteFriend(long userId) {
         logger.debug(" inviteFriend  userId : {}", userId);
 
         User loggedUser = userService.getLoggedUserEntity();
@@ -64,19 +65,19 @@ public class FriendServiceImpl implements FriendService {
         // Create friend
         Chat chat = chatDao.merge(new Chat());
 
-        Friend friend = friendDao.merge(new Friend(chat, FriendStatus.INVITER, loggedUser, invitee));
+        friendDao.merge(new Friend(chat, FriendStatus.INVITER, loggedUser, invitee));
         friendDao.merge(new Friend(chat, FriendStatus.INVITEE, invitee, loggedUser));
 
         // Set chat name
-        chat.addUserChat(userChatDao.merge(new UserChat(chat, loggedUser, invitee.getUserFullName())));
-        chat.addUserChat(userChatDao.merge(new UserChat(chat, invitee, loggedUser.getUserFullName())));
+        userChatDao.merge(new UserChat(chat, loggedUser, invitee.getUserFullName()));
+        userChatDao.merge(new UserChat(chat, invitee, loggedUser.getUserFullName()));
 
-        return friend;
+        return new FriendModel(loggedUser, chat);
     }
 
     @Override
     @Transactional
-    public Friend acceptInvitation(long userId) {
+    public FriendModel acceptInvitation(long userId) {
         logger.debug(" acceptInvite : userId = {}", userId);
 
         return friendAnswer(userId, FriendStatus.ACCEPTED);
@@ -84,7 +85,7 @@ public class FriendServiceImpl implements FriendService {
 
     @Override
     @Transactional
-    public Friend declineInvitation(long userId) {
+    public FriendModel declineInvitation(long userId) {
         logger.debug(" declineInvite : userId = {}", userId);
 
         return friendAnswer(userId, FriendStatus.DECLINED);
@@ -149,7 +150,7 @@ public class FriendServiceImpl implements FriendService {
     }
 
     @Transactional
-    private Friend friendAnswer(long userId, FriendStatus friendStatus) {
+    private FriendModel friendAnswer(long userId, FriendStatus friendStatus) {
         User loggedUser = userService.getLoggedUserEntity();
         User invitee = userService.getUserById(userId);
 
@@ -160,7 +161,7 @@ public class FriendServiceImpl implements FriendService {
         inviterFriend.setFriendStatus(friendStatus);
         inviteeFriend.setFriendStatus(friendStatus);
 
-        return inviterFriend;
+        return new FriendModel(loggedUser, inviterFriend.getChat());
     }
 
     private void createFriendValidation(User inviter, User invitee) {

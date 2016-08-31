@@ -2,6 +2,7 @@ package com.social.network.services;
 
 import java.util.Set;
 
+import com.social.network.core.FriendModel;
 import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.User;
 import com.social.network.domain.model.enums.FriendStatus;
@@ -27,7 +28,7 @@ public interface FriendService {
 	 * @param userId
 	 * @return
 	 */
-	Friend inviteFriend(long userId);
+	FriendModel inviteFriend(long userId);
 
 	/**
 	 * Accept user's invitation
@@ -35,7 +36,7 @@ public interface FriendService {
 	 * @param userId
 	 * @return boolean
 	 */
-	Friend acceptInvitation(long userId);
+	FriendModel acceptInvitation(long userId);
 
 	/**
 	 * Decline user's invitation
@@ -43,7 +44,7 @@ public interface FriendService {
 	 * @param userId
 	 * @return boolean
 	 */
-	Friend declineInvitation(long userId);
+	FriendModel declineInvitation(long userId);
 
 	/**
 	 * Delete friend from friend's list
