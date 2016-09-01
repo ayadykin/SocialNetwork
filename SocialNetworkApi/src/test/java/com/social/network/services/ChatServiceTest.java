@@ -2,6 +2,8 @@ package com.social.network.services;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Date;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +17,6 @@ import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
 import com.social.network.domain.config.HibernateConfig;
 import com.social.network.domain.model.Message;
-import com.social.network.domain.model.enums.Period;
 import com.social.network.exceptions.chat.EditMessageException;
 
 /**
@@ -51,7 +52,7 @@ public class ChatServiceTest extends InitTest {
     public void testGetMessages() {
 
         assertEquals(1, chatService.getChatsList().size());
-        assertEquals(2, chatService.getChatMesasges(chatId, false, Period.ALL).size());
+        assertEquals(2, chatService.getChatMesasges(chatId, false, new Date()).size());
     }
 
     @Test
@@ -62,13 +63,13 @@ public class ChatServiceTest extends InitTest {
         clearSession();
         
         assertEquals(1, chatService.getChatsList().size());
-        assertEquals(3, chatService.getChatMesasges(chatId, false, Period.ALL).size());
+        assertEquals(3, chatService.getChatMesasges(chatId, false, new Date()).size());
     }
 
     @Test
     public void testDeleteMessage() {
 
-        assertEquals(2, chatService.getChatMesasges(chatId, false, Period.ALL).size());
+        assertEquals(2, chatService.getChatMesasges(chatId, false, new Date()).size());
 
         Message message = chatService.sendMessage("Test", chatId);
 
@@ -77,13 +78,13 @@ public class ChatServiceTest extends InitTest {
         clearSession();
 
         assertEquals(1, chatService.getChatsList().size());
-        assertEquals(3, chatService.getChatMesasges(chatId, false, Period.ALL).size());
+        assertEquals(3, chatService.getChatMesasges(chatId, false, new Date()).size());
     }
 
     @Test
     public void testEditMessage() {
 
-        assertEquals(2, chatService.getChatMesasges(chatId, false, Period.ALL).size());
+        assertEquals(2, chatService.getChatMesasges(chatId, false, new Date()).size());
 
         Message message = chatService.sendMessage("Test", chatId);
 
@@ -92,9 +93,9 @@ public class ChatServiceTest extends InitTest {
         clearSession();
 
         assertEquals(1, chatService.getChatsList().size());
-        assertEquals(3, chatService.getChatMesasges(chatId, false, Period.ALL).size());
+        assertEquals(3, chatService.getChatMesasges(chatId, false, new Date()).size());
         
-        for (Message messages : chatService.getChatMesasges(chatId, false, Period.ALL)) {
+        for (Message messages : chatService.getChatMesasges(chatId, false, new Date())) {
             if (messages.getMessageId() == message.getMessageId()) {
                 assertEquals("Test2", messages.getText());
             }

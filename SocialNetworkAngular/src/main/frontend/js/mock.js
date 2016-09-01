@@ -1,6 +1,29 @@
-angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($httpBackend) {
-    // 'ngMockE2E'
+var socialNetworMockServerkApp = angular.module('socialNetworkApp')
+// 'ngMockE2E'
 
+socialNetworMockServerkApp.config(function($provide) {
+    $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator);
+
+    var DELAY_MS = 2000;
+    $provide.decorator('$httpBackend', function($delegate) {
+	var proxy = function(method, url, data, callback, headers) {
+	    var interceptor = function() {
+		var _this = this, _arguments = arguments;
+		setTimeout(function() {
+		    // return result to the client AFTER delay
+		    callback.apply(_this, _arguments);
+		}, DELAY_MS);
+	    };
+	    return $delegate.call(this, method, url, data, interceptor, headers);
+	};
+	for ( var key in $delegate) {
+	    proxy[key] = $delegate[key];
+	}
+	return proxy;
+    });
+});
+
+socialNetworMockServerkApp.run(function($httpBackend) {
     /**
      * Lang
      */
@@ -19,18 +42,15 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	} ]
     });
 
-    $httpBackend.whenGET('../i18n/i18n_config.properties').respond({
-	"en" : {
-	    "id" : "en",
-	    "code" : "en",
-	    "name" : "English"
-	},
-	"ru" : {
-	    "id" : "ru",
-	    "code" : "ru",
-	    "name" : "Русский"
-	}
-    });
+    $httpBackend.whenGET('../i18n/i18n_config.properties').respond([ {
+	"id" : "en",
+	"code" : "en",
+	"name" : "English"
+    }, {
+	"id" : "ru",
+	"code" : "ru",
+	"name" : "Русский"
+    } ]);
 
     $httpBackend.whenGET('../i18n/ru.properties').respond({
 	"code" : "en",
@@ -45,7 +65,17 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
      */
     $httpBackend.whenGET('/SocialNetworkApi/signin').respond({});
     $httpBackend.whenPOST('/SocialNetworkApi/j_spring_security_check?j_password=user1&j_username=user1').respond({
-	"userId" : 1
+	"userId" : 1,
+	"userLocale" : "en",
+	"userName" : "Andrey"
+    });
+
+    /**
+     * Logout
+     */
+
+    $httpBackend.whenGET('/SocialNetworkApi/logout').respond({
+	"response" : true
     });
 
     /**
@@ -160,6 +190,17 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"status" : "ACCEPTED",
 	"chatId" : 1
     } ]);
+    
+    $httpBackend.whenPOST('/SocialNetworkApi/friend/inviteFriend/5').respond({
+	"userId" : 5,
+	"name" : "Dima D",
+	"status" : "INVITED"
+    });
+    
+    $httpBackend.whenPOST('/SocialNetworkApi/friend/acceptInvitation/5').respond();
+    
+    $httpBackend.whenPOST('/SocialNetworkApi/friend/declineInvitation/5').respond();
+    
     $httpBackend.whenDELETE('/SocialNetworkApi/friend/5').respond();
 
     /**
@@ -207,18 +248,14 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"messageInviteStatus" : null
     } ]);
 
-    $httpBackend.whenGET('/SocialNetworkApi/chat/getMessage/0').respond({
-	"chatId" : 3,
-	"messageId" : 7,
-	"text" : "new chat.",
-	"date" : "2016-08-25 18:53:26",
-	"ownerId" : 1,
-	"ownerName" : "Andrey P",
-	"hidden" : false,
-	"messageInviteStatus" : null
-    });
+    /*
+     * $httpBackend.whenGET('/SocialNetworkApi/chat/getMessage').respond({
+     * "chatId" : 3, "messageId" : 7, "text" : "new chat.", "date" : "2016-08-25
+     * 18:53:26", "ownerId" : 1, "ownerName" : "Andrey P", "hidden" : false,
+     * "messageInviteStatus" : null });
+     */
 
-    $httpBackend.whenGET('/SocialNetworkApi/chat/getMessage/1').respond({
+    $httpBackend.whenGET('/SocialNetworkApi/chat/getMessage').respond({
 	"chatId" : 1,
 	"messageId" : 6,
 	"text" : "Hi.",
@@ -227,6 +264,20 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 	"ownerName" : "Andrey P",
 	"hidden" : false,
 	"messageInviteStatus" : null
+    });
+
+    $httpBackend.whenPOST('/SocialNetworkApi/chat/sendMessages').respond(function(method, url, obj) {
+	console.log(obj);
+	return [ 200, {
+	    "chatId" : 3,
+	    "messageId" : 7,
+	    "text" : "new chat.",
+	    "date" : "2016-08-25 18:53:26",
+	    "ownerId" : 1,
+	    "ownerName" : "Andrey P",
+	    "hidden" : false,
+	    "messageInviteStatus" : null
+	} ]
     });
 
     /**
@@ -239,11 +290,38 @@ angular.module('socialNetworMockServerkApp', [ 'ngMockE2E' ]).run(function($http
 
     $httpBackend.whenGET('/SocialNetworkApi/profile/2').respond({
 	"firstName" : "Andrei",
-	"lastName" : "D"
+	"lastName" : "D",
+	"friendStatus" : "ACCEPTED"
+    });
+
+    $httpBackend.whenGET('/SocialNetworkApi/profile/3').respond({
+	"firstName" : "Dima",
+	"lastName" : "S"
+    });
+
+    $httpBackend.whenGET('/SocialNetworkApi/profile/30').respond({
+	"error" : "No row with the given identifier exists: [com.social.network.domain.model.User#20]"
     });
 
     $httpBackend.whenPOST('/SocialNetworkApi/profile').respond({
 	"firstName" : "Andrei Y"
     });
+
+    $httpBackend.whenPOST('/SocialNetworkApi/profile/search').respond([{
+	"userId" : 10,
+	"firstName" : "Dima",
+	"lastName" : "Sam",
+	"street" : "",
+	"city" : "NY",
+	"country" : "USA",
+	"friendStatus" : "ACCEPTED"
+    },{
+	"userId" : 5,
+	"firstName" : "Dima Loooong naaame",
+	"lastName" : "Sam",
+	"street" : "",
+	"city" : "NY",
+	"country" : "USA"	
+    }]);
 
 });

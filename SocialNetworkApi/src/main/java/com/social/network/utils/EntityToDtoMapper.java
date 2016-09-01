@@ -1,5 +1,6 @@
 package com.social.network.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -18,7 +19,6 @@ import com.social.network.dto.GroupDto;
 import com.social.network.dto.MessageDto;
 import com.social.network.dto.chat.ChatDto;
 import com.social.network.dto.group.GroupUserDto;
-import com.social.network.exceptions.chat.ConvertMessageException;
 
 /**
  * Created by Yadykin Andrii Jul 14, 2016
@@ -70,8 +70,8 @@ public class EntityToDtoMapper {
                 friend.getFriend().getUserId());
     }
 
-    public static Set<GroupUserDto> convertUserToGroupUserDto(Set<UserChat> users, long adminId) {
-        Set<GroupUserDto> usersList = new LinkedHashSet<>();
+    public static List<GroupUserDto> convertUserToGroupUserDto(Set<UserChat> users, long adminId) {
+        List<GroupUserDto> usersList = new ArrayList<>();
         for (UserChat user : users) {
             boolean isAdmin = user.getUserId() == adminId;
             if (isAdmin) {
@@ -93,7 +93,7 @@ public class EntityToDtoMapper {
         for (Group group : groups) {
             boolean isAdmin = loggedUserId == group.getAdmin().getUserId();
 
-            Set<GroupUserDto> users = null;
+            List<GroupUserDto> users = null;
             if (withUsers) {
                 users = convertUserToGroupUserDto(group.getChat().getUserChat(), group.getAdmin().getUserId());
             }

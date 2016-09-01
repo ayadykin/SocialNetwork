@@ -4,7 +4,7 @@
 		<div class="col-lg-4 pull-left">
 			<div class="panel panel-default panel-height">
 				<div class="panel-heading text-center">
-					<h2>Chat list</h2>
+					<span class="medium-font">Chat list</span>
 				</div>
 				<div class="panel-body">
 					<ul class="list-group" id="chatList">
@@ -19,24 +19,29 @@
 		<div class="col-lg-8 pull-right">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					Messages
-					<div class="pull-right">
-						<select id="filter" name="filter">
-							<option value="ALL">All</option>
-							<option value="DAY">Day</option>
-							<option value="WEEK">Week</option>
-							<option value="MONTH">Month</option>
-						</select>
+					<span class="medium-font">Messages</span>
+					<div class="input-group col-lg-4 pull-right">
+						<input type="text" class="form-control"
+							data-ng-change="getFilteredMessages()"
+							uib-datepicker-popup="dd.MM.yyyy" ng-model="dateFilter"
+							is-open="popup.opened" datepicker-options="dateOptions"
+							data-close-text="Close" /> <span class="input-group-btn">
+							<button type="button" class="btn btn-default"
+								data-ng-click="openDatePicker()">
+								<i class="glyphicon glyphicon-calendar"></i>
+							</button>
+						</span>
 					</div>
 				</div>
 				<!-- Messages body container -->
 				<div class="panel-body tab-pane" scroll-glue-bottom>
 					<div class="row" data-ng-repeat="message in messages">
-						<div class="panel panel-margin panel-success"
+						<div class="panel"
 							data-ng-class="{false: 'panel-success pull-left', true: 'panel-info pull-right'}[message.ownerId == userId]">
 							<div class="panel-heading">
 								<div class="name-margin">{{message.ownerName}}</div>
-								<div data-ng-show="message.messageInviteStatus == null && message.ownerId == userId && !message.hidden">
+								<div
+									data-ng-show="message.messageInviteStatus == null && message.ownerId == userId && !message.hidden">
 									<div class="pull-right remove-margin"
 										data-ng-click="deleteMessage(message.messageId)">
 										<h6>remove</h6>
@@ -48,7 +53,8 @@
 								</div>
 							</div>
 							<div class="panel-body">
-								<div data-ng-class="{true: 'glyphicon glyphicon-trash'}[message.hidden]">{{message.text}}</div>
+								<div
+									data-ng-class="{true: 'glyphicon glyphicon-trash'}[message.hidden]">{{message.text}}</div>
 								<div id="invitation_message"
 									data-ng-show="message.messageInviteStatus == 'INVITE' && message.ownerId != userId">
 									<a class="btn btn-info" data-ng-click="acceptInvitation()">Accept</a>
@@ -62,16 +68,18 @@
 			</div>
 			<div class="panel panel-default" data-ng-show="chatId != 0">
 				<div class="panel-heading text-center">Comment</div>
-				<div class="panel-body">
+				<div>
 					<textarea class="form-control" rows="5" data-ng-model="messageText"
 						name="text" required></textarea>
 				</div>
 				<div class="panel-footer">
-					<a class="btn btn-info pull-right" data-ng-click="sendMessage()">Send</a>
-					
-					<label class="col-sm-1 control-label">Public</label>
-					<input type="checkbox" data-ng-model="publicMessage"
-                        data-ng-false-value="false" data-ng-true-value="true" />
+					<a class="btn btn-info " data-ng-click="sendMessage()">Send</a>
+					<div class="pull-right col-lg-2">
+						<span>Public</span> 
+						<input
+							type="checkbox" data-ng-model="publicMessage"
+							data-ng-false-value="false" data-ng-true-value="true" />
+					</div>
 				</div>
 			</div>
 		</div>

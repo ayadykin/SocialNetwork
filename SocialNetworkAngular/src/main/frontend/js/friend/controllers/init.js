@@ -1,13 +1,11 @@
 angular.module('socialNetworkControllers').controller('FriendController',
-	function($scope, $q, FriendRest, $log, $location, chatIdProperty, ErrorHandler) {
+	function($scope, FriendRest, $log, $location, chatIdProperty) {
 
 	    $scope.friends = [];
 
 	    FriendRest.get(function(friends) {
-		$log.debug('init friends list');
+		$log.info('init friends list');
 		$scope.friends = friends;
-	    }, function(error) {
-		sendError(error);
 	    });
 
 	    $scope.goToChat = function(chatId) {
@@ -15,20 +13,13 @@ angular.module('socialNetworkControllers').controller('FriendController',
 		$location.path('/chat');
 	    };
 
-	    $scope.deleteFriend = function(friendId) {
-		$log.info('remove friendId : ' + friendId);
+	    $scope.deleteFriend = function(userId) {
+		$log.info('remove userId : ' + userId);
 		FriendRest.remove({
-		    friendId : friendId
-		}).$promise.then(function(data) {
-		    if (data.error) {
-			alert(data.error);
-		    }
-		}, function(error) {
-		    sendError(error);
+		    userId : userId
+		}, function(data) {
+		    
 		});
 	    };
 	    
-	    function sendError(error) {
-		ErrorHandler.notify($scope, error);
-	    }
 	});

@@ -6,6 +6,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONObject;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 
@@ -19,12 +20,11 @@ public class AuthenticationFailure implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
             throws IOException, ServletException, AuthenticationException {
-        try {
-            response.getWriter().print("{\"login\": \"FAILURE\"}");
-            response.getWriter().flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
+        JSONObject obj = new JSONObject();
+        obj.put("login", false);
+        response.getWriter().print(obj);
+        response.getWriter().flush();
     }
 
 }

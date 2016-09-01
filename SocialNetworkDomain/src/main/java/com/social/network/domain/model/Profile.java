@@ -1,7 +1,6 @@
 package com.social.network.domain.model;
 
 import java.io.Serializable;
-import java.util.Locale;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,21 +33,13 @@ public class Profile implements Serializable {
     private String country;
 
     @Column
-    private Locale locale;
-
-    @Column
     private boolean translate;
 
     public Profile() {
 
     }
 
-    public Profile(Locale locale) {
-        this.locale = locale;
-    }
-
-    public Profile(String phone, String street, String city, String country, Locale locale) {
-        this(locale);
+    public Profile(String phone, String street, String city, String country) {
         this.phone = phone;
         this.street = street;
         this.city = city;
@@ -96,14 +87,6 @@ public class Profile implements Serializable {
         this.country = country;
     }
 
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
-
     public boolean isTranslate() {
         return translate;
     }
@@ -115,7 +98,7 @@ public class Profile implements Serializable {
     @Override
     public String toString() {
         return "Profile [profileId=" + profileId + ", phone=" + phone + ", street=" + street + ", city=" + city + ", country=" + country
-                + ", locale=" + locale + ", translate=" + translate + "]";
+                + ", translate=" + translate + "]";
     }
 
 }

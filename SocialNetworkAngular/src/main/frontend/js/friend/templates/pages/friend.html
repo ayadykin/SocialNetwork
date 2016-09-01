@@ -1,7 +1,7 @@
 <div ng-controller="FriendController">
 	<div class="panel panel-default">
 		<div class="panel-heading text-center">
-			<h2>Friends list</h2>
+			<span class="medium-font">Friends list</span>
 		</div>
 		<div class="panel-body">
 			<table class="table">
@@ -17,9 +17,10 @@
 					<td>{{friend.name}}</td>
 					<td>{{friend.status}}</td>
 					<td><a class="btn btn-info"
-						data-ng-if="friend.status == 'ACCEPTED'" data-ng-click='goToChat(friend.chatId)'>Go to chat</a></td>
+						data-ng-show="friend.status == 'ACCEPTED'"
+						data-ng-click='goToChat(friend.chatId)'>Go to chat</a></td>
 					<td><a class="btn btn-info"
-						data-ng-if="friend.status == 'ACCEPTED'"
+						data-ng-show="friend.status == 'ACCEPTED'"
 						data-ng-click='deleteFriend(friend.friendId)'>Delete</a></td>
 				</tr>
 			</table>

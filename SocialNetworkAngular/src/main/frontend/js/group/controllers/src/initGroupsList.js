@@ -31,11 +31,7 @@ $scope.initGroupsList = function() {
 	    if (data.groupId) {
 		removeGroupById($scope.groups, groupId);
 		resultDialog.dialog(true, 'success_delete_group');
-	    } else if (data.error) {
-		sendError(data);
 	    }
-	}, function(data) {
-	    sendError(data);
 	});
     };
     

@@ -62,8 +62,8 @@ public class FriendServiceFacade {
 	}
 
 	@Transactional
-	public boolean deleteFriend(long friendId) {
-		return friendService.deleteFriend(friendId);
+	public boolean deleteFriend(long userId) {
+		return friendService.deleteFriend(userId);
 	}
 
 }

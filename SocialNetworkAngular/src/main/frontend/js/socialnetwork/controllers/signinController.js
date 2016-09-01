@@ -19,6 +19,8 @@ angular.module('socialNetworkControllers').controller('SigninController',
 		    if (data.userId) {
 			$rootScope.authenticated = true;
 			$rootScope.userId = data.userId;
+			$rootScope.userLocale = data.userLocale;
+			$scope.changeLocale(data.userLocale);
 			$location.path("/home");
 			$scope.error = false;
 		    } else {

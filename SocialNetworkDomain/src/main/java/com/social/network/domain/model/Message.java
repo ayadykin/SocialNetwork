@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.Filter;
 import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 
@@ -35,6 +36,7 @@ import com.social.network.domain.model.labels.HiddenLabel;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @FilterDef(name = "messageLimit", parameters = @ParamDef(name = "minDate", type = "date"))
+@Filter(name="messageLimit", condition=":minDate <= created ")
 public class Message implements Serializable {
 
     @Id

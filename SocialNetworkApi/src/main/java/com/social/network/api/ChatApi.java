@@ -8,15 +8,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
-import com.social.network.domain.model.enums.Period;
 import com.social.network.dto.MessageDto;
 import com.social.network.dto.chat.ChatDto;
 import com.social.network.dto.chat.EditMessageDto;
+import com.social.network.dto.chat.GetChatMessagesDto;
 import com.social.network.dto.chat.SendMessageDto;
 import com.social.network.exceptions.chat.EmptyMessageException;
 import com.social.network.facade.ChatServiceFacade;
@@ -52,13 +51,13 @@ public class ChatApi {
     @ResponseBody
     @RequestMapping(value = "/getMessages/{chatId}", method = RequestMethod.GET)
     public List<MessageDto> getFilteredMessages(@PathVariable("chatId") long chatId) {
-        return chatFacade.getChatMesasges(chatId, Period.ALL);
+        return chatFacade.getChatMesasges(chatId);
     }
 
     @ResponseBody
-    @RequestMapping(method = RequestMethod.POST)
-    public List<MessageDto> getChatMessages(@RequestParam("chatId") long chatId, @RequestParam("filter") Period period) {
-        return chatFacade.getChatMesasges(chatId, period);
+    @RequestMapping(value = "/getMessages", method = RequestMethod.POST)
+    public List<MessageDto> getChatMessages(@RequestBody GetChatMessagesDto getChatMessagesDto) {
+        return chatFacade.getChatMesasges(getChatMessagesDto.getChatId(), getChatMessagesDto.getDateFilter());
     }
 
     @ResponseBody
@@ -85,8 +84,8 @@ public class ChatApi {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/getMessage/{chatId}", method = RequestMethod.GET)
-    public DeferredResult<MessageDto> getMessage(@PathVariable("chatId") long chatId) {
+    @RequestMapping(value = "/getMessage", method = RequestMethod.GET)
+    public DeferredResult<MessageDto> getMessage() {
         final DeferredResult<MessageDto> deferredResult = new DeferredResult<MessageDto>(null, "");
 
         MessageDto message = redisService.getMessage();

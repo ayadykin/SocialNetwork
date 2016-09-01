@@ -10,7 +10,7 @@ $scope.getChatMessages = function(chatId) {
 	$scope.messages = messages;
 	findChatById($scope.chats, chatId).newMessages = '';
     }, function(error) {
-	sendError(error);
+	ServerErrorHandler(error);
     });
 
 };

@@ -5,6 +5,11 @@ angular.module('socialNetworkServices').factory('ProfileRest', function($resourc
 	    method : 'GET',
 	    url : url + '/:profileId'
 	},
+	search : {
+	    method : 'POST',
+	    url : url + '/search',
+	    isArray : true
+	}
     });
 
     return resource;

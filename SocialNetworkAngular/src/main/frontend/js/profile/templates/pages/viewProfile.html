@@ -1,0 +1,27 @@
+<div class="col-lg-8 col-lg-offset-2" ng-controller="ProfileController">
+	<div class="panel panel-default">
+		<div class="panel-heading text-center">
+			<span class="medium-font">View {{profile.firstName}} profile</span>
+		</div>
+		<div class="panel-body">
+			<form class="form-narrow form-horizontal">
+
+				<div data-ng-include="'templates/parts/publicInfo.html'"></div>
+				
+				<div class="form-group">
+					<label class="col-lg-3 control-label">Status</label>
+					<div class="col-lg-7 text-center">
+						{{profile.friendStatus}}
+					</div>
+				</div>
+				
+				<pre data-ng-bind="profile|json"></pre>
+			</form>
+		</div>
+		<div class="panel-footer" data-ng-show="!profile.friendStatus">
+            <div class="col-lg-offset-5">
+                <a class="btn btn-default" data-ng-click="inviteFriend()">Send Invitation</a>
+            </div>
+        </div>
+	</div>
+</div>

@@ -1,7 +1,5 @@
 package com.social.network.services.impl;
 
-import java.util.Locale;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,7 +25,7 @@ public class MicrosoftTranslateServiceImpl implements TranslateService {
     private String clientSecret;
 
     @Override
-    public String translateString(String messageText, Locale to) {
+    public String translateString(String messageText, String to) {
         logger.debug(" translateString messageText : {} ", messageText);
         Translate.setClientId(clientId);
         Translate.setClientSecret(clientSecret);
@@ -39,10 +37,10 @@ public class MicrosoftTranslateServiceImpl implements TranslateService {
         }
     }
 
-    private Language getLanguage(Locale locale) {
+    private Language getLanguage(String locale) {
 
         Language language;
-        switch (locale.getLanguage()) {
+        switch (locale) {
         case "ru":
             language = Language.RUSSIAN;
             break;

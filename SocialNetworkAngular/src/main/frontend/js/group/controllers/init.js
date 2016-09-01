@@ -1,5 +1,5 @@
 angular.module('socialNetworkControllers').controller('GroupController',
-	function($scope, $rootScope, $q, GroupRest, FriendRest, resultDialog, $log, $location, ErrorHandler) {
+	function($scope, $rootScope, $q, GroupRest, FriendRest, resultDialog, $log, $location) {
 
 	    $scope.pageNo = 0;
 	    $scope.pageSize = 10;
@@ -10,11 +10,6 @@ angular.module('socialNetworkControllers').controller('GroupController',
 		$scope.groups = groups;
 		$scope.initGroupsList();
 		$scope.isLoad = true;
-	    }, function(data) {
-		sendError(data);
 	    });
 
-	    function sendError(data) {
-		ErrorHandler.notify($scope, data);
-	    }
 	});

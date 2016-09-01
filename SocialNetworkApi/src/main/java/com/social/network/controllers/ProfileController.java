@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.social.network.dto.PasswordDto;
-import com.social.network.dto.ProfileDto;
+import com.social.network.dto.profile.FullProfileDto;
 import com.social.network.services.ProfileService;
 
 /**
@@ -26,19 +26,11 @@ public class ProfileController {
 
     private final static Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
-    private static final String SEARCH_VIEW_NAME = "search/search";
-    private static final String VIEW_PROFILE_VIEW_NAME = "profile/viewProfile";
     private static final String CHANGE_PASSWORD_VIEW_NAME = "profile/changePassword";
-    private static final String PROFILE_LIST_ATTRIBUTE = "profile_list";
 
     @Autowired
     private ProfileService profileService;
 
-    @RequestMapping(value = "/changepassword", method = RequestMethod.GET)
-    public String initChangePassword(Model model) {
-        model.addAttribute(new PasswordDto());
-        return CHANGE_PASSWORD_VIEW_NAME;
-    }
 
     @RequestMapping(value = "/changepassword", method = RequestMethod.POST)
     public String changePassword(Model model, @Valid @ModelAttribute PasswordDto passwordDto, BindingResult result) {
@@ -51,18 +43,6 @@ public class ProfileController {
         }
         model.addAttribute("status", true);
         return CHANGE_PASSWORD_VIEW_NAME;
-    }
-
-    @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public String initSearchProfile(Model model) {
-        return SEARCH_VIEW_NAME;
-    }
-
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
-    public ModelAndView searchProfile(@ModelAttribute ProfileDto profileDto) {
-        ModelAndView mav = new ModelAndView(SEARCH_VIEW_NAME);
-        mav.addObject(PROFILE_LIST_ATTRIBUTE, profileService.searchProfile(profileDto));
-        return mav;
     }
 
 }

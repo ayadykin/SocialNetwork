@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.List;
-import java.util.Set;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +15,7 @@ import com.social.network.config.ApplicationConfig;
 import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
 import com.social.network.domain.config.HibernateConfig;
-import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.enums.FriendStatus;
-import com.social.network.dto.FriendDto;
 import com.social.network.exceptions.friend.DeleteFriendException;
 import com.social.network.exceptions.friend.FriendNotExistException;
 import com.social.network.exceptions.friend.InviteAcceptedException;

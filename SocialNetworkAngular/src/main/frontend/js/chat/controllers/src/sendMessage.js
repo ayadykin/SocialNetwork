@@ -8,12 +8,6 @@ $scope.sendMessage = function() {
 	publicMessage : $scope.publicMessage
     }, function(data) {
 	$scope.messageText = '';
-
-	if (data.error) {
-	    sendError(data);
-	}
-    }, function(error) {
-	sendError(error);
     });
 
 };

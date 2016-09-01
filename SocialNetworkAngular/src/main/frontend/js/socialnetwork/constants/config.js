@@ -12,6 +12,7 @@ angular.module('socialNetworkApp').constant('config', {
     
     signinPath: "/SocialNetworkApi/j_spring_security_check",
     signinInit: "/SocialNetworkApi/signin",
+    logoutPath: "/SocialNetworkApi/logout",
     
     profilePath: "/SocialNetworkApi/profile",
     

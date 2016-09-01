@@ -11,15 +11,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.domain.dao.AccountDao;
-import com.social.network.domain.dao.FriendDao;
 import com.social.network.domain.dao.UsersDao;
 import com.social.network.domain.model.Account;
-import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.Profile;
 import com.social.network.domain.model.User;
+import com.social.network.domain.model.enums.FriendStatus;
 import com.social.network.dto.PasswordDto;
-import com.social.network.dto.ProfileDto;
-import com.social.network.dto.UserDto;
+import com.social.network.dto.profile.FullProfileDto;
+import com.social.network.dto.profile.PublicProfileDto;
+import com.social.network.dto.profile.UserProfileDto;
+import com.social.network.exceptions.profile.PasswordMatchesException;
 import com.social.network.services.ProfileService;
 import com.social.network.services.UserService;
 import com.social.network.validation.DaoValidation;
@@ -31,8 +32,7 @@ import com.social.network.validation.DaoValidation;
 public class ProfileServiceImpl implements ProfileService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
-    @Autowired
-    private FriendDao friendDao;
+
     @Autowired
     private UserService userService;
     @Autowired
@@ -44,17 +44,25 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProfileDto getProfile() {
+    public FullProfileDto getProfile() {
         User loggedUser = userService.getLoggedUserEntity();
         logger.debug(" -> getProfile for user = {}", loggedUser.getUserId());
         Profile profile = loggedUser.getProfile();
-        return new ProfileDto(loggedUser.getFirstName(), loggedUser.getLastName(), profile.getCity(), profile.getCountry(),
-                profile.getLocale(), profile.isTranslate());
+        return new FullProfileDto(loggedUser.getFirstName(), loggedUser.getLastName(), profile.getStreet(), profile.getCity(),
+                profile.getCountry(), loggedUser.getLocale(), profile.isTranslate());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserProfileDto viewProfile(long userId) {
+        logger.debug("-> viewProfile userId = {}", userId);
+        User user = DaoValidation.userExistValidation(usersDao, userId);
+        return cerateUserProfileDto(user);
     }
 
     @Override
     @Transactional
-    public ProfileDto updateProfile(ProfileDto profileDto) {
+    public FullProfileDto updateProfile(FullProfileDto profileDto) {
         logger.debug(" -> updateProfile profileDto = {}", profileDto);
         User loggedUser = userService.getLoggedUserEntity();
         Profile profile = loggedUser.getProfile();
@@ -62,12 +70,14 @@ public class ProfileServiceImpl implements ProfileService {
         // Fill profile
         loggedUser.setFirstName(profileDto.getFirstName());
         loggedUser.setLastName(profileDto.getLastName());
+        loggedUser.setLocale(profileDto.getLocale());
+
+        profile.setStreet(profileDto.getStreet());
         profile.setCity(profileDto.getCity());
         profile.setCountry(profileDto.getCountry());
-        profile.setLocale(profileDto.getLocale());
         profile.setTranslate(profileDto.getTranslate());
-        
-        usersDao.save(loggedUser);
+
+        usersDao.saveOrUpdate(loggedUser);
         return profileDto;
     }
 
@@ -81,7 +91,7 @@ public class ProfileServiceImpl implements ProfileService {
         String oldPassword = loggedAccount.getPassword();
         if (!passwordEncoder.matches(passwordDto.getOldPassword(), oldPassword)) {
             logger.debug("-> old password do not match: {}", passwordDto.getOldPassword());
-            return false;
+            throw new PasswordMatchesException(" old password do not match");
         }
 
         // Save new password
@@ -92,55 +102,40 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<UserDto> searchProfile(ProfileDto profileDto) {
+    public List<UserProfileDto> searchProfile(PublicProfileDto profileDto) {
         logger.debug(" searchProfile profileDto = {}", profileDto);
-        List<User> users = usersDao.searchUser(profileDto.getFirstName(), profileDto.getLastName(),
-                profileDto.getCity(), profileDto.getCountry());
-        List<UserDto> usersList = new ArrayList<>();
+        List<User> users = usersDao.searchUser(profileDto.getFirstName(), profileDto.getLastName(), profileDto.getCity(),
+                profileDto.getCountry());
 
-        //User loggedUser = userService.getLoggedUserEntity();
-        //Set<Friend> friends = loggedUser.getFriends();
-        // Fill UserDto list
+        List<UserProfileDto> usersList = new ArrayList<>();
         for (User user : users) {
-            UserDto userDto = cerateUserDto(user);
-            //setFriendStatus(user, loggedUser, friends, userDto);
-            usersList.add(userDto);
+            usersList.add(cerateUserProfileDto(user));
         }
         logger.debug(" searchProfile usersList = {}", usersList);
         return usersList;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserDto viewProfile(long userId) {
-        logger.debug("-> viewProfile userId = {}", userId);
-        User loggedUser = userService.getLoggedUserEntity();
-       //List<Friend> friends = friendDao.findByOwner(loggedUser);
+    private UserProfileDto cerateUserProfileDto(User user) {
 
-        User user = DaoValidation.userExistValidation(usersDao, userId);
-        UserDto userDto = cerateUserDto(user);
-
-        //setFriendStatus(user, loggedUser, friends, userDto);
-        return userDto;
-    }
-
-    private UserDto cerateUserDto(User user) {
         Profile profile = user.getProfile();
-        return new UserDto(user.getFirstName(), user.getLastName(), profile.getCity(), profile.getCountry(),
-                profile.getLocale(), user.getUserId());
+
+        UserProfileDto userProfileDto = new UserProfileDto(user.getUserId(), user.getFirstName(), user.getLastName(), profile.getStreet(),
+                profile.getCity(), profile.getCountry());
+        setFriendStatus(user, userProfileDto);
+
+        return userProfileDto;
     }
 
-    private void setFriendStatus(User user, User loggedUser, List<Friend> friends, UserDto userDto) {
+    private void setFriendStatus(User user, UserProfileDto userDto) {
+        User loggedUser = userService.getLoggedUserEntity();
 
-        // If this is your user id
         if (user.getUserId() == loggedUser.getUserId()) {
-            userDto.setYourProfile(true);
+            userDto.setFriendStatus(FriendStatus.YOU);
         } else {
-            for (Friend myFriend : friends) {
-                /*if (myFriend.getFriend().getUserId() == user.getUserId()) {
-                    userDto.setFriendStatus(myFriend.getFriendStatus());
-                }*/
-            }
+            user.getFriends().stream().filter(f -> f.getFriend().getUserId() == loggedUser.getUserId()).findFirst().ifPresent(x -> {
+                userDto.setFriendStatus(x.getFriendStatus());
+            });
         }
+
     }
 }

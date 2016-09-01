@@ -14,26 +14,22 @@
 			<li><a href="#/friend">{{'FRIENDS' | translate}}</a></li>
 			<li><a href="#/group">Groups</a></li>
 			<li><a href="#/profile">Profile</a></li>
-			<li><a href="#/profile/search">Search</a></li>
+			<li><a href="#/search">Search</a></li>
 		</ul>
 		<ul class="nav navbar-nav navbar-right">
-			<li><a ng-click="changeLocale('en')">English </a></li>
+			<li><a href="#" ng-click="changeLocale('en')">English </a></li>
 			<li><a ng-click="changeLocale('ru')">Russian </a></li>
 
 			<li data-ng-show="!authenticated"><a href="#/signin">Sign in</a></li>
 
-			<li data-ng-show="authenticated"><a href="#/logout"
-				onclick="document.getElementById('form').submit();">Logout</a>
-				<form style="visibility: hidden" id="form" method="post"
-					action="#/logout"></form></li>
+			<li data-ng-show="authenticated"><a href="#" data-ng-click="logout()">Logout</a></li>
 
 		</ul>
 	</div>
 
 	<!-- Error message block -->
-	<div class="alert-message-at-bottom error"
-		data-ng-show="notificationOptions.message">
-		<span>{{notificationOptions.message}}</span>
-		<div class="close-btn" close-block></div>
+	<div class="alert-message-at-bottom error" data-ng-class="{true: 'error', false: 'msg'}[notification.error]" 
+		data-ng-show="notification.message" >
+		<span>{{notification.message}}</span>
 	</div>
 </div>

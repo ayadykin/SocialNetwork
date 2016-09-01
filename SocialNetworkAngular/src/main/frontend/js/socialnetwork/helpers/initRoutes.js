@@ -10,7 +10,10 @@ function initRoutes($route) {
 	    templateUrl : 'templates/pages/chat.html'
 	},
 	'/profile' : {
-	    templateUrl : 'templates/pages/profile.html'
+	    templateUrl : 'templates/pages/editProfile.html'
+	},
+	'/search' : {
+	    templateUrl : 'templates/pages/searchProfile.html'
 	},
 	'/signin' : {
 	    templateUrl : 'templates/pages/signin.html'
@@ -19,7 +22,7 @@ function initRoutes($route) {
 	    templateUrl : 'templates/pages/signup.html'
 	},
 	'' : {
-	    templateUrl : 'templates/pages/home.html'
+	    templateUrl : 'templates/pages/index.html'
 	},
 	'/home' : {
 	    templateUrl : 'templates/pages/homeSignedIn.html'

@@ -18,6 +18,7 @@ import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import com.social.network.security.AccountService;
 import com.social.network.security.AuthenticationFailure;
 import com.social.network.security.AuthenticationSuccess;
+import com.social.network.security.LogoutSuccess;
 
 /**
  * Created by Yadykin Andrii May 12, 2016
@@ -56,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and().formLogin().successHandler(new AuthenticationSuccess())
                 .loginPage("/signin").loginProcessingUrl("/j_spring_security_check")
                 .passwordParameter("j_password").usernameParameter("j_username").failureHandler(new AuthenticationFailure())
-                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/signin?logout")
+                .and().logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccess())
                 .and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
     }
 

@@ -1,0 +1,46 @@
+<div class="col-lg-8 col-lg-offset-2" ng-controller="ProfileController">
+	<div class="panel panel-default">
+		<div class="panel-heading text-center">
+			<span class="medium-font">My profile</span>
+		</div>
+		<div class="panel-body">
+			<form class="form-narrow form-horizontal">
+
+				<div data-ng-include="'templates/parts/publicInfo.html'"></div>
+
+				<div class="form-group">
+					<label class="col-lg-3 control-label">Gender</label>
+					<div class="col-lg-7">
+						<label class="col-lg-5 control-label"> <input type="radio"
+							data-ng-model="profile.sex" value="male"> Male
+						</label> <label class="col-lg-5 control-label"> <input
+							type="radio" data-ng-model="profile.sex" value="female">
+							Female
+						</label>
+					</div>
+				</div>
+
+				<label class="col-lg-3 control-label">Locale</label>
+				<div class="col-lg-9">
+					<select class="form-control" data-ng-model="profile.locale">
+						<option data-ng-repeat="lang in languaches" value="{{lang.code}}">{{lang.name}}</option>
+					</select>
+				</div>
+				<label class="col-lg-3 control-label">Translate</label>
+				<div class="col-lg-1">
+					<input type="checkbox" class="form-control"
+						data-ng-model="profile.translate" />
+
+				</div>
+				<pre data-ng-bind="profile|json"></pre>
+			</form>
+		</div>
+
+		<div class="panel-footer">
+			<div class="col-lg-offset-5">
+				<a class="btn btn-default" data-ng-click="saveProfile()">Save</a> <a
+					class="btn btn-default">Change Password </a>
+			</div>
+		</div>
+	</div>
+</div>

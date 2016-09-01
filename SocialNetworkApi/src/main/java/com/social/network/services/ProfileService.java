@@ -3,9 +3,9 @@ package com.social.network.services;
 import java.util.List;
 
 import com.social.network.dto.PasswordDto;
-import com.social.network.dto.ProfileDto;
-import com.social.network.dto.UserDto;
-import org.springframework.transaction.annotation.Transactional;
+import com.social.network.dto.profile.FullProfileDto;
+import com.social.network.dto.profile.PublicProfileDto;
+import com.social.network.dto.profile.UserProfileDto;
 
 /**
  * Created by Yadykin Andrii May 17, 2016
@@ -18,9 +18,17 @@ public interface ProfileService {
     /**
      * Get user's profile
      * 
-     * @return profileDto
+     * @return fullProfileDto
      */
-    ProfileDto getProfile();
+    FullProfileDto getProfile();
+    
+    /**
+     * Get profile by userId
+     * 
+     * @param userId
+     * @return userProfileDto
+     */
+    UserProfileDto viewProfile(long userId);
 
     /**
      * Update user's profile
@@ -28,7 +36,8 @@ public interface ProfileService {
      * @param profileDto
      * @return profileDto
      */
-    ProfileDto updateProfile(ProfileDto profileDto);
+    
+    FullProfileDto updateProfile(FullProfileDto profileDto);
 
     /**
      * Get list of profiles searched by profile params
@@ -36,7 +45,7 @@ public interface ProfileService {
      * @param profileDto
      * @return lots of profiles
      */
-    List<UserDto> searchProfile(ProfileDto profileDto);
+    List<UserProfileDto> searchProfile(PublicProfileDto profileDto);
 
     /**
      * Update user's password
@@ -46,5 +55,5 @@ public interface ProfileService {
      */
     boolean changePassword(PasswordDto passwordDto);
 
-    UserDto viewProfile(long userId);
+    
 }

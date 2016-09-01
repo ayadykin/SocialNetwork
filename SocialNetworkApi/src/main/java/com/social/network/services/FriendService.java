@@ -49,10 +49,10 @@ public interface FriendService {
 	/**
 	 * Delete friend from friend's list
 	 * 
-	 * @param friendId
+	 * @param userId
 	 * @return boolean
 	 */
-	boolean deleteFriend(long friendId);
+	boolean deleteFriend(long userId);
 
 	Friend validateFriendByStatus(User friend, User owner, FriendStatus status);
 

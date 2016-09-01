@@ -1,0 +1,66 @@
+<div ng-controller="ProfileController">
+	<div class="row">
+		<div class="col-lg-4 pull-left">
+			<div class="panel panel-default">
+				<div class="panel-heading text-center">
+					<span class="medium-font">Search user profile</span>
+				</div>
+				<div class="panel-body">
+					<form class="form-narrow form-horizontal">
+						<div data-ng-include="'templates/parts/publicInfo.html'"></div>
+					</form>
+				</div>
+				<div class="panel-footer">
+					<div class="col-lg-offset-5">
+						<a class="btn btn-default" data-ng-click="searchProfile()">Search</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-lg-8 pull-right">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<span class="medium-font">User list </span>
+				</div>
+				<div class="panel-body">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>User id</th>
+								<th>First name</th>
+								<th>Last name</th>
+								<th>Street</th>
+								<th>City</th>
+								<th>Country</th>
+								<th>Invite</th>
+							</tr>
+						</thead>
+						<tr data-ng-repeat="profile in profiles">
+							<td>{{profile.userId}}</td>
+							<td>{{profile.firstName}}</td>
+							<td>{{profile.lastName}}</td>
+							<td>{{profile.streey}}</td>
+							<td>{{profile.city}}</td>
+							<td>{{profile.country}}</td>
+							<td data-ng-switch="profile.friendStatus"><span
+								data-ng-switch-when="YOU">Your profile</span> <a
+								class="btn btn-default" data-ng-switch-when="ACCEPTED"
+								data-ng-click="deleteFriend(profile.userId)">Delete
+									{{profile.firstName}}</a> <span data-ng-switch-when="INVITEE">
+									INVITEE </span>
+								<div data-ng-switch-when="INVITER">
+									<a class="btn btn-default"
+										data-ng-click="declineFriend(profile.userId)">Decline
+										{{profile.firstName}}</a> <a class="btn btn-default"
+										data-ng-click="acceptFriend(profile.userId)">Accept
+										{{profile.firstName}}</a>
+								</div> <a class="btn btn-default" data-ng-switch-default
+								data-ng-click="inviteFriend(profile.userId)">Invite
+									{{profile.firstName}}</a></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

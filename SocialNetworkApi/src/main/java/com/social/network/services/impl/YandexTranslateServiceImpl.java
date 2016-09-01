@@ -14,7 +14,7 @@ public class YandexTranslateServiceImpl implements TranslateService{
 
 
     @Override
-    public String translateString(String messageText, Locale to) {
+    public String translateString(String messageText, String to) {
         return messageText;
         
     

@@ -5,9 +5,8 @@ package com.social.network.dto.chat;
  *
  */
 
-public class ChatDto {
+public class ChatDto extends ChatIdDto{
 
-    private long chatId;
     private String name;
     private boolean hidden;
 
@@ -16,17 +15,9 @@ public class ChatDto {
     }
 
     public ChatDto(long chatId, String name, boolean hidden) {
-        this.chatId = chatId;
+        super(chatId);
         this.name = name;
         this.hidden = hidden;
-    }
-
-    public long getChatId() {
-        return chatId;
-    }
-
-    public void setChatId(long chatId) {
-        this.chatId = chatId;
     }
 
     public String getName() {

@@ -18,5 +18,5 @@ html(lang='en', data-ng-app="socialNetworkApp")
         
     body(data-ng-controller="AppController")
         div.navbar.navbar-inverse(data-header-block)
-        div.container
+        div.container(data-ng-init="changeLocale('en')")
             div.col-lg-12(data-ng-view)

@@ -19,8 +19,8 @@ import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
 import com.social.network.domain.config.HibernateConfig;
 import com.social.network.domain.model.enums.FriendStatus;
-import com.social.network.dto.ProfileDto;
-import com.social.network.dto.UserDto;
+import com.social.network.dto.profile.FullProfileDto;
+import com.social.network.dto.profile.UserProfileDto;
 import com.social.network.exceptions.friend.InviteException;
 import com.social.network.exceptions.user.UserNotExistException;
 
@@ -58,15 +58,15 @@ public class ProfileServiceTest extends InitTest {
         
         clearSession();
         
-        List<UserDto> users = profileService.searchProfile(new ProfileDto("user10", "", "", "", Locale.US, false));
+        List<UserProfileDto> users = profileService.searchProfile(new FullProfileDto("user10", "", "", "", Locale.US, false));
         assertEquals(1, users.size());
         //assertTrue(users.get(0).isYourProfile());
 
-        users = profileService.searchProfile(new ProfileDto("", "", "Lviv", "", Locale.US, false));
+        users = profileService.searchProfile(new FullProfileDto("", "", "Lviv", "", Locale.US, false));
         assertEquals(1, users.size());
         //assertTrue(users.get(0).getFriendStatus() == FriendStatus.ACCEPTED);
 
-        users = profileService.searchProfile(new ProfileDto("Roma", "", "", "Ukraine", Locale.US, false));
+        users = profileService.searchProfile(new FullProfileDto("Roma", "", "", "Ukraine", Locale.US, false));
         assertEquals(1, users.size());
         //assertTrue(users.get(0).getFriendStatus() == FriendStatus.INVITER);
     }
@@ -78,7 +78,7 @@ public class ProfileServiceTest extends InitTest {
 
     @Test
     public void testUpdateProfile() {
-        ProfileDto profileDto = profileService.getProfile();
+        FullProfileDto profileDto = profileService.getProfile();
         assertEquals("Dnepr", profileDto.getCity());
         profileDto.setCity("Odessa");
         profileService.updateProfile(profileDto);

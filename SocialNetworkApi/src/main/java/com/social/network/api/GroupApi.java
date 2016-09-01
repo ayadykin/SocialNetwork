@@ -21,7 +21,7 @@ import com.social.network.dto.group.CreateGroupDto;
 import com.social.network.dto.group.GroupUserDto;
 import com.social.network.dto.group.UserGroupActionsDto;
 import com.social.network.facade.GroupServiceFacade;
-import com.social.network.utils.ResultToResponseWrapper;
+import com.social.network.utils.RestResponse;
 
 /**
  * Created by Yadykin Andrii Jul 22, 2016
@@ -76,8 +76,8 @@ public class GroupApi {
 
     @ResponseBody
     @RequestMapping(value = LEAVE_GROUP + "/{groupId}", method = RequestMethod.DELETE)
-    public String leaveGroup(@PathVariable("groupId") long groupId) {
-        return ResultToResponseWrapper.convert(() -> groupServiceFacade.leaveGroup(groupId));
+    public RestResponse leaveGroup(@PathVariable("groupId") long groupId) {
+        return new RestResponse().convert(() -> groupServiceFacade.leaveGroup(groupId));
     }
 
     @ResponseBody

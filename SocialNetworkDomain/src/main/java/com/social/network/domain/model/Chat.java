@@ -36,14 +36,14 @@ public class Chat implements Serializable {
     @Embedded
     private HiddenLabel hidden;
 
-    @OrderBy("createDate")
+    //@OrderBy("createDate")
     @ManyToMany(mappedBy = "chat")
     @Filter(name = "messageLimit", condition = ":minDate <= createDate")
     private Set<Message> messages = new LinkedHashSet<>();
 
-    // @OrderBy("chatId")
+    @OrderBy("user")
     @OneToMany(mappedBy = "chat")
-    private Set<UserChat> userChat = new HashSet<>();
+    private Set<UserChat> userChat = new LinkedHashSet<>();
 
     public Chat() {
         this.creation = new CreationLabel();

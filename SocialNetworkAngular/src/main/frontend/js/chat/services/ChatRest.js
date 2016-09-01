@@ -10,9 +10,14 @@ angular.module('socialNetworkServices').factory('ChatRest', function($resource, 
 	    url : url + '/getMessages/:chatId',
 	    isArray: true
 	},
+	getFilteredMessages:{
+	    method : 'POST',
+	    url : url + '/getMessages',
+	    isArray: true
+	},
 	getMessage : {
 	    method : 'GET',
-	    url : url + '/getMessage/:chatId'
+	    url : url + '/getMessage'
 	},
 	sendMessage :{
 	    method : 'POST',

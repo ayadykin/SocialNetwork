@@ -40,8 +40,12 @@ body {
 .name-margin{
     margin-right: 60px;
 }
-.panel-margin{
+.panel-info{
     margin-right: 10px;
+}
+
+.panel-success{
+    margin-left: 10px;
 }
 
 .error {
@@ -49,7 +53,7 @@ body {
 	margin-bottom: 20px;
 	border: 1px solid transparent;
 	border-radius: 4px;
-	color: #a94442;
+	color: #000000;
 	background-color: #ff0000;
 	border-color: #ebccd1;
 }
@@ -67,4 +71,8 @@ body {
 .footer{
 	position: absolute; 
 	bottom: 10px;
+}
+
+.medium-font{
+	font-size: 25px;
 }

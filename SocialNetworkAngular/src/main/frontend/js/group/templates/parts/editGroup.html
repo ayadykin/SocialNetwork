@@ -1,6 +1,6 @@
 <div class="panel panel-default">
 	<div class="panel-heading text-center">
-		<h2>Edit group {{group.name}}, group id: {{group.groupId}}</h2>
+		<span class="medium-font"> Edit group {{group.name}}, group id: {{group.groupId}}</span>
 	</div>
 	<div class="panel-body">
 		<table class="table">
@@ -17,7 +17,7 @@
 				<td>{{user.userId}}</td>
 				<td>{{user.fullName}}</td>
 				<td><a class="btn btn-info" href="#/profile/{{user.userId}}">Profile </a></td>
-				<td><a class="btn btn-info" data-ng-if="!user.groupAdmin"
+				<td><a class="btn btn-info" data-ng-show="!user.groupAdmin"
 					ng-click="deleteUserFromGroup(group.groupId, user.userId)">Delete
 						user</a></td>
 			<tr>
@@ -27,7 +27,7 @@
 <br />
 <div class="panel panel-default">
 	<div class="panel-heading text-center">
-		<h2>List of friends</h2>
+		<span class="medium-font">List of friends</span>
 	</div>
 	<div class="panel-body">
 		<table class="table">

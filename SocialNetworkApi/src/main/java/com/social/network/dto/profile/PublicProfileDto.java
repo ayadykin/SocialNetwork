@@ -1,44 +1,29 @@
-package com.social.network.dto;
-
-import java.util.Locale;
+package com.social.network.dto.profile;
 
 /**
  * Created by Yadykin Andrii May 17, 2016
  *
  */
 
-public class ProfileDto {
+public class PublicProfileDto {
 
     private String firstName;
     private String lastName;
+    private String street;
     private String city;
     private String country;
-    private Locale locale;
-    private boolean translate;
 
-    public ProfileDto() {
+    public PublicProfileDto() {
 
     }
 
-    public ProfileDto(String firstName, String lastName, String city, String country, Locale locale, boolean translate) {
+    public PublicProfileDto(String firstName, String lastName, String street, String city, String country) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.street = street;
         this.city = city;
         this.country = country;
-        this.locale = locale;
-        this.translate = translate;
-    }
 
-    public Locale getLocale() {
-        return locale;
-    }
-
-    public String[] getLocales() {
-        return locale.getISOLanguages();
-    }
-
-    public void setLocale(String locale) {
-        this.locale = new Locale(locale);
     }
 
     public String getFirstName() {
@@ -57,6 +42,14 @@ public class ProfileDto {
         this.lastName = lastName;
     }
 
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
     public String getCity() {
         return city;
     }
@@ -73,18 +66,9 @@ public class ProfileDto {
         this.country = country;
     }
 
-    public boolean getTranslate() {
-        return translate;
-    }
-
-    public void setTranslate(boolean translate) {
-        this.translate = translate;
-    }
-
     @Override
     public String toString() {
-        return "ProfileDto [firstName=" + firstName + ", lastName=" + lastName + ", city=" + city + ", country="
-                + country + ", locale=" + locale + ", translate=" + translate + "]";
+        return "PublicProfileDto [firstName=" + firstName + ", lastName=" + lastName + ", city=" + city + ", country=" + country + "]";
     }
 
 }

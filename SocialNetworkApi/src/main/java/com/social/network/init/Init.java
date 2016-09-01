@@ -39,17 +39,17 @@ public class Init {
     @Autowired
     private GroupServiceFacade groupFacade;
 
-    @PostConstruct
+    //@PostConstruct
     @Transactional
     public void Init() {
 
         logger.debug("-> initialize");
 
-        User user1 = new User("Andrey", "Y", new Profile("", "", "Mikoleav", "", Locale.US));
-        User user2 = new User("Andrey", "P", new Profile("", "", "Mikoleav", "", Locale.US));
-        User user3 = new User("Dima", "D", new Profile("", "", "Kiev", "", Locale.US));
-        User user4 = new User("Viktor", "G", new Profile("", "", "", "", Locale.US));
-        User user5 = new User("Egor", "H", new Profile("", "", "", "", Locale.US));
+        User user1 = new User("Andrey", "Y", "en",new Profile("", "", "Mikoleav", ""));
+        User user2 = new User("Andrey", "P", "en",new Profile("", "", "Mikoleav", ""));
+        User user3 = new User("Dima", "D", "en",new Profile("", "", "Kiev", ""));
+        User user4 = new User("Viktor", "G", "en",new Profile("", "", "", ""));
+        User user5 = new User("Egor", "H", "en",new Profile("", "", "", ""));
 
         Account account1 = new Account("user1", "user1", "ROLE_USER", user1);
         Account account2 = new Account("user2", "user2", "ROLE_USER", user2);

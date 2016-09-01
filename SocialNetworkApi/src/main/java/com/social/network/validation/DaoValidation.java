@@ -10,6 +10,7 @@ import com.social.network.domain.dao.FriendDao;
 import com.social.network.domain.dao.GroupDao;
 import com.social.network.domain.dao.MessageDao;
 import com.social.network.domain.dao.UsersDao;
+import com.social.network.domain.exceptions.hibernate.GenericDaoException;
 import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.Group;
@@ -32,11 +33,11 @@ public class DaoValidation {
 
     public static User userExistValidation(UsersDao usersDao, long userId) {
         logger.debug("-> userExistValidation: userId: {}", userId);
-        User user = usersDao.get(userId);
-        if (Objects.isNull(user)) {
+        try {
+            return usersDao.load(userId);
+        } catch (GenericDaoException e) {
             throw new UserNotExistException("User with id " + userId + "don't exist");
         }
-        return user;
     }
 
     public static Friend friendExistValidation(FriendDao friendDao, long friendId) {
@@ -50,18 +51,21 @@ public class DaoValidation {
 
     public static Group groupExistValidation(GroupDao groupDao, long groupId) {
         logger.debug("-> groupExistValidation: groupId: {}", groupId);
-        if (!groupDao.exists(groupId)) {
+        Group group = groupDao.get(groupId);
+        if (Objects.nonNull(group)) {
+            return group;
+        } else {
             throw new GroupPermissionExceptions("Group with ID:" + groupId + " don't exist");
         }
-        return groupDao.get(groupId);
     }
 
     public static Message messageExistValidation(MessageDao messageDao, long messageId) {
         logger.debug("-> messageExistValidation:  messageId: {}", messageId);
-        if (!messageDao.exists(messageId)) {
+        try {
+            return messageDao.load(messageId);
+        } catch (GenericDaoException e) {
             throw new EmptyMessageException("Message with ID:" + messageId + " don't exist");
         }
-        return messageDao.get(messageId);
     }
 
     public static Chat chatExistValidation(ChatDao chatDao, long chatId) {

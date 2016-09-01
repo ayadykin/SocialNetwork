@@ -1,6 +1,6 @@
 package com.social.network.dto;
 
-import java.util.Set;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -15,14 +15,14 @@ public class GroupDto {
     private long chatId;
     private long groupId;
     @JsonInclude(Include.NON_NULL)
-    private Set<GroupUserDto> users;
+    private List<GroupUserDto> users;
     private boolean groupAdmin;
     private boolean hidden;
 
     public GroupDto() {
     }
 
-    public GroupDto(String name, long group, long chat, Set<GroupUserDto> users, boolean groupAdmin, boolean hidden) {
+    public GroupDto(String name, long group, long chat, List<GroupUserDto> users, boolean groupAdmin, boolean hidden) {
         this.name = name;
         this.chatId = chat;
         this.groupId = group;
@@ -55,7 +55,7 @@ public class GroupDto {
         this.chatId = chatId;
     }
 
-    public Set<GroupUserDto> getUsers() {
+    public List<GroupUserDto> getUsers() {
         return users;
     }
 
@@ -63,7 +63,7 @@ public class GroupDto {
         this.users.add(user);
     }
 
-    public void setUsers(Set<GroupUserDto> users) {
+    public void setUsers(List<GroupUserDto> users) {
         this.users = users;
     }
 

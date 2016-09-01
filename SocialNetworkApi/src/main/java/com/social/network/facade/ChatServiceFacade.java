@@ -1,16 +1,15 @@
 package com.social.network.facade;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.core.message.FriendsNotification;
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.UserChat;
-import com.social.network.domain.model.enums.Period;
 import com.social.network.dto.MessageDto;
 import com.social.network.dto.chat.ChatDto;
 import com.social.network.services.ChatService;
@@ -35,8 +34,6 @@ public class ChatServiceFacade {
     private MessageService messageService;
     @Autowired
     private RedisService redisService;
-    @Autowired
-    private FriendsNotification friendsNotification;
 
     @Transactional
     public List<ChatDto> getChatsList() {
@@ -58,17 +55,23 @@ public class ChatServiceFacade {
     @Transactional
     public boolean sendMessage(String messageText, long chatId, boolean publicMessage) {
 
-        Message message = chatService.sendMessage(messageText, chatId);
-        
         if (publicMessage) {
-            friendsNotification.notificate(messageText, message.getPublisher());
+            chatService.sendPublicMessage(messageText);
+        } else {
+            Message message = chatService.sendMessage(messageText, chatId);
+            sendMessageToRedis(message);
         }
-        
-        return sendMessageToRedis(message);
+
+        return true;
+    }
+    
+    @Transactional
+    public List<MessageDto> getChatMesasges(long chatId){
+        return getChatMesasges(chatId, null); 
     }
 
     @Transactional
-    public List<MessageDto> getChatMesasges(long chatId, Period filter) {
+    public List<MessageDto> getChatMesasges(long chatId, Date filter) {
 
         List<Message> messagesList = chatService.getChatMesasges(chatId, true, filter);
         // Fill MessageDto list

@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.social.network.dto.FriendDto;
 import com.social.network.facade.FriendServiceFacade;
 import com.social.network.utils.RestResponse;
-import com.social.network.utils.ResultToResponseWrapper;
 
 /**
  * Created by Yadykin Andrii Jul 22, 2016
@@ -33,26 +32,26 @@ public class FriendApi {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/inviteFriend", method = RequestMethod.POST)
-    public String inviteFriend(@RequestParam("userId") long userId) {
-        return ResultToResponseWrapper.convert(() -> friendFacade.inviteFriend(userId));
+    @RequestMapping(value = "/inviteFriend/{userId}", method = RequestMethod.POST)
+    public RestResponse inviteFriend(@PathVariable("userId") long userId) {
+        return new RestResponse().convert(() -> friendFacade.inviteFriend(userId));
     }
 
     @ResponseBody
-    @RequestMapping(value = "/acceptInvitation", method = RequestMethod.POST)
-    public RestResponse accceptInvitation(@RequestParam("userId") long userId) {
+    @RequestMapping(value = "/acceptInvitation/{userId}", method = RequestMethod.POST)
+    public RestResponse accceptInvitation(@PathVariable("userId") long userId) {
         return new RestResponse().convert(() -> friendFacade.acceptInvitation(userId));
     }
 
     @ResponseBody
-    @RequestMapping(value = "/declineInvitation", method = RequestMethod.POST)
-    public RestResponse declineInvitation(@RequestParam("userId") long userId) {
+    @RequestMapping(value = "/declineInvitation/{userId}", method = RequestMethod.POST)
+    public RestResponse declineInvitation(@PathVariable("userId") long userId) {
         return new RestResponse().convert(() -> friendFacade.declineInvitation(userId));
     }
 
     @ResponseBody
-    @RequestMapping(value = "/{friendId}", method = RequestMethod.DELETE)
-    public RestResponse deleteFriend(@PathVariable("friendId") long friendId) {
-        return new RestResponse().convert(() -> friendFacade.deleteFriend(friendId));
+    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    public RestResponse deleteFriend(@PathVariable("userId") long userId) {
+        return new RestResponse().convert(() -> friendFacade.deleteFriend(userId));
     }
 }

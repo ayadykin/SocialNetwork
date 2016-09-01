@@ -28,7 +28,7 @@ import com.social.network.config.ApplicationConfig;
 import com.social.network.config.RedisConfig;
 import com.social.network.config.SecurityConfig;
 import com.social.network.domain.config.HibernateConfig;
-import com.social.network.dto.ProfileDto;
+import com.social.network.dto.profile.FullProfileDto;
 import com.social.network.services.ProfileService;
 
 /**
@@ -56,7 +56,7 @@ public class ProfileControllerTest {
 
     @Test
     public void testGetProfile() throws Exception {
-        when(profileService.getProfile()).thenReturn(new ProfileDto("Name", "LastName", "City", "Country", Locale.US, false));
+        when(profileService.getProfile()).thenReturn(new FullProfileDto("Name", "LastName", "City", "Country", Locale.US, false));
 
         mockMvc.perform(get("/profile"))
                 .andExpect(status().isOk())

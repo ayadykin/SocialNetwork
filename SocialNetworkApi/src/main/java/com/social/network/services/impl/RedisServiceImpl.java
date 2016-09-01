@@ -1,7 +1,5 @@
 package com.social.network.services.impl;
 
-import java.util.Locale;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,9 +48,8 @@ public class RedisServiceImpl implements RedisService {
         MessageDto messageDto = listOps.leftPop();
         if (messageDto != null) {
             if (loggedUser.getProfile().isTranslate()) {
-                Locale locale = loggedUser.getProfile().getLocale();
-                logger.debug("getMessage translate to language : {}", locale.getLanguage());
-                messageDto.setText(translateService.translateString(messageDto.getText(), locale));
+                logger.debug("get translated message");
+                messageDto.setText(translateService.translateString(messageDto.getText(), loggedUser.getLocale()));
             }
             // Change message status read true
             logger.debug(" updateMessageStatus message = {}", messageDto);

@@ -48,10 +48,14 @@ public class User implements Serializable {
 
     @Column
     private String lastName;
-    
-    public User(String firstName, String lastName, Profile profile) {
+
+    @Column
+    private String locale;
+
+    public User(String firstName, String lastName, String locale, Profile profile) {
         this.firstName = firstName;
         this.lastName = lastName;
+        this.locale = locale;
         this.profile = profile;
     }
 
@@ -115,9 +119,18 @@ public class User implements Serializable {
         return new StringBuilder().append(firstName).append(" ").append(lastName).toString();
     }
 
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+
     @Override
     public String toString() {
-        return "User [userId=" + userId + "]";
+        return "User [userId=" + userId + ", friends=" + friends + ", userChat=" + userChat + ", profileId=" + profile.getProfileId() + ", firstName="
+                + firstName + ", lastName=" + lastName + ", locale=" + locale + "]";
     }
 
 }
