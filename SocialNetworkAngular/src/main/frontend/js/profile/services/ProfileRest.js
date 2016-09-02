@@ -9,6 +9,10 @@ angular.module('socialNetworkServices').factory('ProfileRest', function($resourc
 	    method : 'POST',
 	    url : url + '/search',
 	    isArray : true
+	},
+	changepassword : {
+	    method : 'POST',
+	    url : url + '/changepassword'
 	}
     });
 

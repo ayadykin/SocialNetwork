@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 public class HibernateConfig {
-    
+
     @Value("${dataSource.driverClassName}")
     private String driver;
     @Value("${dataSource.url}")
@@ -32,7 +32,6 @@ public class HibernateConfig {
     @Value("${hibernate.hbm2ddl.auto}")
     private String hbm2ddlAuto;
 
-    
     @Bean
     public DataSource configureDataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -59,23 +58,6 @@ public class HibernateConfig {
         return localSessionFactoryBean;
     }
 
-    /*
-     * @Bean public LocalContainerEntityManagerFactoryBean
-     * configureEntityManagerFactory() { LocalContainerEntityManagerFactoryBean
-     * entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-     * entityManagerFactoryBean.setDataSource(configureDataSource());
-     * entityManagerFactoryBean.setPackagesToScan("com.social.network.model");
-     * entityManagerFactoryBean.setJpaVendorAdapter(new
-     * HibernateJpaVendorAdapter());
-     * 
-     * Properties jpaProperties = new Properties();
-     * jpaProperties.put(org.hibernate.cfg.Environment.DIALECT, dialect);
-     * jpaProperties.put(org.hibernate.cfg.Environment.HBM2DDL_AUTO,
-     * hbm2ddlAuto); entityManagerFactoryBean.setJpaProperties(jpaProperties);
-     * 
-     * return entityManagerFactoryBean; }
-     */
-
     @Bean
     @Autowired
     public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
@@ -86,9 +68,4 @@ public class HibernateConfig {
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
-    /*
-     * @Bean public PlatformTransactionManager
-     * annotationDrivenTransactionManager() { return new
-     * JpaTransactionManager(); }
-     */
 }

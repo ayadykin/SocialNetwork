@@ -15,7 +15,7 @@ import com.social.network.domain.model.User;
 import com.social.network.domain.util.Constants;
 
 /**
- * Created by andrii.perylo on 5/13/2016.
+ * Created by Yadykin Andrii on 5/13/2016.
  */
 
 @Repository

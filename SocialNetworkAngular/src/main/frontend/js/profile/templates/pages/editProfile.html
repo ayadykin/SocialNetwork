@@ -1,5 +1,7 @@
-<div class="col-lg-8 col-lg-offset-2" ng-controller="ProfileController">
-	<div class="panel panel-default">
+<div class="col-lg-6 col-lg-offset-3" ng-controller="ProfileController" data-ng-init="editProfile()">
+	<div data-ng-show="changePasswordView"
+                data-ng-include="'templates/parts/changePassword.html'"></div>
+	<div class="panel panel-default" data-ng-show="editProfileView">
 		<div class="panel-heading text-center">
 			<span class="medium-font">My profile</span>
 		</div>
@@ -26,11 +28,11 @@
 						<option data-ng-repeat="lang in languaches" value="{{lang.code}}">{{lang.name}}</option>
 					</select>
 				</div>
+				
 				<label class="col-lg-3 control-label">Translate</label>
 				<div class="col-lg-1">
 					<input type="checkbox" class="form-control"
 						data-ng-model="profile.translate" />
-
 				</div>
 				<pre data-ng-bind="profile|json"></pre>
 			</form>
@@ -39,7 +41,8 @@
 		<div class="panel-footer">
 			<div class="col-lg-offset-5">
 				<a class="btn btn-default" data-ng-click="saveProfile()">Save</a> <a
-					class="btn btn-default">Change Password </a>
+					class="btn btn-default" data-ng-click="changePassword()">Change
+					Password </a>
 			</div>
 		</div>
 	</div>

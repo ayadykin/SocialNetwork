@@ -6,7 +6,7 @@ import com.social.network.domain.model.Profile;
 import org.springframework.stereotype.Repository;
 
 /**
- * Created by andrii.perylo on 5/16/2016.
+ * Created by Yadykin Andrii on 5/16/2016.
  */
 @Repository
 public class ProfileDaoImpl extends GenericDaoHibernate<Profile, Long> implements ProfileDao {

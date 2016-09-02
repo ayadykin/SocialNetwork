@@ -72,7 +72,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>SocialNetworkDomain</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

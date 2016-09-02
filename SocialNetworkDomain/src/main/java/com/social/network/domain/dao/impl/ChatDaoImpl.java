@@ -10,7 +10,7 @@ import com.social.network.domain.dao.ChatDao;
 import com.social.network.domain.model.Chat;
 
 /**
- * Created by andrii.perylo on 5/13/2016.
+ * Created by Yadykin Andrii on 5/13/2016.
  */
 @Repository
 public class ChatDaoImpl extends GenericDaoHibernate<Chat, Long> implements ChatDao {

@@ -25,6 +25,7 @@ angular.module('socialNetworkControllers').controller('AppController',
 	    };
 
 	    $scope.successMessageHandler = function(message) {
+		$log.debug("AppController successMessageHandler message: " + message);
 		if (!$rootScope.notification.error) {
 		    $rootScope.notification.message = message;
 		    $rootScope.notification.error = false;
