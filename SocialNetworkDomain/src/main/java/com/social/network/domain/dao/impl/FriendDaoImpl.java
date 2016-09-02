@@ -1,17 +1,12 @@
 package com.social.network.domain.dao.impl;
 
-import java.util.List;
-
 import org.hibernate.NonUniqueResultException;
-import org.hibernate.SQLQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.social.network.domain.dao.FriendDao;
 import com.social.network.domain.model.Friend;
-import com.social.network.domain.model.Group;
-import com.social.network.domain.model.User;
 import com.social.network.domain.util.Constants;
 
 /**
@@ -27,28 +22,15 @@ public class FriendDaoImpl extends GenericDaoHibernate<Friend, Long> implements 
     }
 
     @Override
-    public Friend findByFriendAndOwner(User invitee, User inviter) {
+    public Friend findByFriendAndOwner(long invitee, long inviter) {
         try {
-            return (Friend) getCurrentSession().getNamedQuery(Constants.FIND_BY_FRIEND_AND_OWNER).setEntity("invitee", invitee)
-                    .setEntity("inviter", inviter).uniqueResult();
+            return (Friend) getCurrentSession().getNamedQuery(Constants.FIND_BY_FRIEND_AND_OWNER).setLong("invitee", invitee)
+                    .setLong("inviter", inviter).uniqueResult();
         } catch (NonUniqueResultException e) {
             logger.debug("findByOwner NonUniqueResultException : {}", e.getMessage());
             return null;
         } catch (Exception e) {
             logger.debug("findByOwner Exception : {}", e.getMessage());
-            return null;
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<User> findFriendNotInGroup(Group group, User user) {
-        try {
-            SQLQuery query = getCurrentSession().createSQLQuery("SELECT f.friend FROM friend f where f.user = :user");
-            query.addEntity(User.class);
-            return query.setLong("chatid", group.getChat().getChatId()).setLong("userId", user.getUserId()).list();
-        } catch (Exception e) {
-            logger.debug("findFriendNotInGroup Exception : {}", e.getMessage());
             return null;
         }
     }

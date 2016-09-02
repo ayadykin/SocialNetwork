@@ -1,10 +1,5 @@
 package com.social.network.init;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -13,14 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.social.network.domain.model.Account;
-import com.social.network.domain.model.Group;
 import com.social.network.domain.model.Profile;
 import com.social.network.domain.model.User;
 import com.social.network.dto.GroupDto;
-import com.social.network.facade.FriendServiceFacade;
 import com.social.network.facade.GroupServiceFacade;
 import com.social.network.services.AuthService;
-import com.social.network.services.GroupService;
+import com.social.network.services.FriendService;
 
 /**
  * Created by Yadykin Andrii Jul 12, 2016
@@ -34,7 +27,7 @@ public class Init {
     private AuthService authService;
 
     @Autowired
-    private FriendServiceFacade friendFacade;
+    private FriendService friendFacade;
 
     @Autowired
     private GroupServiceFacade groupFacade;

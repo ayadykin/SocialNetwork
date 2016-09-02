@@ -6,5 +6,5 @@ package com.social.network.domain.model.enums;
  */
 
 public enum FriendStatus {
-    YOU, INVITER, INVITEE, ACCEPTED, DECLINED, DELETED;
+    YOU, NEW, INVITER, INVITEE, ACCEPTED, DECLINED, DELETED;
 }

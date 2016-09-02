@@ -18,7 +18,6 @@ import com.social.network.domain.dao.UserChatDao;
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.User;
 import com.social.network.domain.model.UserChat;
-import com.social.network.domain.model.enums.FriendStatus;
 import com.social.network.exceptions.chat.ChatPermissionException;
 import com.social.network.exceptions.chat.ChatRemovedException;
 import com.social.network.services.ChatService;
@@ -34,109 +33,107 @@ import com.social.network.services.UserService;
 @Service
 public class ChatServiceImpl implements ChatService {
 
-    private final static Logger logger = LoggerFactory.getLogger(ChatService.class);
-    @Autowired
-    private MessageDao messageDao;
-    @Autowired
-    private UserChatDao userChatDao;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private FriendService friendService;
-    @Autowired
-    private MessageService messageService;
-    @Autowired
-    private FriendsNotification friendsNotification;
+	private final static Logger logger = LoggerFactory.getLogger(ChatService.class);
+	@Autowired
+	private MessageDao messageDao;
+	@Autowired
+	private UserChatDao userChatDao;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private FriendService friendService;
+	@Autowired
+	private MessageService messageService;
+	@Autowired
+	private FriendsNotification friendsNotification;
 
-    @Override
-    @Transactional(readOnly = true)
-    public Set<UserChat> getChatsList() {
-        User loggedUser = userService.getLoggedUserEntity();
-        logger.debug("->getChatsList for user : {}", loggedUser.getUserId());
+	@Override
+	@Transactional(readOnly = true)
+	public Set<UserChat> getChatsList() {
+		User loggedUser = userService.getLoggedUserEntity();
+		logger.debug("->getChatsList for user : {}", loggedUser.getUserId());
 
-        return loggedUser.getUserChat();
-    }
+		return loggedUser.getUserChat();
+	}
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserChat getChat(long chatId) {
-        logger.debug("->getChat chatId : {}", chatId);
-        User loggedUser = userService.getLoggedUserEntity();
+	@Override
+	@Transactional(readOnly = true)
+	public UserChat getChat(long chatId) {
+		logger.debug("->getChat chatId : {}", chatId);
+		User loggedUser = userService.getLoggedUserEntity();
 
-        UserChat userChat = userChatDao.findByChatAndUser(chatId, loggedUser.getUserId());
+		UserChat userChat = userChatDao.findByChatAndUser(chatId, loggedUser.getUserId());
 
-        validateChat(userChat);
-        
-        return userChat;
-    }
+		validateChat(userChat);
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Message> getChatMesasges(long chatId, boolean readed, Date filter) {
-        logger.debug("getChatMesasges : chatId = {}, filter = {}", chatId, filter);
-        User loggedUser = userService.getLoggedUserEntity();
+		return userChat;
+	}
 
-        // Validation
-        getChatMesasgesValidate(chatId, loggedUser.getUserId());
+	@Override
+	@Transactional(readOnly = true)
+	public List<Message> getChatMesasges(long chatId, boolean readed, Date filter) {
+		logger.debug("getChatMesasges : chatId = {}, filter = {}", chatId, filter);
+		User loggedUser = userService.getLoggedUserEntity();
 
-        return messageDao.getMessages(chatId, loggedUser, readed, filter);
-    }
+		// Validation
+		getChatMesasgesValidate(chatId, loggedUser.getUserId());
 
-    @Override
-    @Transactional
-    public Message sendMessage(String messageText, long chatId) {
-        logger.debug("sendMessage messageText : {}, to chatId : {} ", messageText, chatId);
-        User loggedUser = userService.getLoggedUserEntity();
+		return messageDao.getMessages(chatId, loggedUser, readed, filter);
+	}
 
-        UserChat userChat = userChatDao.findByChatAndUser(chatId, loggedUser.getUserId());
-        
-        // Validation
-        sendMessageValidate(userChat);
+	@Override
+	@Transactional
+	public Message sendMessage(String messageText, long chatId) {
+		logger.debug("sendMessage messageText : {}, to chatId : {} ", messageText, chatId);
+		User loggedUser = userService.getLoggedUserEntity();
 
-        return messageService.createMessage(messageText, loggedUser, userChat.getChat());
-    }
+		UserChat userChat = userChatDao.findByChatAndUser(chatId, loggedUser.getUserId());
 
-    @Override
-    @Transactional
-    public void sendPublicMessage(String messageText) {
-        logger.debug("sendPublicMessage messageText : {} ", messageText);
-        User loggedUser = userService.getLoggedUserEntity();
+		// Validation
+		sendMessageValidate(userChat);
 
-        friendsNotification.notificate(messageText, loggedUser);
-    }
+		return messageService.createMessage(messageText, loggedUser, userChat.getChat());
+	}
 
-    private void sendMessageValidate(UserChat userChat) {
-        validateChat(userChat);
-        validateHiddenChat(userChat);
-        validateFriend(userChat);
-    }
+	@Override
+	@Transactional
+	public void sendPublicMessage(String messageText) {
+		logger.debug("sendPublicMessage messageText : {} ", messageText);
+		User loggedUser = userService.getLoggedUserEntity();
 
-    private void getChatMesasgesValidate(long chatId, long userId) {
-        UserChat userChat = userChatDao.findByChatAndUser(chatId, userId);
-        validateChat(userChat);
-    }
+		friendsNotification.notificate(messageText, loggedUser);
+	}
 
-    private void validateFriend(UserChat userChat) {
+	private void sendMessageValidate(UserChat userChat) {
+		validateChat(userChat);
+		validateHiddenChat(userChat);
+		validateFriend(userChat);
+	}
 
-        Iterator<UserChat> iterator = userChat.getChat().getUserChat().iterator();
-        UserChat inviterUser = iterator.next();
-        UserChat inviteeUser = iterator.next();
-        try {
-            friendService.validateFriendByStatus(inviterUser.getUser(), inviteeUser.getUser(), FriendStatus.ACCEPTED);
-        } catch (RuntimeException e) {
-            throw new ChatPermissionException("Friend not accepted your invitation");
-        }
-    }
+	private void getChatMesasgesValidate(long chatId, long userId) {
+		UserChat userChat = userChatDao.findByChatAndUser(chatId, userId);
+		validateChat(userChat);
+	}
 
-    private void validateChat(UserChat userChat) {
-        if (Objects.isNull(userChat)) {
-            throw new ChatPermissionException("You haven't permisions for this chat");
-        }
-    }
+	private void validateFriend(UserChat userChat) {
 
-    private void validateHiddenChat(UserChat userChat) {
-        if (userChat.getChat().getHidden()) {
-            throw new ChatRemovedException("Chat was removed");
-        }
-    }
+		Iterator<UserChat> iterator = userChat.getChat().getUserChat().iterator();
+		UserChat inviterUser = iterator.next();
+		UserChat inviteeUser = iterator.next();
+		if (!friendService.isYourFriend(inviterUser.getUserId(), inviteeUser.getUserId())) {
+			throw new ChatPermissionException("Friend not accepted your invitation");
+		}
+	}
+
+	private void validateChat(UserChat userChat) {
+		if (Objects.isNull(userChat)) {
+			throw new ChatPermissionException("You haven't permisions for this chat");
+		}
+	}
+
+	private void validateHiddenChat(UserChat userChat) {
+		if (userChat.getChat().getHidden()) {
+			throw new ChatRemovedException("Chat was removed");
+		}
+	}
 }

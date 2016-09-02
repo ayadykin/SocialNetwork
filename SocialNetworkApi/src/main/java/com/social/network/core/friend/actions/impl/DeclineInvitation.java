@@ -1,9 +1,8 @@
-package com.social.network.core.friend;
+package com.social.network.core.friend.actions.impl;
 
 import org.springframework.stereotype.Component;
 
-import com.social.network.core.FriendModel;
-import com.social.network.core.FriendTemplate;
+import com.social.network.core.friend.actions.FriendTemplate;
 import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.User;
@@ -12,13 +11,8 @@ import com.social.network.domain.model.User;
 public class DeclineInvitation extends FriendTemplate{
 
 	@Override
-	public FriendModel callService(long userId) {
-		return friendService.declineInvitation(userId);
-	}
-
-	@Override
 	public Message createMessage(String messageText, User publisher, Chat chat) {
-		return friendAnswerMessage.createSystemMessage(messageText, publisher, chat);
+		return createSystemMessage(messageText, publisher, chat);
 	}
 
 }

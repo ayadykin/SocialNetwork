@@ -26,7 +26,7 @@ import com.social.network.domain.util.Constants;
 @Entity
 @DynamicUpdate(value = true)
 @NamedQueries(value = { @NamedQuery(name = Constants.FIND_FRIEND_BY_OWNER, query = "select f from Friend f join f.user u where u = :user"),
-        @NamedQuery(name = Constants.FIND_BY_FRIEND_AND_OWNER, query = "FROM Friend f where f.user = :invitee and f.friend = :inviter)") })
+        @NamedQuery(name = Constants.FIND_BY_FRIEND_AND_OWNER, query = "FROM Friend f where f.user.userId = :invitee and f.friend.userId = :inviter)") })
 public class Friend implements Serializable {
 
     @Id

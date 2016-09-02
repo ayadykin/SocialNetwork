@@ -70,15 +70,8 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
     public Message createMialing(String messageText, User publisher, Set<Chat> chats) {
         SystemMessage message = systemMessageDao.merge(new SystemMessage(messageText, publisher, chats, SystemMessageStatus.SYSTEM));
 
-        //long messageId = message.getMessageId();
-
         for (Chat chat : chats) {
             addRecipients(chat.getUserChat(), message.getMessageId());
-            /*for (UserChat user : chat.getUserChat()) {
-                if (user.getUserId() != publisher.getUserId()) {
-                    recipientDao.save(new Recipient(user.getUser(), messageId));
-                }
-            }*/
         }
         return message;
     }

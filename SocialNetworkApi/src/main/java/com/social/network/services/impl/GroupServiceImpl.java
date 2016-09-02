@@ -1,5 +1,7 @@
 package com.social.network.services.impl;
 
+import static com.social.network.utils.Constants.ADD_USER_TO_GROUP_MESSAGE;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -8,10 +10,12 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.core.GroupModel;
+import com.social.network.core.friend.actions.FriendTemplate;
 import com.social.network.domain.dao.ChatDao;
 import com.social.network.domain.dao.GroupDao;
 import com.social.network.domain.dao.UserChatDao;
@@ -19,7 +23,6 @@ import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Group;
 import com.social.network.domain.model.User;
 import com.social.network.domain.model.UserChat;
-import com.social.network.domain.model.enums.FriendStatus;
 import com.social.network.exceptions.group.DeleteGroupException;
 import com.social.network.exceptions.group.GroupAdminException;
 import com.social.network.exceptions.group.GroupPermissionExceptions;
@@ -45,6 +48,9 @@ public class GroupServiceImpl implements GroupService {
     private UserService userService;
     @Autowired
     private FriendService friendService;
+    @Autowired
+	@Qualifier("addUserToGroup")
+	private FriendTemplate addUserToGroup;
 
     @Override
     @Transactional(readOnly = true)
@@ -87,7 +93,7 @@ public class GroupServiceImpl implements GroupService {
             for (int i = 0; i < size; ++i) {
                 if (Objects.nonNull(userIds[i])) {
                     User user = userService.getUserById(Long.valueOf(userIds[i]));
-                    isYourFriend(loggedUser, user);
+                    isYourFriend(loggedUser.getUserId(), user.getUserId());
                     usersList.add(user);
                 }
             }
@@ -120,10 +126,12 @@ public class GroupServiceImpl implements GroupService {
         User invitedUser = userService.getUserById(invitedUserId);
 
         // Validation
-        addUserToGroupValidation(loggedUser, invitedUser, group);
+        addUserToGroupValidation(loggedUser.getUserId(), invitedUserId, group);
 
-        group.getChat().addUserChat(userChatDao.merge(new UserChat(group.getChat(), invitedUser, group.getGroupName())));
+        userChatDao.merge(new UserChat(group.getChat(), invitedUser, group.getGroupName()));
 
+        addUserToGroup.friendAction(ADD_USER_TO_GROUP_MESSAGE, loggedUser, group.getChat());
+        
         return new GroupModel(invitedUser, loggedUser, group);
     }
 
@@ -187,10 +195,10 @@ public class GroupServiceImpl implements GroupService {
      * Custom action validation
      */
 
-    private void addUserToGroupValidation(User loggedUser, User invitedUser, Group group) {
+    private void addUserToGroupValidation(long loggedUser, long invitedUser, Group group) {
         logger.debug("-> addUserToGroupValidation ");
-        isAdminAction(loggedUser.getUserId(), group.getAdmin().getUserId(), true);
-        isUserInGroup(invitedUser.getUserId(), group.getChatId(), false);
+        isAdminAction(loggedUser, group.getAdmin().getUserId(), true);
+        isUserInGroup(invitedUser, group.getChatId(), false);
         isYourFriend(loggedUser, invitedUser);
     }
 
@@ -249,11 +257,9 @@ public class GroupServiceImpl implements GroupService {
 
     }
 
-    private void isYourFriend(User loggedUser, User invitedUser) {
+    private void isYourFriend(long loggedUser, long invitedUser) {
         logger.debug("-> isYourFriend ");
-        try {
-            friendService.validateFriendByStatus(invitedUser, loggedUser, FriendStatus.ACCEPTED);
-        } catch (RuntimeException e) {
+        if(!friendService.isYourFriend(invitedUser, loggedUser)){
             throw new GroupPermissionExceptions("You catn't add this user!");
         }
     }

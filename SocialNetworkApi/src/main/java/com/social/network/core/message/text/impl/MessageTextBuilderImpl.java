@@ -29,7 +29,15 @@ public class MessageTextBuilderImpl implements MessageTextBuilder {
 		return buildMessage(messageTemplate, arg);
 	}
 
+	@Override
+	public String createThreeParamsMessage(String messageTemplate, String firstParam, String secondParam,
+			String therdParam) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	private String buildMessage(String messageTemplate, String[] arg) {
 		return messageSource.getMessage(messageTemplate, arg, Locale.getDefault());
 	}
+
+	
 }
