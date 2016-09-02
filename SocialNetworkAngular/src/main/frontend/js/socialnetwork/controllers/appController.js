@@ -17,14 +17,15 @@ angular.module('socialNetworkControllers').controller('AppController',
 		$log.info("AppController logout");
 
 		$http.get(config.logoutPath).success(function(data) {
-		    if (data.response) {
-			$log.info("AppController logout success");
+		    if (data.logout) {
+			$log.debug("AppController logout success");
 			$rootScope.authenticated = false;
 		    }
 		});
 	    };
 
 	    $scope.successMessageHandler = function(message) {
+		$log.debug("AppController successMessageHandler message: " + message);
 		if (!$rootScope.notification.error) {
 		    $rootScope.notification.message = message;
 		    $rootScope.notification.error = false;

@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +23,7 @@ import org.hibernate.validator.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.social.network.domain.model.enums.Role;
 import com.social.network.domain.util.Constants;
 
 /**
@@ -43,8 +46,8 @@ public class Account implements Serializable, UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @Cascade({CascadeType.SAVE_UPDATE})
     @OneToOne( fetch = FetchType.LAZY)
@@ -56,7 +59,7 @@ public class Account implements Serializable, UserDetails {
     public Account() {
     }
 
-    public Account(String email, String password, String role, User user) {
+    public Account(String email, String password, Role role, User user) {
 	this.email = email;
 	this.password = password;
 	this.role = role;
@@ -87,11 +90,15 @@ public class Account implements Serializable, UserDetails {
 	this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
 	return role;
     }
+    
+    public String getRoleName() {
+        return role.name();
+    }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
 	this.role = role;
     }
 
