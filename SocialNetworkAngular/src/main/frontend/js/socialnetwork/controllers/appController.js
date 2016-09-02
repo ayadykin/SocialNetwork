@@ -17,8 +17,8 @@ angular.module('socialNetworkControllers').controller('AppController',
 		$log.info("AppController logout");
 
 		$http.get(config.logoutPath).success(function(data) {
-		    if (data.response) {
-			$log.info("AppController logout success");
+		    if (data.logout) {
+			$log.debug("AppController logout success");
 			$rootScope.authenticated = false;
 		    }
 		});

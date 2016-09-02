@@ -24,8 +24,7 @@ public class RedisMessageModel implements Serializable{
     public RedisMessageModel() {
     }
 
-    public RedisMessageModel(long chatId, long messageId, String text, Date date, String ownerName, long ownerId) {
-        this.chatId = chatId;
+    public RedisMessageModel(long messageId, String text, Date date, String ownerName, long ownerId) {
         this.messageId = messageId;
         this.text = text;
         this.date = date;
@@ -37,7 +36,7 @@ public class RedisMessageModel implements Serializable{
         return chatId;
     }
 
-    public void setChatId(long chatId) {
+    public void setChat(long chatId) {
         this.chatId = chatId;
     }
 

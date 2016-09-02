@@ -111,4 +111,10 @@ public class Friend implements Serializable {
         this.friendName = friendName;
     }
 
+    @Override
+    public String toString() {
+        return "Friend [friendId=" + friendId + ", chatId=" + chat.getChatId() + ", userId=" + user.getUserId() + ", friendUserId=" + friend.getUserId() + ", friendStatus="
+                + friendStatus + ", friendName=" + friendName + "]";
+    }
+
 }

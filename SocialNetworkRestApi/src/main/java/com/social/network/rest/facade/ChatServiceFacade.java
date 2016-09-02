@@ -3,7 +3,10 @@ package com.social.network.rest.facade;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,13 +14,13 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.UserChat;
-import com.social.network.rest.dto.MessageDto;
+import com.social.network.redis.RedisMessageModel;
 import com.social.network.rest.dto.chat.ChatDto;
 import com.social.network.rest.utils.EntityToDtoMapper;
 import com.social.network.services.ChatService;
 import com.social.network.services.MessageService;
 import com.social.network.services.RedisService;
-import com.social.network.services.UserService;
+import com.social.network.services.impl.RedisServiceImpl;
 
 /**
  * Created by Yadykin Andrii Jul 21, 2016
@@ -27,8 +30,8 @@ import com.social.network.services.UserService;
 @Service
 public class ChatServiceFacade {
 
-    @Autowired
-    private UserService userService;
+    private static final Logger logger = LoggerFactory.getLogger(ChatServiceFacade.class);
+
     @Autowired
     private ChatService chatService;
     @Autowired
@@ -38,7 +41,6 @@ public class ChatServiceFacade {
 
     @Transactional
     public List<ChatDto> getChatsList() {
-        long userId = userService.getLoggedUserId();
 
         // Fill ChatDto list
         List<ChatDto> chatsList = new ArrayList<>();
@@ -53,6 +55,15 @@ public class ChatServiceFacade {
         return EntityToDtoMapper.convertChatToChatDto(chatService.getChat(chatId));
     }
 
+    /**
+     * Add message to DB and send to redis
+     * 
+     * @param messageText
+     * @param chatId
+     * @param publicMessage
+     * @return
+     */
+    
     @Transactional
     public boolean sendMessage(String messageText, long chatId, boolean publicMessage) {
 
@@ -67,31 +78,45 @@ public class ChatServiceFacade {
     }
 
     @Transactional
-    public List<MessageDto> getChatMesasges(long chatId) {
+    public List<RedisMessageModel> getChatMesasges(long chatId) {
         return getChatMesasges(chatId, null);
     }
 
+    /**
+     * Get messages from DB
+     * 
+     * @param chatId
+     * @param filter
+     * @return
+     */
     @Transactional
-    public List<MessageDto> getChatMesasges(long chatId, Date filter) {
+    public List<RedisMessageModel> getChatMesasges(long chatId, Date filter) {
 
         List<Message> messagesList = chatService.getChatMesasges(chatId, true, filter);
         // Fill MessageDto list
-        List<MessageDto> messages = new ArrayList<>();
+        List<RedisMessageModel> messages = new ArrayList<>();
         for (Message message : messagesList) {
-            MessageDto messageDto = EntityToDtoMapper.convertMessageToMessageDto(message);
-            messages.add(messageDto);
+            RedisMessageModel redisMessageModel = RedisServiceImpl.convertMessageToMessageModel(message);
+            messages.add(redisMessageModel);
+
         }
         return messages;
     }
-    
-    @Transactional
-    public DeferredResult<MessageDto> getRedisMessage() {
-        final DeferredResult<MessageDto> deferredResult = new DeferredResult<MessageDto>(null, "");
 
-        /*MessageDto message = redisService.getMessage();
-        if (Objects.nonNull(message)) {
-            deferredResult.setResult(message);
-        }*/
+    /**
+     * Get message from redis
+     * 
+     * @return
+     */
+    @Transactional
+    public DeferredResult<RedisMessageModel> getRedisMessage() {
+        final DeferredResult<RedisMessageModel> deferredResult = new DeferredResult<RedisMessageModel>(null, "");
+
+        RedisMessageModel redisMessageModel = redisService.getMessage();
+
+        if (Objects.nonNull(redisMessageModel)) {
+            deferredResult.setResult(redisMessageModel);
+        }
 
         return deferredResult;
     }
@@ -110,5 +135,5 @@ public class ChatServiceFacade {
 
     private boolean sendMessageToRedis(Message message) {
         return redisService.sendMessageToRedis(message);
-    }
+    }  
 }

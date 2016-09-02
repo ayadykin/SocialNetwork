@@ -11,11 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.Group;
-import com.social.network.domain.model.Message;
-import com.social.network.domain.model.SystemMessage;
 import com.social.network.domain.model.UserChat;
 import com.social.network.rest.dto.FriendDto;
-import com.social.network.rest.dto.MessageDto;
 import com.social.network.rest.dto.chat.ChatDto;
 import com.social.network.rest.dto.group.GroupDto;
 import com.social.network.rest.dto.group.GroupUserDto;
@@ -27,50 +24,20 @@ import com.social.network.rest.dto.group.GroupUserDto;
 
 public class EntityToDtoMapper {
 
-    private static final Logger logger = LoggerFactory.getLogger(EntityToDtoMapper.class);
-    
-    public static MessageDto convertMessageToMessageDto(Message message) {
-        logger.debug("strart convertMessageToMessageDto : message = {} ", message);
-
-        // Validate chat
-        long chatId = 0;
-        if (message.getChat().size() == 1) {
-            chatId = message.getChat().iterator().next().getChatId();
-        }
-
-       /* if (chatId <= 0) {
-            throw new ConvertMessageException("Can't convert message without chat id");
-        }*/
-        // Get message's owner name
-        String ownerName = message.getPublisher().getUserFullName();
-        MessageDto messageDto = new MessageDto(chatId, message.getMessageId(), message.getText(), message.getCreateDate(), ownerName,
-                message.getPublisherId());
-
-        // Get invitation message flag
-        if (message instanceof SystemMessage) {
-            messageDto.setMessageInviteStatus(((SystemMessage) message).getSystemMessageStatus());
-        }
-        // Get hidden message flag
-        if (message.getHidden().isHidden()) {
-            messageDto.setHidden(true);
-            messageDto.setText("This message has been removed.");
-        }
-
-        logger.debug("end convertMessageToMessageDto : messageDto = {}", messageDto);
-        return messageDto;
-    }
+    private static final Logger logger = LoggerFactory.getLogger(EntityToDtoMapper.class);  
 
     public static ChatDto convertChatToChatDto(UserChat chat) {
         return new ChatDto(chat.getChat().getChatId(), chat.getChatName(), chat.getChat().getHidden());
     }
 
     public static FriendDto convertFriendToFriendDto(Friend friend) {
-        logger.debug(" convertFriendToFriendDto ");
+        logger.debug(" convertFriendToFriendDto friend : {} ", friend);
         return new FriendDto(friend.getFriendName(), friend.getFriendStatus(), friend.getChat().getChatId(),
                 friend.getFriend().getUserId());
     }
 
     public static List<GroupUserDto> convertUserToGroupUserDto(Set<UserChat> users, long adminId) {
+        logger.debug(" convertUserToGroupUserDto ");
         List<GroupUserDto> usersList = new ArrayList<>();
         for (UserChat user : users) {
             boolean isAdmin = user.getUserId() == adminId;

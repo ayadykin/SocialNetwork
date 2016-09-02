@@ -8,7 +8,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.domain.dao.RecipientDao;
 import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Message;
 import com.social.network.domain.model.Recipient;
@@ -46,7 +45,7 @@ public class RedisServiceImpl implements RedisService {
         BoundListOperations<String, RedisMessageModel> listOps = redisTemplate.boundListOps(Long.valueOf(userId).toString());
 
         User loggedUser = userService.getLoggedUserEntity();
-        RedisMessageModel messageDto = listOps.leftPop();
+        RedisMessageModel messageDto = (RedisMessageModel) listOps.leftPop();
         if (messageDto != null) {
             if (loggedUser.getProfile().isTranslate()) {
                 logger.debug("get translated message");
@@ -64,12 +63,13 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean sendMessageToRedis(Message message) {
         logger.debug("sendMessagesToRedis :  message = {}", message);
-        RedisMessageModel redisMessageModel = convertMessageToRedisMessage(message);
+        RedisMessageModel redisMessageModel = RedisServiceImpl.convertMessageToMessageModel(message);
         try {
-            for (Chat chat : message.getChat()) {
-                redisMessageModel.setChatId(chat.getChatId());
+            for (Chat chat : message.getChat()) {              
+                redisMessageModel.setChat(chat.getChatId());            
                 for (Recipient recipient : message.getRecipient()) {
                     String key = Long.valueOf(recipient.getUserId()).toString();
                     redisTemplate.boundListOps(key).rightPush(redisMessageModel);
@@ -83,12 +83,12 @@ public class RedisServiceImpl implements RedisService {
         return true;
     }
 
-    private RedisMessageModel convertMessageToRedisMessage(Message message) {
+    public static RedisMessageModel convertMessageToMessageModel(Message message) {
         logger.debug("strart convertMessageToMessageDto : message = {} ", message);
 
         // Get message's owner name
         String ownerName = message.getPublisher().getUserFullName();
-        RedisMessageModel messageDto = new RedisMessageModel(0, message.getMessageId(), message.getText(), message.getCreateDate(),
+        RedisMessageModel messageDto = new RedisMessageModel(message.getMessageId(), message.getText(), message.getCreateDate(),
                 ownerName, message.getPublisherId());
 
         // Get invitation message flag

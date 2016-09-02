@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import com.social.network.exceptions.chat.EmptyMessageException;
-import com.social.network.rest.dto.MessageDto;
+import com.social.network.redis.RedisMessageModel;
 import com.social.network.rest.dto.chat.ChatDto;
 import com.social.network.rest.dto.chat.EditMessageDto;
 import com.social.network.rest.dto.chat.GetChatMessagesDto;
@@ -49,13 +49,13 @@ public class ChatApi {
 
     @ResponseBody
     @RequestMapping(value = "/getMessages/{chatId}", method = RequestMethod.GET)
-    public List<MessageDto> getFilteredMessages(@PathVariable("chatId") long chatId) {
+    public List<RedisMessageModel> getFilteredMessages(@PathVariable("chatId") long chatId) {
         return chatFacade.getChatMesasges(chatId);
     }
 
     @ResponseBody
     @RequestMapping(value = "/getMessages", method = RequestMethod.POST)
-    public List<MessageDto> getChatMessages(@RequestBody GetChatMessagesDto getChatMessagesDto) {
+    public List<RedisMessageModel> getChatMessages(@RequestBody GetChatMessagesDto getChatMessagesDto) {
         return chatFacade.getChatMesasges(getChatMessagesDto.getChatId(), getChatMessagesDto.getDateFilter());
     }
 
@@ -84,7 +84,7 @@ public class ChatApi {
 
     @ResponseBody
     @RequestMapping(value = "/getMessage", method = RequestMethod.GET)
-    public DeferredResult<MessageDto> getRedisMessage() {
+    public DeferredResult<RedisMessageModel> getRedisMessage() {
         return chatFacade.getRedisMessage();
     }
 }

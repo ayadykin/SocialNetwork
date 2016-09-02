@@ -2,7 +2,7 @@ package com.social.network.domain.model;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -36,7 +36,7 @@ import com.social.network.domain.model.labels.HiddenLabel;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
 @FilterDef(name = "messageLimit", parameters = @ParamDef(name = "minDate", type = "date"))
-@Filter(name="messageLimit", condition=":minDate <= created ")
+@Filter(name = "messageLimit", condition = ":minDate <= created ")
 public class Message implements Serializable {
 
     @Id
@@ -58,32 +58,33 @@ public class Message implements Serializable {
     private User publisher;
 
     @OneToMany(mappedBy = "messageId")
-    private Set<Recipient> recipient;
+    private Set<Recipient> recipient = new HashSet<>();
 
     @NotNull
     @ManyToMany
     @JoinTable(name = "chat_messages", joinColumns = { @JoinColumn(name = "messageId") }, inverseJoinColumns = {
             @JoinColumn(name = "chatId") })
-    private Set<Chat> chat = new LinkedHashSet<>();;
+    private Set<Chat> chat = new HashSet<>();
 
     public Message() {
 
     }
 
-    public Message(String text, User publisher, Chat chat) {
+    public Message(String text, User publisher) {
         this.text = text;
         this.publisher = publisher;
-        this.chat.add(chat);
         this.createDate = new CreationLabel();
         this.hidden = new HiddenLabel();
     }
-    
+
+    public Message(String text, User publisher, Chat chat) {
+        this(text, publisher);
+        this.chat.add(chat);
+    }
+
     public Message(String text, User publisher, Set<Chat> chat) {
-        this.text = text;
-        this.publisher = publisher;
+        this(text, publisher);
         this.chat = chat;
-        this.createDate = new CreationLabel();
-        this.hidden = new HiddenLabel();
     }
 
     public Set<Chat> getChat() {
