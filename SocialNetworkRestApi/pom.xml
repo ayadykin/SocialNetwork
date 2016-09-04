@@ -21,7 +21,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.social.network.service</groupId>
-			<artifactId>social.network.service</artifactId>
+			<artifactId>SocialNetworkServices</artifactId>
 			<version>1.0.0</version>
 		</dependency>
 

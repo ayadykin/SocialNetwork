@@ -18,8 +18,8 @@ import com.social.network.domain.config.HibernateConfig;
 import com.social.network.domain.model.enums.FriendStatus;
 import com.social.network.exceptions.friend.DeleteFriendException;
 import com.social.network.exceptions.friend.FriendNotExistException;
-import com.social.network.exceptions.friend.InviteAcceptedException;
-import com.social.network.exceptions.friend.InviteDeclinedException;
+import com.social.network.exceptions.friend.AcceptInvitationException;
+import com.social.network.exceptions.friend.DeclineInvitationException;
 import com.social.network.exceptions.friend.InviteException;
 import com.social.network.exceptions.user.UserNotExistException;
 
@@ -137,7 +137,7 @@ public class FriendServiceTest extends InitTest {
     /**
      * Accept invitation twice
      */
-    @Test(expected = InviteAcceptedException.class)
+    @Test(expected = AcceptInvitationException.class)
     public void testInviteAcceptedExceptions() {
         authService.signin(account10);
         friendService.inviteFriend(user20.getUserId());
@@ -153,7 +153,7 @@ public class FriendServiceTest extends InitTest {
         friendService.declineInvitation(user30.getUserId());
     }
 
-    @Test(expected = InviteDeclinedException.class)
+    @Test(expected = DeclineInvitationException.class)
     public void testInviteDeclinedException() {
         authService.signin(account10);
         friendService.inviteFriend(user20.getUserId());

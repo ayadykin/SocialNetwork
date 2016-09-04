@@ -40,11 +40,10 @@ public class EntityToDtoMapper {
         logger.debug(" convertUserToGroupUserDto ");
         List<GroupUserDto> usersList = new ArrayList<>();
         for (UserChat user : users) {
-            boolean isAdmin = user.getUserId() == adminId;
-            if (isAdmin) {
-                usersList.add(new GroupUserDto(user.getUserId(), user.getUserFullName(), isAdmin));
+            if (user.getUserId() == adminId) {
+                usersList.add(new GroupUserDto(user.getUserId(), user.getUserFullName(), true));
             } else {
-                usersList.add(new GroupUserDto(user.getUserId(), user.getUserFullName(), isAdmin));
+                usersList.add(new GroupUserDto(user.getUserId(), user.getUserFullName(), false));
             }
         }
         return usersList;

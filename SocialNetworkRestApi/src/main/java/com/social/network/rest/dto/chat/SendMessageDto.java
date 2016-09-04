@@ -8,32 +8,37 @@ import java.io.Serializable;
  */
 
 public class SendMessageDto implements Serializable {
-    private String message;
-    private long chatId;
-    private boolean publicMessage;
+	private String message;
+	private long chatId;
+	private boolean publicMessage;
 
-    public String getMessage() {
-        return message;
-    }
+	public String getMessage() {
+		return message;
+	}
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+	public void setMessage(String message) {
+		this.message = message;
+	}
 
-    public long getChatId() {
-        return chatId;
-    }
+	public long getChatId() {
+		return chatId;
+	}
 
-    public void setChatId(long chatId) {
-        this.chatId = chatId;
-    }
+	public void setChatId(long chatId) {
+		this.chatId = chatId;
+	}
 
-    public boolean getPublicMessage() {
-        return publicMessage;
-    }
+	public boolean getPublicMessage() {
+		return publicMessage;
+	}
 
-    public void setPublicMessage(boolean publicMessage) {
-        this.publicMessage = publicMessage;
-    }
+	public void setPublicMessage(boolean publicMessage) {
+		this.publicMessage = publicMessage;
+	}
+
+	@Override
+	public String toString() {
+		return "SendMessageDto [message=" + message + ", chatId=" + chatId + ", publicMessage=" + publicMessage + "]";
+	}
 
 }

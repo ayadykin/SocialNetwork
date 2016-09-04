@@ -31,7 +31,7 @@ public class ProfileServiceFacade {
     @Autowired
     private UserService userService;
 
-    @Transactional
+    
     public FullProfileDto getProfile() {
         User loggedUser = userService.getLoggedUserEntity();
         Profile profile = loggedUser.getProfile();
@@ -39,13 +39,13 @@ public class ProfileServiceFacade {
                 profile.getCountry(), loggedUser.getLocale(), profile.isTranslate());
     }
 
-    @Transactional
+    
     public UserProfileDto viewProfile(long userId) {
         User loggedUser = userService.getLoggedUserEntity();
         return cerateUserProfileDto(loggedUser);
     }
 
-    @Transactional
+    
     public FullProfileDto updateProfile(FullProfileDto profileDto) {
         
          User user = profileService.updateProfile(profileDto.getFirstName(), profileDto.getLastName(), profileDto.getStreet(),
@@ -54,7 +54,7 @@ public class ProfileServiceFacade {
          return profileDto;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<UserProfileDto> searchProfile(@RequestBody PublicProfileDto profileDto) {
         List<User> users = profileService.searchProfile(profileDto.getFirstName(), profileDto.getLastName(), profileDto.getCity(),
                 profileDto.getCountry());
@@ -66,7 +66,7 @@ public class ProfileServiceFacade {
         return usersDto;
     }
 
-    @Transactional
+    
     public String changePassword(PasswordDto passwordDto) {
         return profileService.changePassword(passwordDto.getOldPassword(), passwordDto.getNewPassword(), passwordDto.getConfirmPassword());
     }

@@ -6,5 +6,5 @@ package com.social.network.redis;
  */
 
 public interface RedisMessageObserver {
-    boolean updateMessageStatus(long userId, long messageId);
+    boolean setMessageToReaded(long userId, long messageId);
 }

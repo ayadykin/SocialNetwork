@@ -1,4 +1,4 @@
-package com.social.network.core.message;
+package com.social.network.core.friend.message;
 
 import java.util.Objects;
 
@@ -33,6 +33,7 @@ public class FriendAnswerMessage {
     public Message createSystemMessage(String messageTemplate,  User publisher, Chat chat) {
         logger.debug("-> createMessage chatId : " + chat.getChatId());
 
+        //TODO Refactor find system message by status
         SystemMessage systemMessage = (SystemMessage) chat.getMessages().iterator().next();
 
         if (Objects.nonNull(systemMessage) && systemMessage.getSystemMessageStatus() == SystemMessageStatus.INVITE) {

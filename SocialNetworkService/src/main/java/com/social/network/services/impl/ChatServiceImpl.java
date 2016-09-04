@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.core.message.FriendsNotification;
+import com.social.network.core.message.FriendsMailing;
 import com.social.network.domain.dao.MessageDao;
 import com.social.network.domain.dao.UserChatDao;
 import com.social.network.domain.model.Message;
@@ -45,7 +45,7 @@ public class ChatServiceImpl implements ChatService {
 	@Autowired
 	private MessageService messageService;
 	@Autowired
-	private FriendsNotification friendsNotification;
+	private FriendsMailing friendsNotification;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -101,7 +101,7 @@ public class ChatServiceImpl implements ChatService {
 		logger.debug("sendPublicMessage messageText : {} ", messageText);
 		User loggedUser = userService.getLoggedUserEntity();
 
-		friendsNotification.notificate(messageText, loggedUser);
+		friendsNotification.mailing(messageText, loggedUser);
 	}
 
 	private void sendMessageValidate(UserChat userChat) {

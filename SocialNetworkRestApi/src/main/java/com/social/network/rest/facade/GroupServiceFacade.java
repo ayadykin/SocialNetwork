@@ -1,11 +1,6 @@
 package com.social.network.rest.facade;
 
-import static com.social.network.utils.Constants.ADD_USER_TO_GROUP_MESSAGE;
-import static com.social.network.utils.Constants.CREATE_GROUP_MESSAGE;
 import static com.social.network.utils.Constants.CREATE_PUBLIC_GROUP_MESSAGE;
-import static com.social.network.utils.Constants.DELETE_GROUP_MESSAGE;
-import static com.social.network.utils.Constants.DELETE_USER_FROM_GROUP_MESSAGE;
-import static com.social.network.utils.Constants.LEAVE_GROUP_MESSAGE;
 
 import java.util.Set;
 
@@ -15,21 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.core.GroupModel;
-import com.social.network.core.message.FriendsNotification;
+import com.social.network.core.message.FriendsMailing;
 import com.social.network.core.message.text.MessageTextBuilder;
-import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Group;
-import com.social.network.domain.model.Message;
 import com.social.network.domain.model.User;
-import com.social.network.domain.model.UserChat;
-import com.social.network.domain.model.enums.SystemMessageStatus;
 import com.social.network.rest.dto.group.GroupDto;
 import com.social.network.rest.dto.group.GroupUserDto;
 import com.social.network.rest.utils.EntityToDtoMapper;
 import com.social.network.services.GroupService;
-import com.social.network.services.MessageService;
-import com.social.network.services.RedisService;
 import com.social.network.services.UserService;
 
 /**
@@ -40,136 +28,70 @@ import com.social.network.services.UserService;
 @Service
 public class GroupServiceFacade {
 
-    private static final Logger logger = LoggerFactory.getLogger(GroupServiceFacade.class);
+	private static final Logger logger = LoggerFactory.getLogger(GroupServiceFacade.class);
 
-    @Autowired
-    private GroupService groupService;
-    @Autowired
-    private RedisService redisService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private MessageTextBuilder messageTextBuilder;
-    @Autowired
-    private MessageService messageService;
-    @Autowired
-    private FriendsNotification friendsNotification;
+	@Autowired
+	private GroupService groupService;
+	@Autowired
+	private UserService userService;
+	@Autowired
+	private MessageTextBuilder messageTextBuilder;
+	@Autowired
+	private FriendsMailing friendsMailing;
+	
+	public GroupDto createGroup(String name, String[] userList, boolean publicGroup) {
+		long userId = userService.getLoggedUserId();
 
-    @Transactional
-    public GroupDto createGroup(String name, String[] userList, boolean publicGroup) {
-        long userId = userService.getLoggedUserId();
+		Group group = groupService.createGroup(name, userList);
+		
+		// Mailing
+		if (publicGroup) {
+			String messageText = messageTextBuilder.createTwoParamsMessage(CREATE_PUBLIC_GROUP_MESSAGE,
+					group.getAdmin().getUserFullName(), name);
+			friendsMailing.mailing(messageText, group.getAdmin());
+		}
+		return EntityToDtoMapper.convertGroupToGroupsDto(group, userId, false);
+	}
 
-        Group group = groupService.createGroup(name, userList);
-        Chat chat = group.getChat();
-        ;
+	public Set<GroupDto> getGroups() {
+		long userId = userService.getLoggedUserId();
+		return EntityToDtoMapper.convertGroupsToGroupsDto(groupService.getGroups(), userId, false);
+	}
 
-        // Create messages
-        for (UserChat user : chat.getUserChat()) {
-            String messageText = null;
-            if (user.getUserId() == userId) {
-                messageText = messageTextBuilder.createOneParamMessage(CREATE_GROUP_MESSAGE, user.getUser().getUserFullName());
-            } else {
-                messageText = messageTextBuilder.createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE, group.getAdmin().getUserFullName(),
-                        user.getUser().getUserFullName());
-            }
-            sendMessageToRedis(messageService.createSystemMessage(messageText, group.getAdmin(), chat, SystemMessageStatus.SYSTEM));
-        }
+	@Transactional(readOnly = true)
+	public GroupDto getGroup(long groupId) {
+		long userId = userService.getLoggedUserId();
 
-        // Public group notification
-        if (publicGroup) {
+		Group group = groupService.getGroup(groupId);
 
-            String messageText = messageTextBuilder.createTwoParamsMessage(CREATE_PUBLIC_GROUP_MESSAGE, group.getAdmin().getUserFullName(),
-                    name);
-            friendsNotification.notificate(messageText, group.getAdmin());
-        }
+		return EntityToDtoMapper.convertGroupToGroupsDto(group, userId, true);
+	}
 
-        return EntityToDtoMapper.convertGroupToGroupsDto(group, userId, false);
-    }
+	public GroupUserDto addUserToGroup(long groupId, long userId) {
 
-    @Transactional
-    public Set<GroupDto> getGroups() {
-        long userId = userService.getLoggedUserId();
-        return EntityToDtoMapper.convertGroupsToGroupsDto(groupService.getGroups(), userId, false);
-    }
+		User user = groupService.addUserToGroup(groupId, userId);
 
-    @Transactional
-    public GroupDto getGroup(long groupId) {
-        long userId = userService.getLoggedUserId();
+		return new GroupUserDto(userId, user.getUserFullName(), false);
+	}
 
-        Group group = groupService.getGroup(groupId);
+	public GroupUserDto deleteUserFromGroup(long groupId, long userId) {
 
-        return EntityToDtoMapper.convertGroupToGroupsDto(group, userId, true);
-    }
+		User user = groupService.deleteUserFromGroup(groupId, userId);
+		return new GroupUserDto(userId, user.getUserFullName(), false);
+	}
 
-    @Transactional
-    public GroupUserDto addUserToGroup(long groupId, long userId) {
+	public GroupDto leaveGroup(long groupId) {
+		long userId = userService.getLoggedUserId();
+		Group group = groupService.leaveGroup(groupId);
 
-        GroupModel groupModel = groupService.addUserToGroup(groupId, userId);
+		return EntityToDtoMapper.convertGroupToGroupsDto(group, userId, false);
+	}
 
-        Chat chat = groupModel.getGroup().getChat();
-        User invitedUser = groupModel.getInvitedUser();
+	public GroupDto deleteGroup(long groupId) {
+		long userId = userService.getLoggedUserId();
+		Group group = groupService.deleteGroup(groupId);
 
-        // Create message
+		return EntityToDtoMapper.convertGroupToGroupsDto(group, userId, false);
+	}
 
-        String messageText = messageTextBuilder.createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE, invitedUser.getUserFullName(),
-                groupModel.getLoggedUser().getFirstName());
-
-        Message message = messageService.createSystemMessage(messageText, groupModel.getLoggedUser(), chat, SystemMessageStatus.SYSTEM);
-
-        sendMessageToRedis(message);
-        return new GroupUserDto(invitedUser.getUserId(), invitedUser.getUserFullName(), false);
-    }
-
-    @Transactional
-    public GroupUserDto deleteUserFromGroup(long groupId, long userId) {
-
-        GroupModel groupModel = groupService.deleteUserFromGroup(groupId, userId);
-
-        Chat chat = groupModel.getGroup().getChat();
-        User removedUser = groupModel.getInvitedUser();
-
-        // Create message
-        String messageText = messageTextBuilder.createTwoParamsMessage(DELETE_USER_FROM_GROUP_MESSAGE, removedUser.getUserFullName(),
-                groupModel.getLoggedUser().getFirstName());
-        Message message = messageService.createSystemMessage(messageText, groupModel.getLoggedUser(), chat, SystemMessageStatus.SYSTEM);
-
-        sendMessageToRedis(message);
-        return new GroupUserDto(removedUser.getUserId(), removedUser.getUserFullName(), false);
-    }
-
-    @Transactional
-    public boolean leaveGroup(long groupId) {
-        long userId = userService.getLoggedUserId();
-
-        GroupModel groupModel = groupService.leaveGroup(groupId);
-
-        // Create message
-        String messageText = messageTextBuilder.createOneParamMessage(LEAVE_GROUP_MESSAGE, groupModel.getLoggedUser().getUserFullName());
-
-        Message message = messageService.createSystemMessage(messageText, groupModel.getLoggedUser(), groupModel.getGroup().getChat(),
-                SystemMessageStatus.SYSTEM);
-
-        sendMessageToRedis(message);
-
-        return true;
-    }
-
-    @Transactional
-    public GroupDto deleteGroup(long groupId) {
-        long userId = userService.getLoggedUserId();
-        GroupModel groupModel = groupService.deleteGroup(groupId);
-
-        // Create message
-        String messageText = messageTextBuilder.createOneParamMessage(DELETE_GROUP_MESSAGE, groupModel.getLoggedUser().getUserFullName());
-
-        Message message = messageService.createSystemMessage(messageText, groupModel.getLoggedUser(), groupModel.getGroup().getChat(),
-                SystemMessageStatus.SYSTEM);
-
-        sendMessageToRedis(message);
-        return EntityToDtoMapper.convertGroupToGroupsDto(groupModel.getGroup(), userId, false);
-    }
-
-    private boolean sendMessageToRedis(Message message) {
-        return redisService.sendMessageToRedis(message);
-    }
 }

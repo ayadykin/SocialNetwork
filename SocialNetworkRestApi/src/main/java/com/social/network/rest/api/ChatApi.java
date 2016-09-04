@@ -1,13 +1,18 @@
 package com.social.network.rest.api;
 
+import static com.social.network.rest.utils.Constants.CHAT_PARAM;
+import static com.social.network.rest.utils.Constants.CHAT_PATH;
+
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
@@ -18,7 +23,6 @@ import com.social.network.rest.dto.chat.EditMessageDto;
 import com.social.network.rest.dto.chat.GetChatMessagesDto;
 import com.social.network.rest.dto.chat.SendMessageDto;
 import com.social.network.rest.facade.ChatServiceFacade;
-import com.social.network.services.RedisService;
 import com.social.network.utils.RestResponse;
 
 /**
@@ -27,64 +31,60 @@ import com.social.network.utils.RestResponse;
  */
 
 @RestController
-@RequestMapping(value = "/chat")
+@RequestMapping(value = CHAT_PATH)
 public class ChatApi {
 
-    @Autowired
-    private ChatServiceFacade chatFacade;
-    @Autowired
-    private RedisService redisService;
+	private static final Logger logger = LoggerFactory.getLogger(ChatApi.class);
 
-    @ResponseBody
-    @RequestMapping(method = RequestMethod.GET)
-    public List<ChatDto> getChatsList() {
-        return chatFacade.getChatsList();
-    }
+	@Autowired
+	private ChatServiceFacade chatFacade;
 
-    @ResponseBody
-    @RequestMapping(value = "/{chatId}", method = RequestMethod.GET)
-    public ChatDto getChat(@PathVariable("chatId") long chatId) {
-        return chatFacade.getChat(chatId);
-    }
+	@RequestMapping(method = RequestMethod.GET)
+	public List<ChatDto> getChatsList() {
+		logger.info(" getChatsList ");
+		return chatFacade.getChatsList();
+	}
 
-    @ResponseBody
-    @RequestMapping(value = "/getMessages/{chatId}", method = RequestMethod.GET)
-    public List<RedisMessageModel> getFilteredMessages(@PathVariable("chatId") long chatId) {
-        return chatFacade.getChatMesasges(chatId);
-    }
+	@RequestMapping(value = CHAT_PARAM, method = RequestMethod.GET)
+	public ChatDto getChat(@PathVariable("chatId") long chatId) {
+		logger.info(" getChat chatId : {}", chatId);
+		return chatFacade.getChat(chatId);
+	}
 
-    @ResponseBody
-    @RequestMapping(value = "/getMessages", method = RequestMethod.POST)
-    public List<RedisMessageModel> getChatMessages(@RequestBody GetChatMessagesDto getChatMessagesDto) {
-        return chatFacade.getChatMesasges(getChatMessagesDto.getChatId(), getChatMessagesDto.getDateFilter());
-    }
+	@RequestMapping(value = "/getMessages" + CHAT_PARAM, method = RequestMethod.GET)
+	public List<RedisMessageModel> getMessages(@PathVariable("chatId") long chatId) {
+		return chatFacade.getChatMesasges(chatId);
+	}
 
-    @ResponseBody
-    @RequestMapping(value = "/sendMessage", method = RequestMethod.POST)
-    public RestResponse sendMessageToChat(@RequestBody SendMessageDto sendMessageDto) {
-        if (sendMessageDto.getMessage().isEmpty()) {
-            throw new EmptyMessageException("Message must not be empty");
-        }
+	@RequestMapping(value = "/getMessages", method = RequestMethod.POST)
+	public List<RedisMessageModel> getFilteredChatMessages(@RequestBody GetChatMessagesDto getChatMessagesDto) {
+		return chatFacade.getChatMesasges(getChatMessagesDto.getChatId(), getChatMessagesDto.getDateFilter());
+	}
 
-        return new RestResponse().convert(
-                () -> chatFacade.sendMessage(sendMessageDto.getMessage(), sendMessageDto.getChatId(), sendMessageDto.getPublicMessage()));
-    }
+	@RequestMapping(value = "/sendMessage", method = RequestMethod.POST)
+	public RestResponse sendMessageToChat(@RequestBody SendMessageDto sendMessageDto) {
+		if (StringUtils.isEmpty(sendMessageDto.getMessage())) {
+			logger.error(" sendMessageToChat sendMessageDto : {}", sendMessageDto);
+			throw new EmptyMessageException("Message must not be empty");
+		}
 
-    @ResponseBody
-    @RequestMapping(value = "/editMessage", method = RequestMethod.POST)
-    public RestResponse editMessage(@RequestBody EditMessageDto editMessageDto) {
-        return new RestResponse().convert(() -> chatFacade.editMessage(editMessageDto.getMessageId(), editMessageDto.getMessage()));
-    }
+		return new RestResponse().convert(() -> chatFacade.sendMessage(sendMessageDto.getMessage(),
+				sendMessageDto.getChatId(), sendMessageDto.getPublicMessage()));
+	}
 
-    @ResponseBody
-    @RequestMapping(value = "/deleteMessage/{messageId}", method = RequestMethod.DELETE)
-    public RestResponse deleteMessage(@PathVariable("messageId") long messageId) {
-        return new RestResponse().convert(() -> chatFacade.deleteMessage(messageId));
-    }
+	@RequestMapping(value = "/editMessage", method = RequestMethod.POST)
+	public RestResponse editMessage(@RequestBody EditMessageDto editMessageDto) {
+		return new RestResponse()
+				.convert(() -> chatFacade.editMessage(editMessageDto.getMessageId(), editMessageDto.getMessage()));
+	}
 
-    @ResponseBody
-    @RequestMapping(value = "/getMessage", method = RequestMethod.GET)
-    public DeferredResult<RedisMessageModel> getRedisMessage() {
-        return chatFacade.getRedisMessage();
-    }
+	@RequestMapping(value = "/deleteMessage/{messageId}", method = RequestMethod.DELETE)
+	public RestResponse deleteMessage(@PathVariable("messageId") long messageId) {
+		return new RestResponse().convert(() -> chatFacade.deleteMessage(messageId));
+	}
+
+	@RequestMapping(value = "/getMessage", method = RequestMethod.GET)
+	public DeferredResult<RedisMessageModel> getRedisMessage() {
+		return chatFacade.getRedisMessage();
+	}
 }

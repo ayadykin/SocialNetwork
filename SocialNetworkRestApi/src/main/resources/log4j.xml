@@ -70,7 +70,6 @@
     
 	<logger name="com.social.network">
         <level value="DEBUG" />
-        <appender-ref ref="console" />
     </logger>
     
 	<root>

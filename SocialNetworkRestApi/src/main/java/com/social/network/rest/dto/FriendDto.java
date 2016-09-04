@@ -9,52 +9,57 @@ import com.social.network.domain.model.enums.FriendStatus;
 
 public class FriendDto {
 
-    private String name;
-    private FriendStatus status;
-    private long chatId;
-    private long userId;
+	private String name;
+	private FriendStatus status;
+	private long chatId;
+	private long userId;
 
-    public FriendDto() {
+	public FriendDto() {
 
-    }
+	}
 
-    public FriendDto( String name, FriendStatus status, long chatId, long userId) {
-        this.name = name;
-        this.status = status;
-        this.chatId = chatId;
-        this.userId = userId;
-    }
+	public FriendDto(String name, FriendStatus status, long chatId, long userId) {
+		this.name = name;
+		this.status = status;
+		this.chatId = chatId;
+		this.userId = userId;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public FriendStatus getStatus() {
-        return status;
-    }
+	public FriendStatus getStatus() {
+		return status;
+	}
 
-    public void setStatus(FriendStatus status) {
-        this.status = status;
-    }
+	public void setStatus(FriendStatus status) {
+		this.status = status;
+	}
 
-    public long getChatId() {
-        return chatId;
-    }
+	public long getChatId() {
+		return chatId;
+	}
 
-    public void setChatId(long chatId) {
-        this.chatId = chatId;
-    }
+	public void setChatId(long chatId) {
+		this.chatId = chatId;
+	}
 
-    public long getUserId() {
-        return userId;
-    }
+	public long getUserId() {
+		return userId;
+	}
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
+	public void setUserId(long userId) {
+		this.userId = userId;
+	}
+
+	@Override
+	public String toString() {
+		return "FriendDto [name=" + name + ", status=" + status + ", chatId=" + chatId + ", userId=" + userId + "]";
+	}
 
 }

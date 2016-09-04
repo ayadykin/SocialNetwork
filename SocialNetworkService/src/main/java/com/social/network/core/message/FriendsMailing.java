@@ -20,14 +20,14 @@ import com.social.network.services.RedisService;
  */
 
 @Component
-public class FriendsNotification {
+public class FriendsMailing {
     @Autowired
     private MessageService messageService;
     @Autowired
     private RedisService redisService;
 
     @Transactional
-    public void notificate(String messageText, User publisher) {
+    public void mailing(String messageText, User publisher) {
 
         Set<Chat> chats = publisher.getFriends().stream().map(f -> f.getChat()).collect(Collectors.toSet());
 

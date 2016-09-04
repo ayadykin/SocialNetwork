@@ -108,8 +108,9 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
 
     @Override
     @Transactional
-    public boolean updateMessageStatus(long userId, long messageId) {
-        for (Recipient recipient : recipientDao.findRecipientsByMessage(messageId)) {
+    public boolean setMessageToReaded(long userId, long messageId) {
+       //TODO Refactor to one query
+    	for (Recipient recipient : recipientDao.findRecipientsByMessage(messageId)) {
             if (recipient.getUserId() == userId) {
                 recipient.setReaded(true);
                 recipientDao.save(recipient);
@@ -123,8 +124,11 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
         if (message.getHidden().isHidden()) {
             throw new EditMessageException("Message was deleted!");
         }
-        User loggedUser = userService.getLoggedUserEntity();
-        if (message.getPublisher().getUserId() != loggedUser.getUserId()) {
+        if (message instanceof SystemMessage){
+        	throw new EditMessageException("Can't edit system message!");
+        }  
+        long loggedUser = userService.getLoggedUserId();
+        if (message.getPublisher().getUserId() != loggedUser) {
             throw new EditMessageException("You don't publish this message!");
         }
     }

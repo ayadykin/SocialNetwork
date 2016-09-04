@@ -39,7 +39,7 @@ public class Account implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long accountId;
 
-    @Email
+    //@Email
     @Column(nullable = false, unique = true)
     private String email;
 

@@ -39,7 +39,7 @@ public class ChatServiceFacade {
     @Autowired
     private RedisService redisService;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ChatDto> getChatsList() {
 
         // Fill ChatDto list
@@ -50,7 +50,6 @@ public class ChatServiceFacade {
         return chatsList;
     }
 
-    @Transactional
     public ChatDto getChat(long chatId) {
         return EntityToDtoMapper.convertChatToChatDto(chatService.getChat(chatId));
     }
@@ -64,7 +63,6 @@ public class ChatServiceFacade {
      * @return
      */
     
-    @Transactional
     public boolean sendMessage(String messageText, long chatId, boolean publicMessage) {
 
         if (publicMessage) {
@@ -77,7 +75,6 @@ public class ChatServiceFacade {
         return true;
     }
 
-    @Transactional
     public List<RedisMessageModel> getChatMesasges(long chatId) {
         return getChatMesasges(chatId, null);
     }
@@ -89,7 +86,7 @@ public class ChatServiceFacade {
      * @param filter
      * @return
      */
-    @Transactional
+    
     public List<RedisMessageModel> getChatMesasges(long chatId, Date filter) {
 
         List<Message> messagesList = chatService.getChatMesasges(chatId, true, filter);
@@ -98,7 +95,6 @@ public class ChatServiceFacade {
         for (Message message : messagesList) {
             RedisMessageModel redisMessageModel = RedisServiceImpl.convertMessageToMessageModel(message);
             messages.add(redisMessageModel);
-
         }
         return messages;
     }
@@ -108,7 +104,7 @@ public class ChatServiceFacade {
      * 
      * @return
      */
-    @Transactional
+    
     public DeferredResult<RedisMessageModel> getRedisMessage() {
         final DeferredResult<RedisMessageModel> deferredResult = new DeferredResult<RedisMessageModel>(null, "");
 
@@ -121,13 +117,13 @@ public class ChatServiceFacade {
         return deferredResult;
     }
 
-    @Transactional
+    
     public boolean editMessage(long messageId, String newMessage) {
         Message message = messageService.editMessage(messageId, newMessage);
         return sendMessageToRedis(message);
     }
 
-    @Transactional
+    
     public boolean deleteMessage(long messageId) {
         Message message = messageService.deleteMessage(messageId);
         return sendMessageToRedis(message);

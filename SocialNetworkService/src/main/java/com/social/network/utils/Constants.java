@@ -39,6 +39,7 @@ public class Constants {
     public final static String INVITATION_MESSAGE = "invitation.message";
     public final static String ACCEPT_INVITATION_MESSAGE = "accept.invitation.message";
     public final static String DECLINE_INVITATION_MESSAGE = "decline.invitation.message";
+    public final static String DELETE_FRIEND_MESSAGE = "";
 
     /**
      * Group message constant

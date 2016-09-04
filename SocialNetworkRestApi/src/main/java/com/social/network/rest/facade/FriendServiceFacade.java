@@ -3,6 +3,8 @@ package com.social.network.rest.facade;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +21,13 @@ import com.social.network.services.FriendService;
 
 @Service
 public class FriendServiceFacade {
+	
+	private static final Logger logger = LoggerFactory.getLogger(FriendServiceFacade.class);
+	
 	@Autowired
 	private FriendService friendService;
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<FriendDto> getFriends() {
 		List<FriendDto> friendsDto = new ArrayList<>();
 		for (Friend friend : friendService.getFriends()) {
@@ -31,22 +36,22 @@ public class FriendServiceFacade {
 		return friendsDto;
 	}
 
-	@Transactional
+	
 	public FriendDto inviteFriend(long userId) {
 		return EntityToDtoMapper.convertFriendToFriendDto(friendService.inviteFriend(userId));
 	}
 
-	@Transactional
+	
 	public FriendDto acceptInvitation(long userId) {
 		return EntityToDtoMapper.convertFriendToFriendDto(friendService.acceptInvitation(userId));
 	}
 
-	@Transactional
+	
 	public FriendDto declineInvitation(long userId) {
 		return EntityToDtoMapper.convertFriendToFriendDto(friendService.declineInvitation(userId));
 	}
 
-	@Transactional
+	
 	public FriendDto deleteFriend(long userId) {
 		return EntityToDtoMapper.convertFriendToFriendDto(friendService.deleteFriend(userId));
 	}
