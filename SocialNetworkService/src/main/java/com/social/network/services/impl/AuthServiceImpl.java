@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -37,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
         logger.debug(" signup user email : {} ", account.getEmail());
         account.setPassword(passwordEncoder.encode(account.getPassword()));
 
-        //Check if user with same email already exist
+        // Check if user with same email already exist
         if (accountDao.findByEmail(account.getEmail()) != null) {
             logger.error(" signup user email exist : {}", account.getEmail());
             return false;
@@ -50,16 +51,12 @@ public class AuthServiceImpl implements AuthService {
     public void signin(Account account) {
         logger.debug("signin user email : {} ", account.getEmail());
         Authentication authentication = new UsernamePasswordAuthenticationToken(createUser(account), null,
-                Collections.singleton(createAuthority(account)));
+                AuthorityUtils.createAuthorityList(account.getRoleName()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
     private Account createUser(Account account) {
-        account.setAuthorities(Collections.singleton(createAuthority(account)));
+        account.setAuthorities(AuthorityUtils.createAuthorityList(account.getRoleName()));
         return account;
-    }
-
-    private GrantedAuthority createAuthority(Account account) {
-        return new SimpleGrantedAuthority(account.getRoleName());
     }
 }

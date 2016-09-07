@@ -2,13 +2,12 @@ package com.social.network.domain.model;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,7 +18,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.NamedQuery;
-import org.hibernate.validator.constraints.Email;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -39,7 +37,7 @@ public class Account implements Serializable, UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long accountId;
 
-    //@Email
+    // @Email
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -49,105 +47,106 @@ public class Account implements Serializable, UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Cascade({CascadeType.SAVE_UPDATE})
-    @OneToOne( fetch = FetchType.LAZY)
+    @Cascade({ CascadeType.SAVE_UPDATE })
+    @OneToOne
     private User user;
 
     @Transient
-    private Set<GrantedAuthority> authorities = null;
+    private List<GrantedAuthority> authorities = null;
 
     public Account() {
     }
 
     public Account(String email, String password, Role role, User user) {
-	this.email = email;
-	this.password = password;
-	this.role = role;
-	this.user = user;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.user = user;
     }
 
     public long getAccountId() {
-	return accountId;
+        return accountId;
     }
 
     public void setAccountId(long accountId) {
-	this.accountId = accountId;
+        this.accountId = accountId;
     }
 
     public String getEmail() {
-	return email;
+        return email;
     }
 
     public void setEmail(String email) {
-	this.email = email;
+        this.email = email;
     }
 
+    @Override
     public String getPassword() {
-	return password;
+        return password;
     }
 
     public void setPassword(String password) {
-	this.password = password;
+        this.password = password;
     }
 
     public Role getRole() {
-	return role;
+        return role;
     }
-    
+
     public String getRoleName() {
         return role.name();
     }
 
     public void setRole(Role role) {
-	this.role = role;
+        this.role = role;
     }
 
     public User getUser() {
-	return user;
+        return user;
     }
 
     public void setUser(User user) {
-	this.user = user;
+        this.user = user;
     }
-    
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
 
-    public void setAuthorities(Set<GrantedAuthority> authorities)
-    {
-        this.authorities=authorities;
+    public void setAuthorities(List<GrantedAuthority> authorities) {
+        this.authorities = authorities;
     }
 
     @Override
     public String getUsername() {
-	return email;
+        return email;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-	return true;
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-	return true;
+        return true;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-	return true;
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-	return true;
-    }
+        return true;
+    }  
 
     @Override
     public String toString() {
-        return "Account [accountId=" + accountId + ", email=" + email + ", password= *****, role=" + role
-                + ", user=" + user + ", authorities=" + authorities + "]";
+        return "Account [accountId=" + accountId + ", email=" + email + ", password= *****, role=" + role + ", authorities=" + authorities
+                + "]";
     }
 
 }

@@ -10,15 +10,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.StandardPasswordEncoder;
-import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
+import com.social.network.rest.filter.CsrfHeaderFilter;
 import com.social.network.rest.security.AuthenticationFailure;
-import com.social.network.rest.security.AuthenticationSuccess;
 import com.social.network.rest.security.LogoutSuccess;
-import com.social.network.security.AccountService;
+import com.social.network.rest.security.RestAuthenticationEntryPoint;
 
 /**
  * Created by Yadykin Andrii May 12, 2016
@@ -28,16 +27,15 @@ import com.social.network.security.AccountService;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public UserDetailsService accountService() {
-        return new AccountService();
-    }
-
-    @Bean
-    public TokenBasedRememberMeServices rememberMeServices() {
-        return new TokenBasedRememberMeServices("remember-me-key", accountService());
-    }
-
+    @Autowired
+    private RestAuthenticationEntryPoint authenticationEntryPoint;
+    @Autowired
+    private LogoutSuccess logoutSuccess;
+    @Autowired
+    private UserDetailsService accountService;
+    @Autowired
+    private AuthenticationFailure accessDeniedHandler;
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new StandardPasswordEncoder();
@@ -45,20 +43,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.eraseCredentials(true).userDetailsService(accountService()).passwordEncoder(passwordEncoder());
+        auth.eraseCredentials(true).userDetailsService(accountService).passwordEncoder(passwordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.authorizeRequests().antMatchers("/", "/favicon.ico", "/resources/**", "/signin", "/signup").permitAll().anyRequest()
-                .authenticated().and().csrf().csrfTokenRepository(csrfTokenRepository())
-                .and().rememberMe().rememberMeServices(rememberMeServices()).key("remember-me-key")
-                .and().formLogin().successHandler(new AuthenticationSuccess())
-                .loginPage("/signin").loginProcessingUrl("/j_spring_security_check")
-                .passwordParameter("j_password").usernameParameter("j_username").failureHandler(new AuthenticationFailure())
-                .and().logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccess())
-                .and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
+        http.authorizeRequests().antMatchers("/favicon.ico", "/resources/**", "/signin", "/signup").permitAll().anyRequest().authenticated()
+                .and().csrf().csrfTokenRepository(csrfTokenRepository()).and()
+                .httpBasic().authenticationEntryPoint(authenticationEntryPoint).and()
+                .exceptionHandling().accessDeniedHandler(accessDeniedHandler).and()
+                .logout().logoutUrl("/logout").logoutSuccessHandler(logoutSuccess).and()
+                .addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class);
     }
 
     private CsrfTokenRepository csrfTokenRepository() {

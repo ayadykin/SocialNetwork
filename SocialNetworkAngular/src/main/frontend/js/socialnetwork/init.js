@@ -21,5 +21,4 @@ socialNetworkApp.config(function($translateProvider, $routeProvider, $httpProvid
     });
 
     $httpProvider.interceptors.push('restErrorInterceptor');
-
 });

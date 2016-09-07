@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context path="/SocialNetworkApi" reloadable="true" privileged="true" antiResourceLocking="false"
+    unpackWAR="true" >
+    <Realm className="org.apache.catalina.realm.JAASRealm" appName="realmName" />
+</Context>
+         

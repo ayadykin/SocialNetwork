@@ -9,7 +9,7 @@ import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatche
 import com.social.network.config.RootServiceConfig;
 
 /**
- * Created by andrii.perylo/Yadykin Andrii on 5/30/2016.
+ * Created by Yadykin Andrii on 5/30/2016.
  */
 public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
     @Override
@@ -29,7 +29,7 @@ public class WebAppInitializer extends AbstractAnnotationConfigDispatcherServlet
 
     @Override
     protected Filter[] getServletFilters() {
-        return new Filter[] { new DelegatingFilterProxy("springSecurityFilterChain") };
+        return new Filter[] { new DelegatingFilterProxy("springSecurityFilterChain")};
     }
 
     @Override

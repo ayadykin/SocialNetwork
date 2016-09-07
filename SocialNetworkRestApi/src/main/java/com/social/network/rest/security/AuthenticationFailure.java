@@ -7,24 +7,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.stereotype.Component;
 
 /**
  * Created by Yadykin Andrii Aug 3, 2016
  *
  */
 
-public class AuthenticationFailure implements AuthenticationFailureHandler {
+@Component
+public class AuthenticationFailure implements AccessDeniedHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(RestAuthenticationEntryPoint.class);
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception)
-            throws IOException, ServletException, AuthenticationException {
-
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException)
+            throws IOException, ServletException {
+        
+        logger.error(" handle error : {}", accessDeniedException.getMessage());
         JSONObject obj = new JSONObject();
-        obj.put("login", false);
+        obj.put("error", accessDeniedException.getMessage());
+        obj.put("status", HttpServletResponse.SC_FORBIDDEN);
         response.getWriter().print(obj);
-        response.getWriter().flush();
     }
 
 }

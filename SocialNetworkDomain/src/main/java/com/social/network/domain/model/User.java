@@ -129,7 +129,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User [userId=" + userId + ", friends=" + friends + ", userChat=" + userChat + ", profileId=" + profile.getProfileId() + ", firstName="
+        return "User [userId=" + userId + ", profileId=" + profile.getProfileId() + ", firstName="
                 + firstName + ", lastName=" + lastName + ", locale=" + locale + "]";
     }
 

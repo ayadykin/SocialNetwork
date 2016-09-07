@@ -1,5 +1,5 @@
 angular.module('socialNetworkControllers').controller('AppController',
-	function($q, $scope, $rootScope, $route, config, $log, $http, $locale, $translate, $timeout) {
+	function($q, $scope, $rootScope, $route, config, $log, $http, $locale, $translate, $timeout, $location) {
 
 	    $rootScope.notification = {};
 	    initRoutes($route);
@@ -16,11 +16,11 @@ angular.module('socialNetworkControllers').controller('AppController',
 	    $scope.logout = function() {
 		$log.info("AppController logout");
 
-		$http.get(config.logoutPath).success(function(data) {
-		    if (data.logout) {
-			$log.debug("AppController logout success");
-			$rootScope.authenticated = false;
-		    }
+		$http.get(config.logoutPath, {}).success(function(data) {
+		    $rootScope.authenticated = false;
+		    $location.path("/signin");
+		}).error(function(data) {
+		    //$rootScope.authenticated = false;
 		});
 	    };
 

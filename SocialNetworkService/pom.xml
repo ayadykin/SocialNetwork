@@ -28,13 +28,23 @@
 			<groupId>com.social.network.domain</groupId>
 			<artifactId>social.network.domain</artifactId>
 			<version>1.0.0</version>
-		</dependency>	
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+		</dependency>		
 
 		<!-- Servlet api -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>${javax.servlet.api.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
 		</dependency>
 
 		<!-- Date utils -->

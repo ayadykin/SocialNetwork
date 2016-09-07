@@ -71,8 +71,8 @@ public class GroupApi {
 	}
 
 	@RequestMapping(value = LEAVE_GROUP + GROUP_PARAM, method = RequestMethod.DELETE)
-	public RestResponse leaveGroup(@PathVariable("groupId") long groupId) {
-		return new RestResponse().convert(() -> groupServiceFacade.leaveGroup(groupId));
+	public GroupDto leaveGroup(@PathVariable("groupId") long groupId) {
+		return groupServiceFacade.leaveGroup(groupId);
 	}
 
 	@RequestMapping(value = GROUP_PARAM, method = RequestMethod.DELETE)

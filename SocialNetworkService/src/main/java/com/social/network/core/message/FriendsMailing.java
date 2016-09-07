@@ -3,10 +3,9 @@ package com.social.network.core.message;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Message;

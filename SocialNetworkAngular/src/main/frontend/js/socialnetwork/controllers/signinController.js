@@ -1,34 +1,54 @@
 angular.module('socialNetworkControllers').controller('SigninController',
-	function($rootScope, $scope, $location, Signin, $log) {
+	function($rootScope, $scope, $location, Signin, $log, $http, config) {
 
-	    Signin.get().$promise.then(function(data) {
-		if (data.response) {
-		    $scope.token = true;
-		} else {
-		    $scope.token = false;
-		}
-	    });
+	    var authenticate = function(credentials) {
 
-	    $scope.login = function() {
-		$log.info("login ");
-		Signin.post({
-		    j_username : $scope.username,
-		    j_password : $scope.password
-		}).$promise.then(function(data) {
+		var headers = credentials ? {
+		    authorization : "Basic " + btoa(credentials.username + ":" + credentials.password)
+		} : {};
 
-		    if (data.userId) {
+		$http.get(config.signinPath, {
+		    headers : headers
+		}).success(function(data) {
+		    if (data.email) {
 			$rootScope.authenticated = true;
-			$rootScope.userId = data.userId;
-			$rootScope.userLocale = data.userLocale;
-			$scope.changeLocale(data.userLocale);
-			$location.path("/home");
-			$scope.error = false;
+		    } else if (data.error) {
+			$scope.error = true;
 		    } else {
 			$rootScope.authenticated = false;
-			$location.path("/signin");
-			$scope.error = true;
 		    }
-		    $log.info("login userId : " + data.userId);
+		    callback();
+		}).error(function() {
+		    $rootScope.authenticated = false;
+		    callback();
 		});
+
 	    };
+
+	    var callback = function() {
+		if ($rootScope.authenticated) {
+		    $log.debug("callback  " + $rootScope.authenticated);
+		    $location.path("/home");
+		    $scope.error = false;
+		}
+	    };
+
+	    if (!$rootScope.authenticated) {
+		authenticate();
+	    }
+	    $scope.credentials = {};
+	    $scope.login = function() {
+		authenticate($scope.credentials);
+	    };
+	    /*
+	     * 
+	     * $scope.login = function() { $log.info("login ");
+	     * Signin.get("/signin", {headers :
+	     * headers}).$promise.then(function(data) {
+	     * 
+	     * if (data.userId) { $rootScope.authenticated = true;
+	     * $rootScope.userId = data.userId; $rootScope.userLocale =
+	     * data.userLocale; $scope.changeLocale(data.userLocale); }
+	     * $log.info("login userId : " + data.userId); }); };
+	     */
 	});

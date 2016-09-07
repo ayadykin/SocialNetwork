@@ -74,7 +74,8 @@ public class ChatServiceFacade {
 
         return true;
     }
-
+    
+    @Transactional(readOnly = true)
     public List<RedisMessageModel> getChatMesasges(long chatId) {
         return getChatMesasges(chatId, null);
     }
@@ -87,6 +88,7 @@ public class ChatServiceFacade {
      * @return
      */
     
+    @Transactional(readOnly = true)
     public List<RedisMessageModel> getChatMesasges(long chatId, Date filter) {
 
         List<Message> messagesList = chatService.getChatMesasges(chatId, true, filter);

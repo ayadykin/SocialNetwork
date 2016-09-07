@@ -323,5 +323,11 @@ socialNetworMockServerkApp.run(function($httpBackend) {
 	"city" : "NY",
 	"country" : "USA"	
     }]);
-
+    
+    /*$httpBackend.whenPOST('/SocialNetworkApi/profile/search').respond(function(method, url, obj) {
+	return [ 401, {
+	    "chatId" : 3,
+	} ]
+    });*/
+    
 });

@@ -31,7 +31,7 @@ public class ProfileServiceFacade {
     @Autowired
     private UserService userService;
 
-    
+    @Transactional(readOnly = true)
     public FullProfileDto getProfile() {
         User loggedUser = userService.getLoggedUserEntity();
         Profile profile = loggedUser.getProfile();
