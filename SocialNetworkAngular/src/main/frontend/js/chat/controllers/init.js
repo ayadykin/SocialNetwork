@@ -1,7 +1,5 @@
-angular.module('socialNetworkControllers').controller(
-	'ChatController',
-	function($scope, $rootScope, $q, ChatRest, $log, $templateCache, $compile,
-		chatIdProperty) {
+angular.module('socialNetworkControllers').controller('ChatController',
+	function($scope, $rootScope, $q, ChatRest, $log, $templateCache, $compile, chatIdProperty) {
 
 	    $scope.chats = [];
 	    $scope.messages = [];
@@ -22,6 +20,7 @@ angular.module('socialNetworkControllers').controller(
 		getRedisChatMessages();
 	    });
 
+	    // Load messages from redis
 	    function getRedisChatMessages() {
 		$log.debug('getRedisChatMessages : ');
 		ChatRest.getMessage(function(message) {
@@ -72,5 +71,36 @@ angular.module('socialNetworkControllers').controller(
 		$log.debug('ChatController destroy');
 		reload = false;
 	    });
+
+	    $scope.getChatMessages = function(chatId) {
+
+		$log.debug('getChatMessages chatId : ' + chatId);
+
+		$scope.chatId = chatId;
+
+		ChatRest.getMessages({
+		    chatId : chatId
+		}, function(messages) {
+		    $scope.messages = messages;
+		    findChatById($scope.chats, chatId).newMessages = '';
+		}, function(error) {
+		    ServerErrorHandler(error);
+		});
+
+	    };
+	    $scope.sendMessage = function() {
+
+		$log.debug('sendMessage text : ' + $scope.messageText);
+
+		ChatRest.sendMessage({
+		    chatId : $scope.chatId,
+		    message : $scope.messageText,
+		    publicMessage : $scope.publicMessage
+		}, function(data) {
+		    $scope.messageText = '';
+		});
+
+	    };
+	    
 
 	});

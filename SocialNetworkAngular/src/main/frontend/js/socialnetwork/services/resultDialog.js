@@ -4,9 +4,9 @@ angular.module('socialNetworkServices').factory('resultDialog', function($transl
 	dialog : function(result, key) {
 	    var templateUrl, message = $translate.instant(key);
 	    if (result) {
-		templateUrl = 'templates/parts/success_dialog.html';
+		templateUrl = 'parts/success_dialog.html';
 	    } else {
-		templateUrl = 'templates/parts/error_dialog.html';
+		templateUrl = 'parts/error_dialog.html';
 	    }
 
 	    var uibModalInstance = $uibModal.open({

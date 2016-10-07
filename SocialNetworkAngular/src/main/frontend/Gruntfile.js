@@ -44,11 +44,13 @@ module.exports = function(grunt) {
 	sn : socialNetworkTasks.concat([ 'uglify:sn' ]),
 	"karma" : [ 'karma:unit:run' ]
     };
+    
 
     for (t in taskList) {
 	grunt.registerTask(t, taskList[t]);
     }
 
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-angular-templates');
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');

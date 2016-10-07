@@ -18,15 +18,12 @@ module.exports = function(grunt) {
 	mainViewer : {
 	    src : [
 		    'bower_components/jquery/dist/jquery.js',
-		    'bower_components/angular/angular.js',
 		    'bower_components/angular-bootstrap/ui-bootstrap.js',
 		    'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
-		    'bower_components/angular-animate/angular-animate.js',
-		    'bower_components/angular-route/angular-route.js',
-		    'bower_components/angular-resource/angular-resource.js',
+
 		    'bower_components/angular-translate/angular-translate.js',
-		    'bower_components/angular-scroll-glue/src/scrollglue.js',
-		    'bower_components/angular-cookies/angular-cookies.js' ].concat(getModuleTree('socialnetwork')
+		    'bower_components/angular-scroll-glue/src/scrollglue.js']
+    		.concat(getModuleTree('socialnetwork')
 		    .concat(
 			    [
 				    '../webapp/js/friend/build/app.js',

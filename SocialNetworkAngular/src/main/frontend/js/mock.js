@@ -1,7 +1,5 @@
-var socialNetworMockServerkApp = angular.module('socialNetworkApp')
-// 'ngMockE2E'
-
-socialNetworMockServerkApp.config(function($provide) {
+angular.module('socialNetworkApp')
+.config(function($provide) {
     $provide.decorator('$httpBackend', angular.mock.e2e.$httpBackendDecorator);
 
     var DELAY_MS = 2000;
@@ -21,9 +19,8 @@ socialNetworMockServerkApp.config(function($provide) {
 	}
 	return proxy;
     });
-});
-
-socialNetworMockServerkApp.run(function($httpBackend) {
+})
+.run(function($httpBackend) {
     /**
      * Lang
      */
@@ -190,17 +187,17 @@ socialNetworMockServerkApp.run(function($httpBackend) {
 	"status" : "ACCEPTED",
 	"chatId" : 1
     } ]);
-    
+
     $httpBackend.whenPOST('/SocialNetworkApi/friend/inviteFriend/5').respond({
 	"userId" : 5,
 	"name" : "Dima D",
 	"status" : "INVITED"
     });
-    
+
     $httpBackend.whenPOST('/SocialNetworkApi/friend/acceptInvitation/5').respond();
-    
+
     $httpBackend.whenPOST('/SocialNetworkApi/friend/declineInvitation/5').respond();
-    
+
     $httpBackend.whenDELETE('/SocialNetworkApi/friend/5').respond();
 
     /**
@@ -307,7 +304,7 @@ socialNetworMockServerkApp.run(function($httpBackend) {
 	"firstName" : "Andrei Y"
     });
 
-    $httpBackend.whenPOST('/SocialNetworkApi/profile/search').respond([{
+    $httpBackend.whenPOST('/SocialNetworkApi/profile/search').respond([ {
 	"userId" : 10,
 	"firstName" : "Dima",
 	"lastName" : "Sam",
@@ -315,19 +312,18 @@ socialNetworMockServerkApp.run(function($httpBackend) {
 	"city" : "NY",
 	"country" : "USA",
 	"friendStatus" : "ACCEPTED"
-    },{
+    }, {
 	"userId" : 5,
 	"firstName" : "Dima Loooong naaame",
 	"lastName" : "Sam",
 	"street" : "",
 	"city" : "NY",
-	"country" : "USA"	
-    }]);
-    
-    /*$httpBackend.whenPOST('/SocialNetworkApi/profile/search').respond(function(method, url, obj) {
-	return [ 401, {
-	    "chatId" : 3,
-	} ]
-    });*/
-    
+	"country" : "USA"
+    } ]);
+
+    /*
+     * $httpBackend.whenPOST('/SocialNetworkApi/profile/search').respond(function(method,
+     * url, obj) { return [ 401, { "chatId" : 3, } ] });
+     */
+
 });

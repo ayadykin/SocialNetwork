@@ -1,0 +1,55 @@
+{
+  "env": {
+    "node": true,
+    "es6": true
+  },
+  "parserOptions": {
+        "ecmaVersion": 6,
+        "sourceType": "script",
+        "ecmaFeatures": {
+            "jsx": false
+        }
+    },
+  "extends": ["eslint:recommended", "angular"],
+  "rules": {
+    // require function expressions to have a name
+    "func-names": 0,
+    // enforce a maximum line length
+    "max-len": [1, 120],
+    // enforce a maximum number of statements allowed per line 
+    "max-statements": [1, 15],
+    // require constructor function names to begin with a capital letter
+    "new-cap": [2, { "capIsNewExceptions": ["Router"] }],
+    // disallow shadowing
+    // Shadowing is the process by which a local variable shares the same name
+    // as a variable in its containing scope
+    "no-shadow": [2, {
+      "builtinGlobals": true,
+      "hoist": "all",
+      "allow": ["err"]
+    }],
+    // disallow return before else
+    "no-else-return": 0,
+    // disallow reassignment of function parameters
+    "no-param-reassign": 0,
+    // disallow dangling underscores in identifiers
+    // _id allowed for mongo
+    "no-underscore-dangle": [2, { "allow": ["_id"] }],
+    // disallow early use    
+    "no-use-before-define": [2, "nofunc"],
+    // require let or const instead of var
+    "no-var": 0,
+    // suggest using arrow functions as callbacks
+    "prefer-arrow-callback": 0,
+    // suggest using template literals instead of string concatenation
+    // ex: var name = "Max"; var str = `Hello, ${name}!`;
+    "prefer-template": 0,
+    // require variable declarations to be at the top of their scope 
+    "vars-on-top": 0,
+    // quoting style for property names
+    "quote-props": [2, "consistent"],
+    "comma-dangle": ["error", "always-multiline"],
+
+
+  }
+}

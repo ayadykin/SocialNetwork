@@ -1,31 +1,31 @@
 function initRoutes($route) {
     var k, defaultRoutes = {
 	'/friend' : {
-	    templateUrl : 'templates/pages/friend.html',
+	    templateUrl : 'pages/friend.html',
 	},
 	'/group' : {
-	    templateUrl : 'templates/pages/group.html'
+	    templateUrl : 'pages/group.html'
 	},
 	'/chat' : {
-	    templateUrl : 'templates/pages/chat.html'
+	    templateUrl : 'pages/chat.html'
 	},
 	'/profile' : {
-	    templateUrl : 'templates/pages/editProfile.html'
+	    templateUrl : 'pages/editProfile.html'
 	},
 	'/search' : {
-	    templateUrl : 'templates/pages/searchProfile.html'
+	    templateUrl : 'pages/searchProfile.html'
 	},
 	'/signin' : {
-	    templateUrl : 'templates/pages/signin.html'
+	    templateUrl : 'pages/signin.html'
 	},
 	'/signup' : {
-	    templateUrl : 'templates/pages/signup.html'
+	    templateUrl : 'pages/signup.html'
 	},
 	'' : {
-	    templateUrl : 'templates/pages/index.html'
+	    templateUrl : 'pages/index.html'
 	},
 	'/home' : {
-	    templateUrl : 'templates/pages/homeSignedIn.html'
+	    templateUrl : 'pages/homeSignedIn.html'
 	}
 
     }, defaultUrl;

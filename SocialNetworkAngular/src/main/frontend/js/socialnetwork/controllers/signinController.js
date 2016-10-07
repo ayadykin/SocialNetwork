@@ -1,5 +1,5 @@
 angular.module('socialNetworkControllers').controller('SigninController',
-	function($rootScope, $scope, $location, Signin, $log, $http, config) {
+	function($rootScope, $scope, $location, $log, $http, config) {
 
 	    var authenticate = function(credentials) {
 
@@ -15,11 +15,11 @@ angular.module('socialNetworkControllers').controller('SigninController',
 		    } else if (data.error) {
 			$scope.error = true;
 		    } else {
-			$rootScope.authenticated = false;
+			$rootScope.authenticated = true;
 		    }
 		    callback();
 		}).error(function() {
-		    $rootScope.authenticated = false;
+		    $rootScope.authenticated = true;
 		    callback();
 		});
 

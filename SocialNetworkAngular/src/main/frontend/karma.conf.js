@@ -7,7 +7,7 @@ module.exports = function(config) {
 
 	files : [
 		'bower_components/jquery/dist/jquery.js',
-		'bower_components/angular/angular.js',
+
 		'bower_components/angular-bootstrap/ui-bootstrap.js',
 		'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
 		'bower_components/angular-animate/angular-animate.js',

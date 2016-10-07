@@ -7,7 +7,12 @@ html(lang='en', data-ng-app="socialNetworkApp")
         
         link(type='text/css', rel='stylesheet', href='../css/core.css')
         link(type='text/css', rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css')
+        
+        
+        script(src='../js/node_modules.js')
+        script(src='../lib/scrollglue.js')
         script(src='../js/socialnetwork/build/app#{jsSuffix}.js')
+       
         script.
             if (window.applicationCache) {
                 window.applicationCache.addEventListener('updateready', function () {
