@@ -18,7 +18,9 @@ import com.social.network.core.friend.FriendTemplateMethod;
 import com.social.network.domain.dao.FriendDao;
 import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.enums.FriendStatus;
+import com.social.network.neo4j.domain.User;
 import com.social.network.services.FriendService;
+import com.social.network.services.Neo4jService;
 import com.social.network.services.UserService;
 
 /**
@@ -26,11 +28,14 @@ import com.social.network.services.UserService;
  *
  */
 
+@Transactional(value = "hibernateTx")
 @Service
 public class FriendServiceImpl implements FriendService {
 
 	private static final Logger logger = LoggerFactory.getLogger(FriendService.class);
 
+	@Autowired
+	private Neo4jService neo4jService;
 	@Autowired
 	private FriendDao friendDao;
 	@Autowired
@@ -49,7 +54,7 @@ public class FriendServiceImpl implements FriendService {
 	private FriendTemplateMethod deleteFriend;
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional(value = "hibernateTx", readOnly = true)
 	public Set<Friend> getFriends() {
 		logger.debug(" getFriends  ");
 
@@ -57,15 +62,15 @@ public class FriendServiceImpl implements FriendService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(value = "hibernateTx")
 	public Friend inviteFriend(long userId) {
 		logger.debug(" inviteFriend  userId : {}", userId);
-
-		return inviteFriend.friendAction(INVITATION_MESSAGE, userId, FriendStatus.NEW);
+		Friend friend = inviteFriend.friendAction(INVITATION_MESSAGE, userId, FriendStatus.NEW);
+		//neo4jService.save(friend.getFriendName());
+		return friend;
 	}
 
 	@Override
-	@Transactional
 	public Friend acceptInvitation(long userId) {
 		logger.debug(" acceptInvite : userId = {}", userId);
 
@@ -73,7 +78,6 @@ public class FriendServiceImpl implements FriendService {
 	}
 
 	@Override
-	@Transactional
 	public Friend declineInvitation(long userId) {
 		logger.debug(" declineInvite : userId = {}", userId);
 
@@ -81,7 +85,6 @@ public class FriendServiceImpl implements FriendService {
 	}
 
 	@Override
-	@Transactional
 	public Friend deleteFriend(long userId) {
 		logger.debug(" deleteFriend : userId = {} ", userId);
 

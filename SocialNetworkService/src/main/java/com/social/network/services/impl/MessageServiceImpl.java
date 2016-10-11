@@ -30,6 +30,7 @@ import com.social.network.validation.DaoValidation;
  */
 
 @Service
+@Transactional(value="hibernateTx")
 public class MessageServiceImpl implements MessageService, RedisMessageObserver {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageService.class);
@@ -44,7 +45,6 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
     private UserService userService;
 
     @Override
-    @Transactional
     public Message createMessage(String messageText, User publisher, Chat chat) {
         logger.debug("createMessage :  messageText = {}, chat = {}", messageText, chat);
         Message message = messageDao.merge(new Message(messageText, publisher, chat));
@@ -55,7 +55,6 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
     }
 
     @Override
-    @Transactional
     public Message createSystemMessage(String messageText, User publisher, Chat chat, SystemMessageStatus systemMessageStatus) {
         logger.debug("createMessage :  messageText = {}, chat = {}", messageText, chat);
         SystemMessage message = systemMessageDao.merge(new SystemMessage(messageText, publisher, chat, systemMessageStatus));
@@ -66,7 +65,6 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
     }
 
     @Override
-    @Transactional
     public Message createMialing(String messageText, User publisher, Set<Chat> chats) {
         SystemMessage message = systemMessageDao.merge(new SystemMessage(messageText, publisher, chats, SystemMessageStatus.SYSTEM));
 
@@ -76,7 +74,6 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
         return message;
     }
 
-    @Transactional
     private void addRecipients(Set<UserChat> users, long messageId) {
         for (UserChat user : users) {
             recipientDao.save(new Recipient(user.getUser(), messageId));
@@ -84,7 +81,6 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
     }
 
     @Override
-    @Transactional
     public Message editMessage(long messageId, String newMessage) {
         logger.debug("editMessage : messageId = {}, newMessage = {}", messageId, newMessage);
         Message message = DaoValidation.messageExistValidation(messageDao, messageId);
@@ -96,7 +92,6 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
     }
 
     @Override
-    @Transactional
     public Message deleteMessage(long messageId) {
         logger.debug("deleteMessage messageId: {}", messageId);
         // TODO Validation
@@ -107,7 +102,6 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
     }
 
     @Override
-    @Transactional
     public boolean setMessageToReaded(long userId, long messageId) {
        //TODO Refactor to one query
     	for (Recipient recipient : recipientDao.findRecipientsByMessage(messageId)) {

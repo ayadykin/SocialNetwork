@@ -22,6 +22,7 @@ import com.social.network.services.UserService;
  * Created by Yadykin Andrii May 17, 2016
  */
 @Service
+@Transactional(value="hibernateTx")
 public class ProfileServiceImpl implements ProfileService {
 
     private static final Logger logger = LoggerFactory.getLogger(ProfileService.class);
@@ -36,7 +37,6 @@ public class ProfileServiceImpl implements ProfileService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    @Transactional
     public User updateProfile(String firstName, String lastName, String street, String city, String country, String locale,
             boolean translate) {
         logger.debug(" -> updateProfile ");
@@ -58,7 +58,6 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @Transactional
     public String changePassword(String oldPassword, String newPassword, String confirmPassword) {
         Account loggedAccount = userService.getLoggedAccountEntity();
         logger.debug("-> changePassword for account {}", loggedAccount);
@@ -77,7 +76,7 @@ public class ProfileServiceImpl implements ProfileService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(value="hibernateTx", readOnly = true)
     public List<User> searchProfile(String firstName, String lastName, String city, String country) {
         logger.debug(" searchProfile firstName = {}, lastName = {}, city = {}, country = {}", firstName, lastName, city, country);
         return usersDao.searchUser(firstName, lastName, city, country);

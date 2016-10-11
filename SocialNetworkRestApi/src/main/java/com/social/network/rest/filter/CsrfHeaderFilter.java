@@ -1,4 +1,4 @@
-package com.social.network.rest.config;
+package com.social.network.rest.filter;
 
 import java.io.IOException;
 

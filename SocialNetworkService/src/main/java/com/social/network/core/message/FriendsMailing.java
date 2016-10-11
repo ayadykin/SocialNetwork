@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Message;
@@ -25,7 +24,6 @@ public class FriendsMailing {
     @Autowired
     private RedisService redisService;
 
-    @Transactional
     public void mailing(String messageText, User publisher) {
 
         Set<Chat> chats = publisher.getFriends().stream().map(f -> f.getChat()).collect(Collectors.toSet());

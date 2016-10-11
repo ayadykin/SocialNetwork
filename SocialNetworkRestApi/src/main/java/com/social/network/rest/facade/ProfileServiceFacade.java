@@ -31,7 +31,7 @@ public class ProfileServiceFacade {
     @Autowired
     private UserService userService;
 
-    @Transactional(readOnly = true)
+    @Transactional(value="hibernateTx", readOnly = true)
     public FullProfileDto getProfile() {
         User loggedUser = userService.getLoggedUserEntity();
         Profile profile = loggedUser.getProfile();
@@ -54,7 +54,7 @@ public class ProfileServiceFacade {
          return profileDto;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(value="hibernateTx", readOnly = true)
     public List<UserProfileDto> searchProfile(@RequestBody PublicProfileDto profileDto) {
         List<User> users = profileService.searchProfile(profileDto.getFirstName(), profileDto.getLastName(), profileDto.getCity(),
                 profileDto.getCountry());

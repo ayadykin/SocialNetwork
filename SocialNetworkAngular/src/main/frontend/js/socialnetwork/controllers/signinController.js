@@ -15,11 +15,11 @@ angular.module('socialNetworkControllers').controller('SigninController',
 		    } else if (data.error) {
 			$scope.error = true;
 		    } else {
-			$rootScope.authenticated = true;
+			$rootScope.authenticated = false;
 		    }
 		    callback();
 		}).error(function() {
-		    $rootScope.authenticated = true;
+		    $rootScope.authenticated = false;
 		    callback();
 		});
 

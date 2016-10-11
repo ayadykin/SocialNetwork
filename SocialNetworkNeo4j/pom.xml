@@ -1,0 +1,43 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<groupId>com.social.network</groupId>
+		<artifactId>SocialNetwork</artifactId>
+		<version>1.0.0</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<groupId>com.social.network.neo4j</groupId>
+	<artifactId>SocialNetworkNeo4j</artifactId>
+	<modelVersion>4.0.0</modelVersion>
+	<packaging>jar</packaging>
+
+	<properties>
+		<springframework.data>4.1.4.RELEASE</springframework.data>
+		<neo4j>2.0.1</neo4j>
+	</properties>
+
+	<dependencies>
+
+		<!-- Spring data -->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-neo4j</artifactId>
+			<version>${springframework.data}</version>
+		</dependency>
+
+		<!-- Neo4j -->
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-ogm-core</artifactId>
+			<version>${neo4j}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.neo4j</groupId>
+			<artifactId>neo4j-ogm-http-driver</artifactId>
+			<version>${neo4j}</version>
+		</dependency>
+
+	</dependencies>
+</project>

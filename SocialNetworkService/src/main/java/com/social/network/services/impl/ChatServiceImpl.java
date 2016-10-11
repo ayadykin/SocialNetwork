@@ -48,7 +48,7 @@ public class ChatServiceImpl implements ChatService {
 	private FriendsMailing friendsNotification;
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional(value="hibernateTx", readOnly = true)
 	public Set<UserChat> getChatsList() {
 		User loggedUser = userService.getLoggedUserEntity();
 		logger.debug("->getChatsList for user : {}", loggedUser.getUserId());
@@ -57,7 +57,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional(value="hibernateTx", readOnly = true)
 	public UserChat getChat(long chatId) {
 		logger.debug("->getChat chatId : {}", chatId);
 		User loggedUser = userService.getLoggedUserEntity();
@@ -70,7 +70,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional(value="hibernateTx", readOnly = true)
 	public List<Message> getChatMesasges(long chatId, boolean readed, Date filter) {
 		logger.debug("getChatMesasges : chatId = {}, filter = {}", chatId, filter);
 		User loggedUser = userService.getLoggedUserEntity();
@@ -82,7 +82,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(value="hibernateTx")
 	public Message sendMessage(String messageText, long chatId) {
 		logger.debug("sendMessage messageText : {}, to chatId : {} ", messageText, chatId);
 		User loggedUser = userService.getLoggedUserEntity();
@@ -96,7 +96,7 @@ public class ChatServiceImpl implements ChatService {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(value="hibernateTx")
 	public void sendPublicMessage(String messageText) {
 		logger.debug("sendPublicMessage messageText : {} ", messageText);
 		User loggedUser = userService.getLoggedUserEntity();

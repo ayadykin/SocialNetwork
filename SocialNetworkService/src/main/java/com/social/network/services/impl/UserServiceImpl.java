@@ -20,6 +20,7 @@ import com.social.network.validation.DaoValidation;
  */
 
 @Service
+@Transactional(value="hibernateTx")
 public class UserServiceImpl implements UserService {
 
     private final static Logger logger = LoggerFactory.getLogger(UserService.class);
@@ -30,14 +31,12 @@ public class UserServiceImpl implements UserService {
     private AccountDao accountDao;
 
     @Override
-    @Transactional(readOnly = true)
     public User getUserById(long userId) {
         logger.debug(" getUserById userId : {} ", userId);
         return DaoValidation.userExistValidation(userDao, userId);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public User getLoggedUserEntity() {
         logger.debug(" getLoggedUserEntity ");
         return DaoValidation.userExistValidation(userDao, getLoggedAccount().getUser().getUserId());
@@ -54,7 +53,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Account getLoggedAccountEntity() {
         logger.debug(" getLoggedAccountEntity ");
         return accountDao.merge(getLoggedAccount());

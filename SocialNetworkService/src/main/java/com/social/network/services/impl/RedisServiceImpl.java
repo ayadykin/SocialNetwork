@@ -41,7 +41,7 @@ public class RedisServiceImpl implements RedisService {
 	private MessageDao messageDao;
 
 	@Override
-	@Transactional
+	@Transactional(value="hibernateTx")
 	public RedisMessageModel getMessage() {
 		logger.debug("getMessage ");
 		long userId = userService.getLoggedUserId();
@@ -70,7 +70,7 @@ public class RedisServiceImpl implements RedisService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional(value="hibernateTx", readOnly = true)
 	public boolean sendMessageToRedis(Message message) {
 		logger.debug("sendMessagesToRedis :  message = {}", message);
 		RedisMessageModel redisMessageModel = RedisServiceImpl.convertMessageToMessageModel(message);

@@ -21,7 +21,7 @@ module.exports = function() {
 	    var path = getModuleTree('socialnetwork');
 	    path.push('js/socialnetwork/controllers/**/*.js');
 	    path.push('../webapp/js/**/app.js');
-	    path.push('js/mock.js');
+	    //path.push('js/mock.js');
 
 	    return gulp.src(path).pipe(concat('app.js')).pipe(gulp.dest('../webapp/js/socialnetwork/build/'));
 

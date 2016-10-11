@@ -29,7 +29,7 @@ public class AccountService implements UserDetailsService {
     private AccountDao accountDao;
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(value="hibernateTx", readOnly = true)
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         logger.debug("loadUserByUsername : username = {}", email);
         Account account = accountDao.findByEmail(email);

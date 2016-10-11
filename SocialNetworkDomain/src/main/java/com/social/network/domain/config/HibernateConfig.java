@@ -58,9 +58,9 @@ public class HibernateConfig {
         return localSessionFactoryBean;
     }
 
-    @Bean
+    @Bean(name = "hibernateTx")
     @Autowired
-    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
+    public HibernateTransactionManager txManager(SessionFactory sessionFactory) {
         return new HibernateTransactionManager(sessionFactory);
     }
 

@@ -41,6 +41,7 @@ import com.social.network.validation.DaoValidation;
  * Created by Yadykin Andrii on 5/17/2016.
  */
 @Service
+@Transactional(value="hibernateTx")
 public class GroupServiceImpl implements GroupService {
 
 	private static final Logger logger = LoggerFactory.getLogger(GroupService.class);
@@ -62,7 +63,7 @@ public class GroupServiceImpl implements GroupService {
 	private RedisService redisService;
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional(value="hibernateTx", readOnly = true)
 	public List<Group> getGroups() {
 		// Get logged user
 		User loggedUser = userService.getLoggedUserEntity();
@@ -72,7 +73,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	@Transactional(readOnly = true)
+	@Transactional(value="hibernateTx", readOnly = true)
 	public Group getGroup(long groupId) {
 		// Get loggedUser
 		long userId = userService.getLoggedUserId();
@@ -86,7 +87,6 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	@Transactional
 	public Group createGroup(String name, String[] userIds) {
 		// Get loggedUser
 		User loggedUser = userService.getLoggedUserEntity();
@@ -134,7 +134,6 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	@Transactional
 	public User addUserToGroup(long groupId, long invitedUserId) {
 		logger.debug("-> addUserToGroup : groupId = {}, invitedUserId = {}", groupId, invitedUserId);
 		User loggedUser = userService.getLoggedUserEntity();
@@ -153,7 +152,6 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	@Transactional
 	public User deleteUserFromGroup(long groupId, long removedUserId) {
 		logger.debug("-> deleteUserFromGroup : groupId = {}, removedUserId = {}", groupId, removedUserId);
 		User loggedUser = userService.getLoggedUserEntity();
@@ -172,7 +170,6 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	@Transactional
 	public Group leaveGroup(long groupId) {
 		logger.debug("leaveGroup : groupId = {}", groupId);
 		User loggedUser = userService.getLoggedUserEntity();
@@ -189,7 +186,6 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	@Transactional
 	public Group deleteGroup(long groupId) {
 		logger.debug("-> deleteGroup : groupId: {}", groupId);
 		User loggedUser = userService.getLoggedUserEntity();

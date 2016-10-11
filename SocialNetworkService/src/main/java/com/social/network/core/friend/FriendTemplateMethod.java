@@ -16,6 +16,7 @@ import com.social.network.domain.model.UserChat;
 import com.social.network.domain.model.enums.FriendStatus;
 import com.social.network.services.FriendService;
 import com.social.network.services.MessageService;
+import com.social.network.services.Neo4jService;
 import com.social.network.services.RedisService;
 import com.social.network.services.UserService;
 
@@ -39,6 +40,8 @@ public abstract class FriendTemplateMethod {
 	protected FriendAnswerMessage friendAnswerMessage;
 	@Autowired
 	private RedisService redisService;
+	@Autowired
+	private Neo4jService neo4jService;
 
 	final public Friend friendAction(String template, long userId, FriendStatus friendStatus) {
 
@@ -53,6 +56,8 @@ public abstract class FriendTemplateMethod {
 		// 2. Create friend or update status
 		if (FriendStatus.NEW == friendStatus) {
 			inviteeFriend = createNewFriend(loggedUser, userId);
+		} else if (FriendStatus.ACCEPTED == friendStatus) {
+			neo4jService.addFriend(loggedUser.getUserId(), userId);
 		} else {
 			updateStatus(inviterFriend, inviteeFriend, friendStatus);
 		}
@@ -72,7 +77,7 @@ public abstract class FriendTemplateMethod {
 	protected abstract void validateStatus(Friend inviterFriend, Friend inviteeFriend, FriendStatus status);
 
 	// 2
-	@Transactional
+	@Transactional(value = "hibernateTx")
 	private Friend createNewFriend(User loggedUser, long userId) {
 		User invitee = userService.getUserById(userId);
 		// Create friend
@@ -86,7 +91,7 @@ public abstract class FriendTemplateMethod {
 		userChatDao.merge(new UserChat(chat, invitee, loggedUser.getUserFullName()));
 		return friend;
 	}
-	@Transactional
+
 	private void updateStatus(Friend inviterFriend, Friend inviteeFriend, FriendStatus status) {
 		inviterFriend.setFriendStatus(status);
 		inviteeFriend.setFriendStatus(status);

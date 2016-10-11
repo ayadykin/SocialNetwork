@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Message;
@@ -29,7 +28,6 @@ public class FriendAnswerMessage {
     @Autowired
     private MessageService messageService;
     
-    @Transactional
     public Message createSystemMessage(String messageTemplate,  User publisher, Chat chat) {
         logger.debug("-> createMessage chatId : " + chat.getChatId());
 

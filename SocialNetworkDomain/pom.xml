@@ -9,15 +9,14 @@
 	</parent>
 
 	<groupId>com.social.network.domain</groupId>
-	<artifactId>social.network.domain</artifactId>
+	<artifactId>SocialNetworkDomain</artifactId>
 	<modelVersion>4.0.0</modelVersion>
 	<packaging>jar</packaging>
-
 
 	<properties>
 		<org.hibernate.version>4.3.10.Final</org.hibernate.version>
 		<org.hibernate.validator.version>4.3.0.Final</org.hibernate.validator.version>
-		<org.postgresql.version>9.4.1208.jre7</org.postgresql.version>        
+		<org.postgresql.version>9.4.1208.jre7</org.postgresql.version>
 	</properties>
 
 	<dependencies>
@@ -28,14 +27,14 @@
 			<artifactId>spring-security-core</artifactId>
 		</dependency>
 		<dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-orm</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
-        </dependency>
-        
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+		</dependency>
+
 		<!-- Hibernate -->
 		<dependency>
 			<groupId>org.hibernate</groupId>

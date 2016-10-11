@@ -1,5 +1,7 @@
 package com.social.network.init;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,8 +34,8 @@ public class Init {
     @Autowired
     private GroupService groupFacade;
 
-    //@PostConstruct
-    @Transactional
+    @PostConstruct
+    @Transactional(value="hibernateTx")
     public void Init() {
 
         logger.debug("-> initialize");
