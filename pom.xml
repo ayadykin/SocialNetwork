@@ -15,6 +15,7 @@
 	<modules>
 		<module>SocialNetworkNeo4j</module>
 		<module>SocialNetworkDomain</module>
+		<module>SocialNetworkMongo</module>
 		<module>SocialNetworkService</module>
 		<module>SocialNetworkRestApi</module>
 		<module>SocialNetworkAngular</module>

@@ -26,7 +26,7 @@
 
 
 	<dependencies>
-<!-- Neo4j -->
+		<!-- Neo4j -->
 		<dependency>
 			<groupId>org.neo4j</groupId>
 			<artifactId>neo4j-ogm-core</artifactId>
@@ -37,6 +37,8 @@
 			<artifactId>neo4j-ogm-http-driver</artifactId>
 			<version>${neo4j}</version>
 		</dependency>
+
+		<!-- Internal -->
 		<dependency>
 			<groupId>com.social.network.neo4j</groupId>
 			<artifactId>SocialNetworkNeo4j</artifactId>
@@ -47,6 +49,11 @@
 			<artifactId>SocialNetworkDomain</artifactId>
 			<version>1.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.social.network.message.service</groupId>
+			<artifactId>SocialNetworkMessageService</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 
 		<!-- Spring data -->
 		<dependency>
@@ -54,7 +61,7 @@
 			<artifactId>spring-data-neo4j</artifactId>
 			<version>${springframework.data}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
