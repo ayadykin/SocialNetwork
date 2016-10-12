@@ -3,7 +3,7 @@ var gutil = require('gulp-util');
 var concat = require('gulp-concat-util');
 
 module.exports = function() {
-    
+
     return {
 	controllers : function() {
 	    concatController('chat');
@@ -14,13 +14,14 @@ module.exports = function() {
 	concatModule : function(name) {
 	    var path = getModuleTree(name);
 	    path.push('../webapp/js/' + name + '/controllers/build/ctrl.js');
+	    gutil.log(name +' concatModule: ' + path);
 	    gulp.src(path).pipe(concat('app.js')).pipe(gulp.dest('../webapp/js/' + name + '/controllers/build/'));
 	},
 
 	concatMainModule : function() {
 	    var path = getModuleTree('socialnetwork');
-	    path.push('js/socialnetwork/controllers/**/*.js');
-	    path.push('../webapp/js/**/app.js');
+	    path.push('../webapp/js/friend/controllers/build/app.js', '../webapp/js/group/controllers/build/app.js',
+		    '../webapp/js/chat/controllers/build/app.js', '../webapp/js/profile/controllers/build/app.js');
 	    path.push('js/mock.js');
 
 	    return gulp.src(path).pipe(concat('app.js')).pipe(gulp.dest('../webapp/js/socialnetwork/build/'));
@@ -42,10 +43,9 @@ module.exports = function() {
 		prefix + 'helpers/**/*.js',
 		prefix + 'filters/**/*.js',
 		prefix + 'directives/**/*.js',
-		'../webapp/' + prefix + 'build/parts/*.js' ];
+		'../webapp/' + prefix + 'build/parts/templates.js' ];
     }
 
-    
     function concatController(name) {
 	gutil.log('controllers concat : ' + name);
 
