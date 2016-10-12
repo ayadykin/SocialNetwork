@@ -57,7 +57,7 @@ public abstract class FriendTemplateMethod {
 		if (FriendStatus.NEW == friendStatus) {
 			inviteeFriend = createNewFriend(loggedUser, userId);
 		} else if (FriendStatus.ACCEPTED == friendStatus) {
-			neo4jService.addFriend(loggedUser.getUserId(), userId);
+			//neo4jService.addFriend(loggedUser.getUserId(), userId);
 		} else {
 			updateStatus(inviterFriend, inviteeFriend, friendStatus);
 		}

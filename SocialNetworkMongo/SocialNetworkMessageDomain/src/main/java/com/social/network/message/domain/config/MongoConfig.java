@@ -1,16 +1,19 @@
 package com.social.network.message.domain.config;
 
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
-import org.springframework.context.annotation.Bean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
 
 /**
  * Created by Yadykin Andrii Oct 12, 2016
@@ -22,6 +25,8 @@ import com.mongodb.MongoClient;
 @EnableMongoRepositories("com.social.network.message.domain.repository")
 public class MongoConfig extends AbstractMongoConfiguration {
 
+    private static final Logger logger = LoggerFactory.getLogger(MongoConfig.class);
+
     @Override
     protected String getDatabaseName() {
         return "message";
@@ -29,19 +34,13 @@ public class MongoConfig extends AbstractMongoConfiguration {
 
     @Override
     public Mongo mongo() throws UnknownHostException {
-        return new MongoClient("ds035026.mlab.com", 35026);
+        ServerAddress serverAddress = new ServerAddress("ds035026.mlab.com", 35026);
+        MongoCredential credential = MongoCredential.createCredential("SNmongoDB", getDatabaseName(), "SNpass".toCharArray());
+        return new MongoClient(serverAddress, Arrays.asList(credential));
     }
 
-    @Bean
-    public MongoTemplate mongoTemplate() throws Exception {
-
-        MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory());
-
-        return mongoTemplate;
-
-    }
     @Override
     protected String getMappingBasePackage() {
-      return "com.social.network.message.domain.model";
+        return "com.social.network.message.domain.model";
     }
 }

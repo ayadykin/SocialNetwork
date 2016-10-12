@@ -12,7 +12,6 @@ import org.springframework.core.io.Resource;
 
 import com.social.network.Application;
 import com.social.network.domain.config.HibernateConfig;
-import com.social.network.neo4j.config.Neo4jConfig;
 
 /**
  * Created by Yadykin Andrii May 12, 2016
