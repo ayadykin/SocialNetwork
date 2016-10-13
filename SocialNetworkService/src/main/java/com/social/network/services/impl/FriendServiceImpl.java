@@ -1,10 +1,5 @@
 package com.social.network.services.impl;
 
-import static com.social.network.utils.Constants.ACCEPT_INVITATION_MESSAGE;
-import static com.social.network.utils.Constants.DECLINE_INVITATION_MESSAGE;
-import static com.social.network.utils.Constants.DELETE_FRIEND_MESSAGE;
-import static com.social.network.utils.Constants.INVITATION_MESSAGE;
-
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -18,10 +13,13 @@ import com.social.network.core.friend.FriendTemplateMethod;
 import com.social.network.domain.dao.FriendDao;
 import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.enums.FriendStatus;
-import com.social.network.neo4j.domain.User;
 import com.social.network.services.FriendService;
-import com.social.network.services.Neo4jService;
 import com.social.network.services.UserService;
+
+import static com.social.network.utils.Constants.ACCEPT_INVITATION_MESSAGE;
+import static com.social.network.utils.Constants.DECLINE_INVITATION_MESSAGE;
+import static com.social.network.utils.Constants.DELETE_FRIEND_MESSAGE;
+import static com.social.network.utils.Constants.INVITATION_MESSAGE;
 
 /**
  * Created by Yadykin Andrii May 16, 2016
@@ -34,8 +32,6 @@ public class FriendServiceImpl implements FriendService {
 
 	private static final Logger logger = LoggerFactory.getLogger(FriendService.class);
 
-	@Autowired
-	private Neo4jService neo4jService;
 	@Autowired
 	private FriendDao friendDao;
 	@Autowired
@@ -57,7 +53,6 @@ public class FriendServiceImpl implements FriendService {
 	@Transactional(value = "hibernateTx", readOnly = true)
 	public Set<Friend> getFriends() {
 		logger.debug(" getFriends  ");
-
 		return userService.getLoggedUserEntity().getFriends();
 	}
 
@@ -65,9 +60,7 @@ public class FriendServiceImpl implements FriendService {
 	@Transactional(value = "hibernateTx")
 	public Friend inviteFriend(long userId) {
 		logger.debug(" inviteFriend  userId : {}", userId);
-		Friend friend = inviteFriend.friendAction(INVITATION_MESSAGE, userId, FriendStatus.NEW);
-		//neo4jService.save(friend.getFriendName());
-		return friend;
+		return inviteFriend.friendAction(INVITATION_MESSAGE, userId, FriendStatus.NEW);
 	}
 
 	@Override
@@ -101,6 +94,6 @@ public class FriendServiceImpl implements FriendService {
 			return true;
 		} else {
 			return false;
-		}
-	}
+        }
+    }
 }

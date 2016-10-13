@@ -30,9 +30,11 @@ import com.social.network.domain.model.enums.SystemMessageStatus;
 import com.social.network.exceptions.group.DeleteGroupException;
 import com.social.network.exceptions.group.GroupAdminException;
 import com.social.network.exceptions.group.GroupPermissionExceptions;
+import com.social.network.message.service.MongoChatService;
 import com.social.network.services.FriendService;
 import com.social.network.services.GroupService;
 import com.social.network.services.MessageService;
+import com.social.network.services.Neo4jService;
 import com.social.network.services.RedisService;
 import com.social.network.services.UserService;
 import com.social.network.validation.DaoValidation;
@@ -61,7 +63,9 @@ public class GroupServiceImpl implements GroupService {
 	private MessageService messageService;
 	@Autowired
 	private RedisService redisService;
-
+	@Autowired
+        private MongoChatService mongoChatService;
+	
 	@Override
 	@Transactional(value="hibernateTx", readOnly = true)
 	public List<Group> getGroups() {
@@ -110,7 +114,8 @@ public class GroupServiceImpl implements GroupService {
 
 		// Create chat
 		Chat chat = chatDao.merge(new Chat());
-
+		mongoChatService.saveChat(chat.getChatId());
+		
 		// Create group
 		Group group = groupDao.merge(new Group(chat, name, loggedUser));
 

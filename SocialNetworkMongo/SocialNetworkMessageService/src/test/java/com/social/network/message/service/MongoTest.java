@@ -1,6 +1,8 @@
 package com.social.network.message.service;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,8 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import com.social.network.message.domain.model.Message;
-import com.social.network.message.domain.repository.MessageRepository;
+import com.social.network.message.domain.repository.ChatRepository;
 import com.social.network.message.service.config.RootConfig;
 
 import static org.junit.Assert.assertNotNull;
@@ -24,16 +25,20 @@ import static org.junit.Assert.assertNotNull;
 public class MongoTest {
 
     @Autowired
-    private MessageRepository messageRepository;
+    private ChatRepository chatRepository;
+
+    @Autowired
+    private MongoChatService mongoChatService;
 
     @Test
     public void init() {
 
-        assertNotNull(messageRepository);
-        Message message = new Message();
-        List<Message> mes = messageRepository.findAll();
+        assertNotNull(chatRepository);
+
+        //mongoChatService.saveChat(1);
         
-        //messageRepository.save(message);
+        //mongoChatService.addMessage(1, "newTtt", 1, new HashSet<>(Arrays.asList(1l,3l)));
+        
 
     }
 }

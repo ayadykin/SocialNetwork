@@ -1,5 +1,8 @@
 package com.social.network.message.domain.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -11,17 +14,57 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "message")
 public class Message {
 
-    @Id
-    private long id;
+    private long messageId;
 
     private String text;
 
-    public long getId() {
-        return id;
+    private long publisher;
+
+    private boolean hidden;
+
+    private Set<Recipient> recipient = new HashSet<>();
+
+    public Message() {
+
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public Message(long messageId, String text, long publisher, Set<Recipient> recipient){
+        this.messageId = messageId;
+        this.text = text;
+        this.publisher = publisher;
+        this.recipient = recipient;
+    }
+
+    public long getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(long messageId) {
+        this.messageId = messageId;
+    }
+
+    public long getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(long publisher) {
+        this.publisher = publisher;
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
+    public Set<Recipient> getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(Set<Recipient> recipient) {
+        this.recipient = recipient;
     }
 
     public String getText() {
@@ -34,7 +77,8 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message [id=" + id + ", text=" + text + "]";
+        return "Message [messageId=" + messageId + ", text=" + text + ", publisher=" + publisher + ", hidden=" + hidden + ", recipient="
+                + recipient + "]";
     }
 
 }

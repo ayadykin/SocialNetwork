@@ -3,12 +3,9 @@ package com.social.network.message.domain.config;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
@@ -21,11 +18,8 @@ import com.mongodb.ServerAddress;
  */
 
 @Configuration
-@EnableTransactionManagement
 @EnableMongoRepositories("com.social.network.message.domain.repository")
 public class MongoConfig extends AbstractMongoConfiguration {
-
-    private static final Logger logger = LoggerFactory.getLogger(MongoConfig.class);
 
     @Override
     protected String getDatabaseName() {

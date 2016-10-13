@@ -14,6 +14,7 @@ import com.social.network.domain.model.Message;
 import com.social.network.domain.model.User;
 import com.social.network.domain.model.UserChat;
 import com.social.network.domain.model.enums.FriendStatus;
+import com.social.network.message.service.MongoChatService;
 import com.social.network.services.FriendService;
 import com.social.network.services.MessageService;
 import com.social.network.services.Neo4jService;
@@ -42,6 +43,8 @@ public abstract class FriendTemplateMethod {
 	private RedisService redisService;
 	@Autowired
 	private Neo4jService neo4jService;
+	@Autowired
+        private MongoChatService mongoChatService;
 
 	final public Friend friendAction(String template, long userId, FriendStatus friendStatus) {
 
@@ -56,8 +59,6 @@ public abstract class FriendTemplateMethod {
 		// 2. Create friend or update status
 		if (FriendStatus.NEW == friendStatus) {
 			inviteeFriend = createNewFriend(loggedUser, userId);
-		} else if (FriendStatus.ACCEPTED == friendStatus) {
-			//neo4jService.addFriend(loggedUser.getUserId(), userId);
 		} else {
 			updateStatus(inviterFriend, inviteeFriend, friendStatus);
 		}
@@ -82,6 +83,9 @@ public abstract class FriendTemplateMethod {
 		User invitee = userService.getUserById(userId);
 		// Create friend
 		Chat chat = chatDao.merge(new Chat());
+		
+		//Mongo
+		mongoChatService.saveChat(chat.getChatId());
 
 		Friend friend = friendDao.merge(new Friend(chat, FriendStatus.INVITER, loggedUser, invitee));
 		friendDao.merge(new Friend(chat, FriendStatus.INVITEE, invitee, loggedUser));

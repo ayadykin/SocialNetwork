@@ -1,5 +1,7 @@
 package com.social.network.services.impl;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -19,6 +21,7 @@ import com.social.network.domain.model.User;
 import com.social.network.domain.model.UserChat;
 import com.social.network.domain.model.enums.SystemMessageStatus;
 import com.social.network.exceptions.chat.EditMessageException;
+import com.social.network.message.service.MongoChatService;
 import com.social.network.redis.RedisMessageObserver;
 import com.social.network.services.MessageService;
 import com.social.network.services.UserService;
@@ -30,11 +33,12 @@ import com.social.network.validation.DaoValidation;
  */
 
 @Service
-@Transactional(value="hibernateTx")
+@Transactional(value = "hibernateTx")
 public class MessageServiceImpl implements MessageService, RedisMessageObserver {
 
     private static final Logger logger = LoggerFactory.getLogger(MessageService.class);
-
+    @Autowired
+    private MongoChatService mongoChatService;
     @Autowired
     private SystemMessageDao systemMessageDao;
     @Autowired
@@ -61,6 +65,13 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
 
         addRecipients(chat.getUserChat(), message.getMessageId());
 
+        // Mongo
+        Set<Long> res = new HashSet<>();
+        for (UserChat user : chat.getUserChat()) {
+            res.add(user.getUserId());
+        }
+
+        mongoChatService.addMessage(chat.getChatId(), messageText, publisher.getUserId(), res);
         return message;
     }
 
@@ -103,8 +114,8 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
 
     @Override
     public boolean setMessageToReaded(long userId, long messageId) {
-       //TODO Refactor to one query
-    	for (Recipient recipient : recipientDao.findRecipientsByMessage(messageId)) {
+        // TODO Refactor to one query
+        for (Recipient recipient : recipientDao.findRecipientsByMessage(messageId)) {
             if (recipient.getUserId() == userId) {
                 recipient.setReaded(true);
                 recipientDao.save(recipient);
@@ -118,9 +129,9 @@ public class MessageServiceImpl implements MessageService, RedisMessageObserver 
         if (message.getHidden().isHidden()) {
             throw new EditMessageException("Message was deleted!");
         }
-        if (message instanceof SystemMessage){
-        	throw new EditMessageException("Can't edit system message!");
-        }  
+        if (message instanceof SystemMessage) {
+            throw new EditMessageException("Can't edit system message!");
+        }
         long loggedUser = userService.getLoggedUserId();
         if (message.getPublisher().getUserId() != loggedUser) {
             throw new EditMessageException("You don't publish this message!");

@@ -18,14 +18,14 @@ import com.social.network.message.domain.repository.MessageRepository;
  */
 
 @Service
-public class Init {
+public class MongoInit {
     
-    private static final Logger logger = LoggerFactory.getLogger(Init.class);
+    private static final Logger logger = LoggerFactory.getLogger(MongoInit.class);
     
     @Autowired
     private MessageRepository messageRepository;
 
-    @PostConstruct
+    //@PostConstruct
     //@Transactional
     public void init() {
         logger.debug("----------");
