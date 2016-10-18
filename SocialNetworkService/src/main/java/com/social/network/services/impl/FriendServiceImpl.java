@@ -18,9 +18,7 @@ import com.social.network.core.friend.FriendTemplateMethod;
 import com.social.network.domain.dao.FriendDao;
 import com.social.network.domain.model.Friend;
 import com.social.network.domain.model.enums.FriendStatus;
-import com.social.network.neo4j.domain.User;
 import com.social.network.services.FriendService;
-import com.social.network.services.Neo4jService;
 import com.social.network.services.UserService;
 
 /**
@@ -34,8 +32,6 @@ public class FriendServiceImpl implements FriendService {
 
 	private static final Logger logger = LoggerFactory.getLogger(FriendService.class);
 
-	@Autowired
-	private Neo4jService neo4jService;
 	@Autowired
 	private FriendDao friendDao;
 	@Autowired
@@ -62,12 +58,9 @@ public class FriendServiceImpl implements FriendService {
 	}
 
 	@Override
-	@Transactional(value = "hibernateTx")
 	public Friend inviteFriend(long userId) {
 		logger.debug(" inviteFriend  userId : {}", userId);
-		Friend friend = inviteFriend.friendAction(INVITATION_MESSAGE, userId, FriendStatus.NEW);
-		//neo4jService.save(friend.getFriendName());
-		return friend;
+		return inviteFriend.friendAction(INVITATION_MESSAGE, userId, FriendStatus.NEW);
 	}
 
 	@Override

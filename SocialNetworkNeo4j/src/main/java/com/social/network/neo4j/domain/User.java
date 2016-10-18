@@ -9,17 +9,18 @@ import org.neo4j.ogm.annotation.Relationship;
 @NodeEntity
 public class User {
 
-	Long id;
+	private Long id;
 
-	String name;
-	@Relationship(type = "INVITE")
-	List<User> invete = new ArrayList<>();
+	private String name;
+
 	
-	@Relationship(type = "FRIEND")
-	List<User> friends = new ArrayList<>();
+	public User() {
+	}
 
-	@Relationship(type = "GROUP")
-	List<Group> group= new ArrayList<>();
+	public User(long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
 
 	public Long getId() {
 		return id;
@@ -37,24 +38,5 @@ public class User {
 		this.name = name;
 	}
 
-	public List<User> getFriends() {
-		return friends;
-	}
-
-	public void setFriends(List<User> friends) {
-		this.friends = friends;
-	}
-
-	public void addFriend(User friend) {
-		this.friends.add(friend);
-	}
-
-	public List<Group> getGroup() {
-		return group;
-	}
-
-	public void setGroup(List<Group> group) {
-		this.group = group;
-	}
 
 }

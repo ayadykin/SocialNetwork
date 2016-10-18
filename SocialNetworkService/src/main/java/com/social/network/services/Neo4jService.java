@@ -4,5 +4,7 @@ public interface Neo4jService {
 
 	void save(long id, String name);
 	
-	void addFriend(long id, long to);
+	void acceptFriend(long id, long to);
+	
+	void addInvite(long id, long to);
 }
