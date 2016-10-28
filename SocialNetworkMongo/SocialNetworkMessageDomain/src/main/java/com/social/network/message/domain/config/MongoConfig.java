@@ -3,7 +3,9 @@ package com.social.network.message.domain.config;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
@@ -36,5 +38,10 @@ public class MongoConfig extends AbstractMongoConfiguration {
     @Override
     protected String getMappingBasePackage() {
         return "com.social.network.message.domain.model";
+    }
+
+    @Bean
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
     }
 }

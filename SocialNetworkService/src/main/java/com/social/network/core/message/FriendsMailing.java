@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.social.network.domain.model.Chat;
-import com.social.network.domain.model.Message;
 import com.social.network.domain.model.User;
+import com.social.network.redis.service.RedisService;
 import com.social.network.services.MessageService;
-import com.social.network.services.RedisService;
 
 /**
  * Created by Yadykin Andrii Aug 30, 2016
@@ -28,9 +27,9 @@ public class FriendsMailing {
 
         Set<Chat> chats = publisher.getFriends().stream().map(f -> f.getChat()).collect(Collectors.toSet());
 
-        Message message = messageService.createMialing(messageText, publisher, chats);
+        //Message message = messageService.createMialing(messageText, publisher, chats);
 
-        redisService.sendMessageToRedis(message);
+        //redisService.sendMessageToRedis(message);
 
     }
 }

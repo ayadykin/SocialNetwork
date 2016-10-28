@@ -13,6 +13,7 @@
 	<description>SocialNetwork</description>
 
 	<modules>
+		<module>SocialNetworkRedis</module>
 		<module>SocialNetworkNeo4j</module>
 		<module>SocialNetworkDomain</module>
 		<module>SocialNetworkMongo</module>

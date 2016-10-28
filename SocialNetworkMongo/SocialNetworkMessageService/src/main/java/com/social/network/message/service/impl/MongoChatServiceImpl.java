@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.social.network.message.domain.model.Chat;
-import com.social.network.message.domain.model.Message;
+import com.social.network.message.domain.model.MongoMessage;
 import com.social.network.message.domain.model.Recipient;
 import com.social.network.message.domain.repository.ChatRepository;
 import com.social.network.message.domain.repository.MessageRepository;
@@ -53,7 +53,7 @@ public class MongoChatServiceImpl implements MongoChatService {
 
         // Create message
         long meaageId = counterService.getNextSequence(MESSAGE_ID_SEQUENCE_NAME);
-        Message message = new Message(meaageId, text, publisher, recipientsList);
+        MongoMessage message = new MongoMessage(meaageId, text, publisher, recipientsList);
 
         // Add message to chat
         Chat chat = chatRepository.findOne(chatId);
@@ -62,7 +62,7 @@ public class MongoChatServiceImpl implements MongoChatService {
     }
 
     @Override
-    public List<Message> getMessages(long chatId) {
+    public List<MongoMessage> getMessages(long chatId) {
         return chatRepository.findOne(chatId).getMessages();
     }
 

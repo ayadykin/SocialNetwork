@@ -37,9 +37,9 @@ public class Chat implements Serializable {
     private HiddenLabel hidden;
 
     //@OrderBy("createDate")
-    @ManyToMany(mappedBy = "chat")
-    @Filter(name = "messageLimit", condition = ":minDate <= createDate")
-    private Set<Message> messages = new LinkedHashSet<>();
+    //@ManyToMany(mappedBy = "chat")
+    //@Filter(name = "messageLimit", condition = ":minDate <= createDate")
+   // private Set<Message> messages = new LinkedHashSet<>();
 
     @OrderBy("user")
     @OneToMany(mappedBy = "chat")
@@ -58,7 +58,7 @@ public class Chat implements Serializable {
         this.chatId = chatId;
     }
 
-    public Set<Message> getMessages() {
+    /*public Set<Message> getMessages() {
         return messages;
     }
 
@@ -72,7 +72,7 @@ public class Chat implements Serializable {
 
     public void setMessages(Set<Message> messages) {
         this.messages = messages;
-    }
+    }*/
 
     public Set<UserChat> getUserChat() {
         return userChat;

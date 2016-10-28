@@ -57,7 +57,6 @@ public class FriendServiceImpl implements FriendService {
 	}
 
 	@Override
-	@Transactional(value = "hibernateTx")
 	public Friend inviteFriend(long userId) {
 		logger.debug(" inviteFriend  userId : {}", userId);
 		return inviteFriend.friendAction(INVITATION_MESSAGE, userId, FriendStatus.NEW);

@@ -20,7 +20,7 @@ import com.social.network.domain.config.HibernateConfig;
 
 @Configuration
 @ComponentScan(basePackageClasses = Application.class)
-@Import({ HibernateConfig.class, RedisConfig.class })
+@Import({ HibernateConfig.class })
 public class RootServiceConfig {
     private static final String MESSAGE_SOURCE = "classpath:i18n/messages";
     private static final String PERSISTANCE_PROPERTIES = "/persistance.properties";

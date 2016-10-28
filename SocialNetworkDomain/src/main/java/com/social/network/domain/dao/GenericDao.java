@@ -12,7 +12,7 @@ public interface GenericDao <T, PK extends Serializable> {
 
     List<T> getAll();
     T get(PK id);
-    long save(T object);
+    T save(T object);
     void persist(T entity);
     void saveOrUpdate(T entity);
     void remove(PK id);

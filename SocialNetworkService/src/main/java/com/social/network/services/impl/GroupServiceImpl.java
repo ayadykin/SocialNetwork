@@ -1,11 +1,5 @@
 package com.social.network.services.impl;
 
-import static com.social.network.utils.Constants.ADD_USER_TO_GROUP_MESSAGE;
-import static com.social.network.utils.Constants.CREATE_GROUP_MESSAGE;
-import static com.social.network.utils.Constants.DELETE_GROUP_MESSAGE;
-import static com.social.network.utils.Constants.DELETE_USER_FROM_GROUP_MESSAGE;
-import static com.social.network.utils.Constants.LEAVE_GROUP_MESSAGE;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -18,26 +12,29 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.core.message.text.MessageTextBuilder;
-import com.social.network.domain.dao.ChatDao;
 import com.social.network.domain.dao.GroupDao;
 import com.social.network.domain.dao.UserChatDao;
 import com.social.network.domain.model.Chat;
 import com.social.network.domain.model.Group;
-import com.social.network.domain.model.Message;
 import com.social.network.domain.model.User;
 import com.social.network.domain.model.UserChat;
-import com.social.network.domain.model.enums.SystemMessageStatus;
 import com.social.network.exceptions.group.DeleteGroupException;
 import com.social.network.exceptions.group.GroupAdminException;
 import com.social.network.exceptions.group.GroupPermissionExceptions;
 import com.social.network.message.service.MongoChatService;
+import com.social.network.redis.service.RedisService;
+import com.social.network.services.ChatService;
 import com.social.network.services.FriendService;
 import com.social.network.services.GroupService;
 import com.social.network.services.MessageService;
-import com.social.network.services.Neo4jService;
-import com.social.network.services.RedisService;
 import com.social.network.services.UserService;
 import com.social.network.validation.DaoValidation;
+
+import static com.social.network.utils.Constants.ADD_USER_TO_GROUP_MESSAGE;
+import static com.social.network.utils.Constants.CREATE_GROUP_MESSAGE;
+import static com.social.network.utils.Constants.DELETE_GROUP_MESSAGE;
+import static com.social.network.utils.Constants.DELETE_USER_FROM_GROUP_MESSAGE;
+import static com.social.network.utils.Constants.LEAVE_GROUP_MESSAGE;
 
 /**
  * Created by Yadykin Andrii on 5/17/2016.
@@ -50,7 +47,7 @@ public class GroupServiceImpl implements GroupService {
 	@Autowired
 	private GroupDao groupDao;
 	@Autowired
-	protected ChatDao chatDao;
+	private ChatService chatService;
 	@Autowired
 	private UserChatDao userChatDao;
 	@Autowired
@@ -113,7 +110,7 @@ public class GroupServiceImpl implements GroupService {
 		}
 
 		// Create chat
-		Chat chat = chatDao.merge(new Chat());
+		Chat chat = chatService.save(new Chat());
 		mongoChatService.saveChat(chat.getChatId());
 		
 		// Create group
@@ -132,7 +129,7 @@ public class GroupServiceImpl implements GroupService {
 				messageText = messageTextBuilder.createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE,
 						group.getAdmin().getUserFullName(), user.getUserFullName());
 			}
-			sendMessageToRedis(messageText, group, loggedUser);
+			//sendMessageToRedis(messageText, group, loggedUser);
 		}
 
 		return group;
@@ -152,7 +149,7 @@ public class GroupServiceImpl implements GroupService {
 		String messageText = messageTextBuilder.createTwoParamsMessage(ADD_USER_TO_GROUP_MESSAGE,
 				loggedUser.getUserFullName(), invitedUser.getFirstName());
 		
-		sendMessageToRedis(messageText, group, loggedUser);
+		//sendMessageToRedis(messageText, group, loggedUser);
 		return invitedUser;
 	}
 
@@ -170,7 +167,7 @@ public class GroupServiceImpl implements GroupService {
 		String messageText = messageTextBuilder.createTwoParamsMessage(DELETE_USER_FROM_GROUP_MESSAGE,
 				loggedUser.getFirstName(), removedUser.getUserFullName());
 		
-		sendMessageToRedis(messageText, group, loggedUser);
+		//sendMessageToRedis(messageText, group, loggedUser);
 		return removedUser;
 	}
 
@@ -186,7 +183,7 @@ public class GroupServiceImpl implements GroupService {
 		String messageText = messageTextBuilder.createOneParamMessage(LEAVE_GROUP_MESSAGE,
 				loggedUser.getUserFullName());
 
-		sendMessageToRedis(messageText, group, loggedUser);
+		//sendMessageToRedis(messageText, group, loggedUser);
 		return group;
 	}
 
@@ -203,15 +200,15 @@ public class GroupServiceImpl implements GroupService {
 		String messageText = messageTextBuilder.createOneParamMessage(DELETE_GROUP_MESSAGE,
 				loggedUser.getUserFullName());
 
-		sendMessageToRedis(messageText, group, loggedUser);
+		//sendMessageToRedis(messageText, group, loggedUser);
 		return group;
 	}
 
-	private boolean sendMessageToRedis(String messageText, Group group, User loggedUser) {
+	/*private boolean sendMessageToRedis(String messageText, Group group, User loggedUser) {
 		Message message = messageService.createSystemMessage(messageText, loggedUser, group.getChat(),
 				SystemMessageStatus.SYSTEM);
 		return redisService.sendMessageToRedis(message);
-	}
+	}*/
 
 	/*
 	 * Custom action validation

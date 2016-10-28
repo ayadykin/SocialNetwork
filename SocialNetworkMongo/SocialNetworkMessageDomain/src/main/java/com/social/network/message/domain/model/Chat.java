@@ -17,7 +17,7 @@ public class Chat {
     @Id
     private long chatId;
 
-    private List<Message> messages = new ArrayList<>();
+    private List<MongoMessage> messages = new ArrayList<>();
 
     public Chat() {
 
@@ -35,15 +35,15 @@ public class Chat {
         this.chatId = chatId;
     }
 
-    public List<Message> getMessages() {
+    public List<MongoMessage> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<Message> messages) {
+    public void setMessages(List<MongoMessage> messages) {
         this.messages = messages;
     }
 
-    public void addMessage(Message message) {
+    public void addMessage(MongoMessage message) {
         this.messages.add(message);
     }
 

@@ -1,17 +1,15 @@
-package com.social.network.redis;
+package com.social.network.redis.model;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import com.social.network.domain.model.enums.SystemMessageStatus;
-import com.social.network.utils.Constants;
+import java.util.Set;
 
 /**
  * Created by Yadykin Andrii Sep 2, 2016
  *
  */
 
-public class RedisMessageModel implements Serializable{
+public class RedisMessage implements Serializable {
     private long chatId;
     private long messageId;
     private String text;
@@ -19,12 +17,17 @@ public class RedisMessageModel implements Serializable{
     private long ownerId;
     private String ownerName;
     private boolean hidden;
-    private SystemMessageStatus messageInviteStatus;
+    private Set<Long> recipientsList;
+    // private SystemMessageStatus messageInviteStatus;
 
-    public RedisMessageModel() {
+    public RedisMessage() {
     }
-
-    public RedisMessageModel(long messageId, String text, Date date, String ownerName, long ownerId) {
+    public RedisMessage(String text, long chatId, String ownerName){
+        this.text = text;
+        this.chatId = chatId;
+        this.ownerName = ownerName;
+    }
+    public RedisMessage(long messageId, String text, Date date, String ownerName, long ownerId) {
         this.messageId = messageId;
         this.text = text;
         this.date = date;
@@ -57,7 +60,7 @@ public class RedisMessageModel implements Serializable{
     }
 
     public String getDate() {
-        return Constants.dateFormat.format(date);
+        return "";// Constants.dateFormat.format(date);
     }
 
     public void setDate(Date date) {
@@ -88,17 +91,26 @@ public class RedisMessageModel implements Serializable{
         this.ownerId = ownerId;
     }
 
-    public SystemMessageStatus getMessageInviteStatus() {
-        return messageInviteStatus;
+    /*
+     * public SystemMessageStatus getMessageInviteStatus() { return
+     * messageInviteStatus; }
+     * 
+     * public void setMessageInviteStatus(SystemMessageStatus
+     * messageInviteStatus) { this.messageInviteStatus = messageInviteStatus; }
+     */
+
+    public Set<Long> getRecipientsList() {
+        return recipientsList;
     }
 
-    public void setMessageInviteStatus(SystemMessageStatus messageInviteStatus) {
-        this.messageInviteStatus = messageInviteStatus;
+    public void setRecipientsList(Set<Long> recipientsList) {
+        this.recipientsList = recipientsList;
     }
 
     @Override
     public String toString() {
-        return "MessageDto [chatId=" + chatId + ", messageId=" + messageId + ", text=" + text + ", date=" + date + ", ownerId=" + ownerId
-                + ", ownerName=" + ownerName + ", hidden=" + hidden + ", messageInviteStatus=" + messageInviteStatus + "]";
+        return "RedisMessage [chatId=" + chatId + ", messageId=" + messageId + ", text=" + text + ", date=" + date + ", ownerId=" + ownerId
+                + ", ownerName=" + ownerName + ", hidden=" + hidden + ", recipientsList=" + recipientsList + "]";
     }
+
 }

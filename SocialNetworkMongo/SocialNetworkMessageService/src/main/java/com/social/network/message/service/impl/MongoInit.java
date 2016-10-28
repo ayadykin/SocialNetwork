@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.social.network.message.domain.model.Message;
+import com.social.network.message.domain.model.MongoMessage;
 import com.social.network.message.domain.repository.MessageRepository;
 
 /**
@@ -29,7 +29,7 @@ public class MongoInit {
     //@Transactional
     public void init() {
         logger.debug("----------");
-        Message message = new Message();
+        MongoMessage message = new MongoMessage();
         //messageRepository.save(message);
         
     }

@@ -1,8 +1,5 @@
 package com.social.network.rest.api;
 
-import static com.social.network.rest.utils.Constants.CHAT_PARAM;
-import static com.social.network.rest.utils.Constants.CHAT_PATH;
-
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,13 +14,15 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import com.social.network.exceptions.chat.EmptyMessageException;
-import com.social.network.redis.RedisMessageModel;
+import com.social.network.redis.model.RedisMessage;
 import com.social.network.rest.dto.chat.ChatDto;
 import com.social.network.rest.dto.chat.EditMessageDto;
-import com.social.network.rest.dto.chat.GetChatMessagesDto;
 import com.social.network.rest.dto.chat.SendMessageDto;
 import com.social.network.rest.facade.ChatServiceFacade;
 import com.social.network.utils.RestResponse;
+
+import static com.social.network.rest.utils.Constants.CHAT_PARAM;
+import static com.social.network.rest.utils.Constants.CHAT_PATH;
 
 /**
  * Created by Yadykin Andrii Jul 22, 2016
@@ -52,14 +51,14 @@ public class ChatApi {
 	}
 
 	@RequestMapping(value = "/getMessages" + CHAT_PARAM, method = RequestMethod.GET)
-	public List<RedisMessageModel> getMessages(@PathVariable("chatId") long chatId) {
+	public List<RedisMessage> getMessages(@PathVariable("chatId") long chatId) {
 		return chatFacade.getChatMesasges(chatId);
 	}
 
-	@RequestMapping(value = "/getMessages", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/getMessages", method = RequestMethod.POST)
 	public List<RedisMessageModel> getFilteredChatMessages(@RequestBody GetChatMessagesDto getChatMessagesDto) {
 		return chatFacade.getChatMesasges(getChatMessagesDto.getChatId(), getChatMessagesDto.getDateFilter());
-	}
+	}*/
 
 	@RequestMapping(value = "/sendMessage", method = RequestMethod.POST)
 	public RestResponse sendMessageToChat(@RequestBody SendMessageDto sendMessageDto) {
@@ -84,7 +83,7 @@ public class ChatApi {
 	}
 
 	@RequestMapping(value = "/getMessage", method = RequestMethod.GET)
-	public DeferredResult<RedisMessageModel> getRedisMessage() {
+	public DeferredResult<RedisMessage> getRedisMessage() {
 		return chatFacade.getRedisMessage();
 	}
 }

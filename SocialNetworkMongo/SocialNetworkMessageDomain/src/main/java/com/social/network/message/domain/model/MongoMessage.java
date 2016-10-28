@@ -1,9 +1,9 @@
 package com.social.network.message.domain.model;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -12,26 +12,29 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 
 @Document(collection = "message")
-public class Message {
+public class MongoMessage {
 
     private long messageId;
 
+    private Date createDate;
+
     private String text;
 
-    private long publisher;
+    private long publisherId;
 
     private boolean hidden;
 
     private Set<Recipient> recipient = new HashSet<>();
 
-    public Message() {
+    public MongoMessage() {
 
     }
 
-    public Message(long messageId, String text, long publisher, Set<Recipient> recipient){
+    public MongoMessage(long messageId, String text, long publisherId, Set<Recipient> recipient) {
         this.messageId = messageId;
+        this.createDate = new Date();
         this.text = text;
-        this.publisher = publisher;
+        this.publisherId = publisherId;
         this.recipient = recipient;
     }
 
@@ -43,12 +46,20 @@ public class Message {
         this.messageId = messageId;
     }
 
-    public long getPublisher() {
-        return publisher;
+    public Date getCreateDate() {
+        return createDate;
     }
 
-    public void setPublisher(long publisher) {
-        this.publisher = publisher;
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    public long getPublisherId() {
+        return publisherId;
+    }
+
+    public void setPublisherId(long publisherId) {
+        this.publisherId = publisherId;
     }
 
     public boolean isHidden() {
@@ -77,8 +88,8 @@ public class Message {
 
     @Override
     public String toString() {
-        return "Message [messageId=" + messageId + ", text=" + text + ", publisher=" + publisher + ", hidden=" + hidden + ", recipient="
-                + recipient + "]";
+        return "MongoMessage [messageId=" + messageId + ", createDate=" + createDate + ", text=" + text + ", publisherId=" + publisherId
+                + ", hidden=" + hidden + ", recipient=" + recipient + "]";
     }
 
 }
