@@ -21,12 +21,9 @@ import com.social.network.message.service.CounterService;
 public class CounterServiceImpl implements CounterService {
 
     private final static Logger logger = LoggerFactory.getLogger(CounterService.class);
-    private final MongoTemplate mongoTemplate;
-
+    
     @Autowired
-    public CounterServiceImpl(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
+    private MongoTemplate mongoTemplate;
 
     @Override
     public long getNextSequence(String counterName) {

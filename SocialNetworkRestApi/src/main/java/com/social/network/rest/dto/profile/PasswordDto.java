@@ -1,12 +1,15 @@
 package com.social.network.rest.dto.profile;
 
-import com.social.network.utils.Constants;
-import org.hibernate.validator.constraints.NotBlank;
-
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import static com.social.network.utils.Constants.*;
+import com.social.network.utils.Constants;
+
+import static com.social.network.utils.Constants.SECURE_PASSWORD_LOWER_CASE;
+import static com.social.network.utils.Constants.SECURE_PASSWORD_NO_DIGITS;
+import static com.social.network.utils.Constants.SECURE_PASSWORD_SPACES;
+import static com.social.network.utils.Constants.SECURE_PASSWORD_SYMBOLS;
+import static com.social.network.utils.Constants.SECURE_PASWWORD_UPPER_CASE;
 
 /**
  * Created by Yadykin Andrii on 5/30/2016.
@@ -15,7 +18,7 @@ public class PasswordDto {
 
     private String oldPassword;
 
-    @NotBlank(message = Constants.NOT_BLANK_MESSAGE)
+    //@NotBlank(message = Constants.NOT_BLANK_MESSAGE)
     @Size(min = 6, message = Constants.MIN_PASSWORD_SIZE)
     @Pattern.List({ @Pattern(regexp = "(?=.*\\d).+", message = SECURE_PASSWORD_NO_DIGITS),
             @Pattern(regexp = "(?=.*[a-z]).+", message = SECURE_PASSWORD_LOWER_CASE),

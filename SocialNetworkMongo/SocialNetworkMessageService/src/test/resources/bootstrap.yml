@@ -1,0 +1,11 @@
+eureka:
+  client:
+    enabled: false
+spring:
+  data:
+    mongodb:
+      database: message
+      host: ds035026.mlab.com
+      port: 35026
+      password: SNpass
+      username: SNmongoDB

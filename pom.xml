@@ -20,6 +20,7 @@
 		<module>SocialNetworkService</module>
 		<module>SocialNetworkRestApi</module>
 		<module>SocialNetworkAngular</module>
+		<module>SNConfig</module>
 	</modules>
 
 	<properties>

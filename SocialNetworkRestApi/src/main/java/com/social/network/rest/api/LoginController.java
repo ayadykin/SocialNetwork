@@ -20,7 +20,7 @@ import com.social.network.rest.dto.AccountDto;
 
 @RestController
 @RequestMapping(value = "/signin")
-public class SigninApi {
+public class LoginController {
 
     @ResponseBody
     @RequestMapping(method = RequestMethod.GET)
