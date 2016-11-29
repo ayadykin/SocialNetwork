@@ -3,6 +3,7 @@ package com.social.network.message.service;
 import java.util.List;
 import java.util.Set;
 
+import com.social.network.message.domain.model.Chat;
 import com.social.network.message.domain.model.MongoMessage;
 
 /**
@@ -12,7 +13,7 @@ import com.social.network.message.domain.model.MongoMessage;
 
 public interface MongoChatService {
 
-    void saveChat(long chatId);
+    Chat saveChat(long chatId);
     
     void addMessage(long chatId, String text, long publisher, Set<Long> resiients);
     

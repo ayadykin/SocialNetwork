@@ -1,6 +1,7 @@
 package com.social.network.redis.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,12 +23,12 @@ public class RedisController {
     @Autowired
     private RedisService redisService;
 
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public RedisMessage getChat() {
         return redisService.getMessage();
     }
 
-    @PostMapping
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public RedisMessage sendMessage(@RequestBody RedisMessage redisMessage) {
         redisService.sendMessageToRedis(redisMessage);
         return redisMessage;

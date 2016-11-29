@@ -28,30 +28,15 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <spring.boot>1.4.2.RELEASE</spring.boot>
-        <org.springframework.version>4.3.2.RELEASE</org.springframework.version>
-        <org.springframework.security.version>3.2.3.RELEASE</org.springframework.security.version>
-        <org.slf4j.version>1.7.5</org.slf4j.version>
-        <commons.logging.version>1.2</commons.logging.version>
-        <log4j.version>1.2.17</log4j.version>
         <org.apache.commons.lang3.version>3.4</org.apache.commons.lang3.version>
-        <jackson.version>2.7.5</jackson.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-            <!--dependency> <groupId>org.springframework</groupId> <artifactId>spring-framework-bom</artifactId> <version>${org.springframework.version}</version> 
-                <type>pom</type> <scope>import</scope> </dependency -->
-            <dependency>
-                <groupId>org.springframework.security</groupId>
-                <artifactId>spring-security-bom</artifactId>
-                <version>${org.springframework.security.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
-                <version>Brixton.RELEASE</version>
+                <version>Brixton.SR7</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -82,7 +67,18 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka-server</artifactId>
+        </dependency>
+        
+        <!-- Jersey -->
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+        </dependency>
 
+        
         <!-- Utils -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -90,41 +86,10 @@
             <version>${org.apache.commons.lang3.version}</version>
         </dependency>
 
-        <!-- Json -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-        </dependency>
-
-        <!-- Logging -->
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${commons.logging.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>apache-log4j-extras</artifactId>
-            <version>${log4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>${log4j.version}</version>
         </dependency>
 
         <!-- Test -->
@@ -136,11 +101,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
             <scope>test</scope>
         </dependency>
 

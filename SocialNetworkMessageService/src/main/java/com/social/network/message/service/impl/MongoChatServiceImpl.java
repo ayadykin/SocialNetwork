@@ -37,9 +37,9 @@ public class MongoChatServiceImpl implements MongoChatService {
     private MessageRepository messageRepository;
 
     @Override
-    public void saveChat(long chatId) {
+    public Chat saveChat(long chatId) {
         logger.debug(" saveChat chatId : {}", chatId);
-        chatRepository.save(new Chat(chatId));
+        return chatRepository.save(new Chat(chatId));
     }
 
     @Override
