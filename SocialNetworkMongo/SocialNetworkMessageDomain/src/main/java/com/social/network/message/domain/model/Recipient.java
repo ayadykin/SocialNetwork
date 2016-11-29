@@ -2,7 +2,6 @@ package com.social.network.message.domain.model;
 
 import java.io.Serializable;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -12,7 +11,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "recipient")
 public class Recipient implements Serializable {
-
 
     private boolean readed;
 

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: sn-server
+  cloud:
+    config: 
+     uri: http://localhost:8080/SNConfig
+     fail-fast: true
+      #password: ${CONFIG_SERVICE_PASSWORD}
+      #username: user
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+spring.jmx.default-domain: com.social.network.server

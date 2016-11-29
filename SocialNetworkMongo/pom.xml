@@ -21,6 +21,8 @@
         <log4j.version>1.2.17</log4j.version>
         <org.slf4j.version>1.7.5</org.slf4j.version>
         <junit.version>4.12</junit.version>
+        <spring.data.mongodb>1.9.4.RELEASE</spring.data.mongodb>
+        <mongodb.driver>3.2.2</mongodb.driver>
     </properties>
 
     <modules>

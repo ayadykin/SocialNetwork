@@ -44,12 +44,12 @@ public class ChatServiceImpl extends GenericServiceImpl<Chat> implements ChatSer
     private UserService userService;
     @Autowired
     private FriendService friendService;
-    @Autowired
-    private MessageService messageService;
+    //@Autowired
+    //private MessageService messageService;
     @Autowired
     private FriendsMailing friendsNotification;
-    @Autowired
-    private MongoChatService mongoChatService;
+    //@Autowired
+    //private MongoChatService mongoChatService;
     @Autowired
     private RedisService redisService;
 

@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.social.network.redis.model.RedisMessage;
+import com.social.network.redis.model.RedisMessageDto;
 import com.social.network.redis.service.RedisService;
 import com.social.network.redis.util.RedisMessageConverter;
 
@@ -30,7 +30,7 @@ public class RedisServiceImpl implements RedisService {
 
 
     @Override
-    @Transactional(value = "hibernateTx")
+    //@Transactional(value = "hibernateTx")
     public RedisMessage getMessage() {
         logger.debug("getMessage ");
         long userId = 0;//userService.getLoggedUserId();
@@ -57,22 +57,23 @@ public class RedisServiceImpl implements RedisService {
     }
 
     @Override
-    @Transactional(value = "hibernateTx", readOnly = true)
-    public boolean sendMessageToRedis(String message, long chatId, String publisherNamme) {
-        logger.debug("sendMessagesToRedis :  message = {}", message);
-        RedisMessage redisMessageModel = RedisMessageConverter.createRedisMessage(message, chatId, publisherNamme);
+    //@Transactional(value = "hibernateTx", readOnly = true)
+    public boolean sendMessageToRedis(RedisMessage redisMessage) {
+        logger.debug("sendMessagesToRedis :  redisMessage = {}", redisMessage);
+        //RedisMessage redisMessageModel = RedisMessageConverter.createRedisMessage(message, chatId, publisherNamme);
         //message = messageDao.merge(message);
         try {
             //for (Chat chat : message.getChat()) {
                 //redisMessageModel.setChat(chat.getChatId());
                 //for (Recipient recipient : message.getRecipient()) {
-                    String key = String.valueOf(chatId);
-                    redisTemplate.boundListOps(key).rightPush(redisMessageModel);
-                    redisTemplate.convertAndSend(key, redisMessageModel);
+                    String key = String.valueOf(redisMessage.getChatId());
+                    redisTemplate.boundListOps(key).rightPush(redisMessage);
+                    redisTemplate.convertAndSend(key, redisMessage);
                 //}
             //}
         } catch (Exception e) {
             logger.error("sendMessageToRedis {}", e);
+            return false;
         }
 
         return true;

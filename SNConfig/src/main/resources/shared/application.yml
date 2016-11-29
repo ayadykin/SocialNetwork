@@ -1,9 +1,10 @@
 logging:
   level:
     org.springframework.security: INFO
+    com.social.network: DEBUG
 eureka:
   instance:
     leaseRenewalIntervalInSeconds: 5
   client:
     serviceUrl:
-      defaultZone: http://localhost:8080/eureka-server/eureka/
+      defaultZone: http://localhost:8080/SNServer/eureka/

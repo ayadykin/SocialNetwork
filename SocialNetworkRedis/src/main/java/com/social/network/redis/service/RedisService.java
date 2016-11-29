@@ -13,11 +13,6 @@ public interface RedisService {
      */
     RedisMessage getMessage();
 
-    /**
-     * @param message
-     * @param userId
-     * @return
-     */
-    boolean sendMessageToRedis(String message, long chatId, String publisherNamme);
+    boolean sendMessageToRedis(RedisMessage redisMessage);
 
 }

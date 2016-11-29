@@ -1,35 +1,31 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+    <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.social.network</groupId>
         <artifactId>SocialNetwork</artifactId>
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.social.network.config</groupId>
-    <artifactId>SNConfig</artifactId>
-    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.social.network.server</groupId>
+    <artifactId>SNServer</artifactId>
+    <name>SNServer</name>
     <packaging>war</packaging>
-    <name>SNConfig</name>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-config-server</artifactId>
+            <artifactId>spring-cloud-starter-eureka-server</artifactId>
         </dependency>
+        <!--dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-server</artifactId>
+        </dependency-->
     </dependencies>
 
     <build>
+        <finalName>SNServer</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <finalName>config</finalName>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.apache.tomcat.maven</groupId>
                 <artifactId>tomcat7-maven-plugin</artifactId>
