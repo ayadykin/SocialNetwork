@@ -8,9 +8,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.social.network.redis.model.RedisMessage;
-import com.social.network.redis.model.RedisMessageDto;
 import com.social.network.redis.service.RedisService;
-import com.social.network.redis.util.RedisMessageConverter;
 
 /**
  * Created by Yadykin Andrii May 12, 2016
