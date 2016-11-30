@@ -12,6 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @FeignClient("message-service")
 public interface MessageClient {
 
-    @RequestMapping(method = RequestMethod.POST, value = "/MessageService/chat/message")
-    void saveMessage(@RequestBody MessageDto messageDto);
+    @RequestMapping(method = RequestMethod.PUT, value = "/MessageService/chat/message")
+    long saveMessage(@RequestBody MessageDto messageDto);
 }

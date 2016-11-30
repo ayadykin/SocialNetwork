@@ -1,11 +1,12 @@
 package com.social.network.message.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,7 @@ import com.social.network.message.domain.model.MongoMessage;
 import com.social.network.message.domain.model.Recipient;
 import com.social.network.message.domain.repository.ChatRepository;
 import com.social.network.message.domain.repository.MessageRepository;
+import com.social.network.message.exceptions.ChatException;
 import com.social.network.message.service.CounterService;
 import com.social.network.message.service.MongoChatService;
 
@@ -22,10 +24,9 @@ import com.social.network.message.service.MongoChatService;
  *
  */
 
+@Slf4j
 @Service
 public class MongoChatServiceImpl implements MongoChatService {
-
-    private final static Logger logger = LoggerFactory.getLogger(MongoChatService.class);
 
     private static final String MESSAGE_ID_SEQUENCE_NAME = "message_id";
 
@@ -38,13 +39,13 @@ public class MongoChatServiceImpl implements MongoChatService {
 
     @Override
     public Chat saveChat(long chatId) {
-        logger.debug(" saveChat chatId : {}", chatId);
+        log.debug(" saveChat chatId : {}", chatId);
         return chatRepository.save(new Chat(chatId));
     }
 
     @Override
-    public void addMessage(long chatId, String text, long publisher, Set<Long> resipientsId) {
-        logger.debug(" addMessage chatId : {}, text : {}, publisher : {}, resipientsId : {}", chatId, text, publisher, resipientsId);
+    public MongoMessage addMessage(long chatId, String text, long publisher, Set<Long> resipientsId) {
+        log.debug(" addMessage chatId : {}, text : {}, publisher : {}, resipientsId : {}", chatId, text, publisher, resipientsId);
         // Create recipients
         Set<Recipient> recipientsList = new HashSet<>();
         for (long userId : resipientsId) {
@@ -57,8 +58,13 @@ public class MongoChatServiceImpl implements MongoChatService {
 
         // Add message to chat
         Chat chat = chatRepository.findOne(chatId);
+        
+        if(Objects.isNull(chat)){
+            throw new ChatException("Chat not exist");
+        }
         chat.addMessage(message);
         chatRepository.save(chat);
+        return message;
     }
 
     @Override

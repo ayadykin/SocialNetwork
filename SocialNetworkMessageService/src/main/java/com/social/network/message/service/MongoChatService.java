@@ -15,7 +15,7 @@ public interface MongoChatService {
 
     Chat saveChat(long chatId);
     
-    void addMessage(long chatId, String text, long publisher, Set<Long> resiients);
+    MongoMessage addMessage(long chatId, String text, long publisher, Set<Long> resiients);
     
     List<MongoMessage> getMessages(long chatId);
 }

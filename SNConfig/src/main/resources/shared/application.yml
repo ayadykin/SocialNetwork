@@ -3,8 +3,15 @@ logging:
     org.springframework.security: INFO
     com.social.network: DEBUG
 eureka:
-  instance:
+  instance:    
     leaseRenewalIntervalInSeconds: 5
   client:
     serviceUrl:
       defaultZone: http://localhost:8080/SNServer/eureka/
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000

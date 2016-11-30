@@ -44,8 +44,8 @@ public class RedisMessageListener implements MessageListener {
             messageDto.setChatId(redisMessage.getChatId());
             messageDto.setResipientsId(redisMessage.getRecipientsList());
             
-            messageClient.saveMessage(messageDto);
-            
+            long meggaseId = messageClient.saveMessage(messageDto);
+            log.debug(" onMessage saveMessage meggaseId : {}", meggaseId);
             //mongoChatService.addMessage(redisMessage.getChatId(), redisMessage.getText(), redisMessage.getOwnerId(),
             //        new HashSet<>(Arrays.asList(1l, 3l)));
         } catch (Exception e) {

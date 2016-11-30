@@ -17,6 +17,7 @@ import java.util.Set;
 @ToString
 public class MessageDto implements Serializable {
     private long chatId;
+    private long messageId;
     private String text;
     private long publisher;
     private Set<Long> resipientsId;
