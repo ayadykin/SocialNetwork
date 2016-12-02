@@ -3,8 +3,8 @@ package com.social.network.neo4j.domain;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
@@ -20,13 +20,39 @@ public class User {
 
     private String name;
 
-    @Relationship(type = "INVITE")
-    List<User> invete = new ArrayList<>();
+    @Relationship(type = "INVITEE")
+    private Set<User> invetee = new HashSet<>();
+    
+    @Relationship(type = "INVITER", direction = Relationship.INCOMING)
+    private Set<User> inveter = new HashSet<>();
 
     @Relationship(type = "FRIEND")
-    List<User> friends = new ArrayList<>();
+    private Set<User> friends = new HashSet<>();
 
     @Relationship(type = "GROUP")
-    List<Group> group = new ArrayList<>();
+    private Set<Group> group = new HashSet<>();
 
+    public void addInvitee(User user) {
+        invetee.add(user);
+    }
+
+    public boolean removeInvitee(User user) {
+        return invetee.remove(user);
+    }
+    
+    public void addInviter(User user) {
+        inveter.add(user);
+    }
+
+    public boolean removeInviter(User user) {
+        return inveter.remove(user);
+    }
+
+    public void addFriend(User user) {
+        friends.add(user);
+    }
+    
+    public void addGroup(Group user) {
+        group.add(user);
+    }
 }

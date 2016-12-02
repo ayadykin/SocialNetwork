@@ -15,3 +15,7 @@ hystrix:
         isolation:
           thread:
             timeoutInMilliseconds: 10000
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://localhost:8080/AuthService/users/current

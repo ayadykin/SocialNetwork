@@ -1,27 +1,39 @@
 package com.social.network.neo4j.domain;
 
-import java.util.List;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.HashSet;
+import java.util.Set;
 
 import org.neo4j.ogm.annotation.GraphId;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Relationship;
 
+@Setter
+@Getter
+@NoArgsConstructor
 @NodeEntity
 public class Group {
 
-	@GraphId
-	Long id;
-	
-	String title;
+    @GraphId
+    private Long id;
 
-	/*Person director;
+    private String name;
+    
+    @Relationship(type = "OWNER")
+    private User owner;
 
-	@Relationship(type = "ACTS_IN", direction = Relationship.INCOMING)
-	Set<Person> actors;*/
-
-	@Relationship(type = "MEMBER")
-	List<User> members;
-	
-	@Relationship(type = "FRIEND")
-	List<User> friends;
+    @Relationship(type = "USER")
+    private Set<User> users = new HashSet<>();
+    
+    public Group(String name, User owner){
+        this.name = name;
+        this.owner = owner;
+    }
+    
+    public void addUser(User user){
+        users.add(user);
+    }
 }

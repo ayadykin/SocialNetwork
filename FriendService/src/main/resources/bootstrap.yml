@@ -1,10 +1,10 @@
 spring:
   application:
-    name: neo4j-service
+    name: friend-service
   cloud:
     config: 
      uri: http://localhost:8080/SNConfig
-     #fail-fast: true
+     fail-fast: true
       #password: ${CONFIG_SERVICE_PASSWORD}
       #username: user
-spring.jmx.default-domain: com.social.network.neo4j
+spring.jmx.default-domain: com.social.network.friend
