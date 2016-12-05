@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import com.social.network.message.MessageServer;
 import com.social.network.message.domain.model.MongoMessage;
@@ -24,6 +25,7 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration(classes = { MessageServer.class }, loader = AnnotationConfigContextLoader.class)
 @SpringApplicationConfiguration(classes = MessageServer.class)
+@WebAppConfiguration
 public class MongoTest {
 
     @Autowired

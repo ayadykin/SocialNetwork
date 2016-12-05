@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import com.social.network.message.domain.model.Chat;
@@ -36,6 +37,8 @@ public class MongoChatServiceImpl implements MongoChatService {
     private CounterService counterService;
     @Autowired
     private MessageRepository messageRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     public Chat saveChat(long chatId) {
@@ -58,8 +61,8 @@ public class MongoChatServiceImpl implements MongoChatService {
 
         // Add message to chat
         Chat chat = chatRepository.findOne(chatId);
-        
-        if(Objects.isNull(chat)){
+
+        if (Objects.isNull(chat)) {
             throw new ChatException("Chat not exist");
         }
         chat.addMessage(message);

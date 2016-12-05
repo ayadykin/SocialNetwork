@@ -37,12 +37,8 @@ public class FriendServiceController {
         return friends.stream().map(f-> new UserDto(f.getId(), f.getName())).collect(Collectors.toList());      
     }
 
-    @PostMapping(value = "/user", produces = MediaType.APPLICATION_JSON_VALUE)
-    public void createUser(@RequestBody UserDto userDto) {
 
-        neo4jService.createUser(userDto.getName());
-    }
-
+    //@PreAuthorize("#oauth2.hasScope('server')")
     @PostMapping(value = "/invite", produces = MediaType.APPLICATION_JSON_VALUE)
     public void inviteFriend(@RequestBody InviteDto inviteDto) {
 
@@ -53,5 +49,13 @@ public class FriendServiceController {
     public void acceptInvitation(@RequestBody InviteDto inviteDto) {
 
         neo4jService.acceptInvitation(inviteDto.getUserId(), inviteDto.getFriendId());
+    }
+    
+    public void declineInvitation(@RequestBody InviteDto inviteDto) {
+        
+    }
+    
+    public void deleteFriend(@RequestBody InviteDto inviteDto) {
+        
     }
 }
