@@ -1,6 +1,6 @@
 package com.social.network.message.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.HashSet;
 import java.util.List;
@@ -25,7 +25,7 @@ import com.social.network.message.service.MongoChatService;
  *
  */
 
-@Slf4j
+@Log4j2
 @Service
 public class MongoChatServiceImpl implements MongoChatService {
 

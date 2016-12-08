@@ -18,4 +18,4 @@ hystrix:
 security:
   oauth2:
     resource:
-      user-info-uri: http://localhost:8080/AuthService/users/current
+      user-info-uri: http://localhost:8080/AuthService/user/current

@@ -1,6 +1,6 @@
 package com.social.network.auth.services;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
 
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
  *
  */
 
-@Slf4j
+@Log4j2
 @Component
 public class AuthenticationFailure implements AccessDeniedHandler {   
 

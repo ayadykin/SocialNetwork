@@ -2,16 +2,14 @@ package com.social.network.friend.fallback;
 
 import feign.Response;
 import feign.codec.ErrorDecoder;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.stereotype.Component;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Created by Yadykin Andrii Dec 2, 2016
  *
  */
 
-@Slf4j
+@Log4j2
 public class FeignServiceExceptionErrorDecoder implements ErrorDecoder {
 
     @Override

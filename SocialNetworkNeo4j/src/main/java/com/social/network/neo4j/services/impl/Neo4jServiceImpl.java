@@ -42,6 +42,7 @@ public class Neo4jServiceImpl implements Neo4jService {
     @Override
     @Transactional
     public User createUser(String name) {
+        log.info(" createUser name : {}", name);
         User user = new User();
         user.setName(name);
         return userRepository.save(user);

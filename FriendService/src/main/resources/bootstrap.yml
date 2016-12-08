@@ -4,7 +4,9 @@ spring:
   cloud:
     config: 
      uri: http://localhost:8080/SNConfig
-     fail-fast: true
+     #fail-fast: true
       #password: ${CONFIG_SERVICE_PASSWORD}
       #username: user
 spring.jmx.default-domain: com.social.network.friend
+logging:
+  file: /Logs/SocialNetwork/${spring.application.name}.log

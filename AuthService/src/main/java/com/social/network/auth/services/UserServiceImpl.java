@@ -1,6 +1,6 @@
 package com.social.network.auth.services;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import com.social.network.auth.model.UserRepository;
  *
  */
 
-@Slf4j
+@Log4j2
 @Service
 public class UserServiceImpl {
 
@@ -30,6 +30,8 @@ public class UserServiceImpl {
     public User createUser(String name) {
 
         long userId = userClient.createUser(new UserDto());
+        
+        log.info(" createUser userId : {}", userId);
 
         return userRepository.save(new User(userId, name));
 

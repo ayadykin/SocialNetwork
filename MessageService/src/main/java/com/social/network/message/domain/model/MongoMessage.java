@@ -1,9 +1,7 @@
 package com.social.network.message.domain.model;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 import java.util.Date;
 import java.util.HashSet;
@@ -17,9 +15,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  *
  */
 
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @Document(collection = "message")
 public class MongoMessage {

@@ -1,6 +1,6 @@
 package com.social.network.auth.services;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Collections;
 
@@ -11,7 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Slf4j
+@Log4j2
 @Service
 public class MongoUserDetailsService implements UserDetailsService {
 

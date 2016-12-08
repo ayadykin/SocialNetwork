@@ -1,5 +1,7 @@
 package com.social.network.auth;
 
+import lombok.extern.log4j.Log4j2;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
@@ -18,6 +20,7 @@ import com.social.network.auth.config.WebSecurityConfig;
  *
  */
 
+@Log4j2
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
@@ -28,6 +31,7 @@ import com.social.network.auth.config.WebSecurityConfig;
 public class AuthServer extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
+        log.debug("Start AuthServer");
         SpringApplication.run(AuthServer.class, args);
     }
 }

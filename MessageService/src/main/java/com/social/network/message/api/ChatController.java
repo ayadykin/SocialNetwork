@@ -1,14 +1,12 @@
 package com.social.network.message.api;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 
-import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +25,7 @@ import com.social.network.message.service.MongoChatService;
  *
  */
 
-@Slf4j
+@Log4j2
 @RestController
 @RequestMapping("/chat")
 public class ChatController {
@@ -50,13 +48,15 @@ public class ChatController {
 
     @PreAuthorize("#oauth2.hasScope('server') or #accountName.equals('demo')")
     @PutMapping(value = "/message",produces = MediaType.APPLICATION_JSON_VALUE)
-    public long addMessage(@RequestBody MessageDto messageDto) {
+    public MongoMessage addMessage(@RequestBody MessageDto messageDto) {
         log.info("addMessage messageDto : {}", messageDto);
         
         //TODO Validate DTO
         
         MongoMessage mongoMessage =  mongoChatService.addMessage(messageDto.getChatId(), messageDto.getText(), messageDto.getPublisher(),
                 messageDto.getResipientsId());
-        return mongoMessage.getMessageId();
+        log.debug("addMessage mongoMessage : {}", mongoMessage);
+        
+        return mongoMessage;
     }
 }

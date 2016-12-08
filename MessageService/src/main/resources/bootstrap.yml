@@ -8,3 +8,5 @@ spring:
       #password: ${CONFIG_SERVICE_PASSWORD}
       #username: user
 spring.jmx.default-domain: com.social.network.message
+logging:
+  file: /Logs/SocialNetwork/${spring.application.name}.log
