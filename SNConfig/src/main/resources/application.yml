@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: sn-server
   cloud:
     config:
       server:
@@ -11,3 +13,5 @@ spring:
 #  user:
 #    password: ${CONFIG_SERVICE_PASSWORD}
 spring.jmx.default-domain: com.social.network.config
+logging:
+  file: /Logs/SocialNetwork/${spring.application.name}.log

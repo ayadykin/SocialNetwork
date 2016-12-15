@@ -5,7 +5,8 @@ var concat = require('./gulp/concat');
 var clean = require('./gulp/clean');
 var rename = require("gulp-rename");
 
-gulp.task('default', [ 'browserifyModues' ]);
+gulp.task('default', ['jade', 'browserifyModues' ]);
+gulp.task('production', ['jade', 'browserifyModues' ]);
 
 // Clean
 gulp.task('clean', function() {
@@ -69,18 +70,18 @@ gulp.task('jade', [ 'uglify' ], function() {
 	locals : {
 	    jsSuffix : '.min'
 	}
-    })).pipe(gulp.dest('../webapp/html/'))
+    })).pipe(gulp.dest('../webapp'))
 
     gulp.src('jade/*.jade').pipe(jade({
 	pretty : true,
 	locals : {
 	    jsSuffix : ''
 	},
-    })).pipe(rename("socialnetwork-debug.html")).pipe(gulp.dest('../webapp/html'))
+    })).pipe(rename("socialnetwork-debug.html")).pipe(gulp.dest('../webapp'))
 });
 
 // Browserify Modules
-gulp.task('browserifyModues', [ 'jade' ], function() {
+gulp.task('browserifyModues', [], function() {
     var concat = require('gulp-concat-util');
     var browserify = require('gulp-browserify');
     gulp.src('js/modules.js').pipe(browserify()).pipe(concat('node_modules.js')).pipe(gulp.dest('../webapp/js'))

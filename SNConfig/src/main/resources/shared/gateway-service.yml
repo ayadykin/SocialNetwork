@@ -1,0 +1,57 @@
+ribbon:
+  ReadTimeout: 20000
+  ConnectTimeout: 20000
+security:
+  oauth2:
+    client:
+      clientId: acme
+      clientSecret: acmesecret
+      accessTokenUri: http://localhost:8080/AuthService/oauth/token
+      grant-type: client_credentials
+      scope: authorization_code
+linkedin:
+  client:
+    clientId: 86k63lhjq6z5m5
+    clientSecret: ISP5ygCpYNA68DBv
+    accessTokenUri: https://www.linkedin.com/oauth/v2/accessToken
+    userAuthorizationUri: https://www.linkedin.com/oauth/v2/authorization
+    clientAuthenticationScheme: form
+    preEstablishedRedirectUri: http://localhost:8080/SocialNetworkAngular/login/linkedin/callback
+    useCurrentUri: false   
+  resource:
+    userInfoUri: https://api.linkedin.com/v1/people
+facebook:
+  client:
+    clientId: 217117248735417
+    clientSecret: dc5810422bd5f808121d5675d9fffc20
+    accessTokenUri: https://graph.facebook.com/oauth/access_token
+    userAuthorizationUri: https://www.facebook.com/dialog/oauth
+    tokenName: oauth_token
+    authenticationScheme: query
+    clientAuthenticationScheme: form
+  resource:
+    userInfoUri: https://graph.facebook.com/me
+github:
+  client:
+    clientId: db52b3952f6abe5d9a5b
+    clientSecret: f01feac8598532bf3bbe85e9339ee5b4f0c00c6f
+    accessTokenUri: https://github.com/login/oauth/access_token
+    userAuthorizationUri: https://github.com/login/oauth/authorize
+    clientAuthenticationScheme: form
+  resource:
+    userInfoUri: https://api.github.com/user
+zuul:
+  ignoredServices: '*'
+  host:
+    connect-timeout-millis: 20000
+    socket-timeout-millis: 20000
+
+  routes:
+    resource:
+      path: /resource/**
+      url: http://localhost:8080
+    auth-service:
+        path: /user/**
+        url: http://localhost:8080/AuthService
+        stripPrefix: false
+        sensitiveHeaders:

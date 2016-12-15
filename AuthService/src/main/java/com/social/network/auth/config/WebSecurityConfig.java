@@ -9,8 +9,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 
-import com.social.network.auth.services.AuthenticationFailure;
 import com.social.network.auth.services.MongoUserDetailsService;
 
 /**
@@ -19,19 +19,16 @@ import com.social.network.auth.services.MongoUserDetailsService;
  */
 
 @Configuration
+@EnableOAuth2Client
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private MongoUserDetailsService userDetailsService;
-    @Autowired
-    private AuthenticationFailure accessDeniedHandler;
-    
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
-        http.authorizeRequests().anyRequest().authenticated().and().exceptionHandling().accessDeniedHandler(accessDeniedHandler).and()
-                .csrf().disable();
+        http.authorizeRequests().anyRequest().authenticated().and().csrf().disable();
     }
 
     @Override
@@ -44,4 +41,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
 }

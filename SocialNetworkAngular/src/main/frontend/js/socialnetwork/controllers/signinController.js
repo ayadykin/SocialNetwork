@@ -7,10 +7,15 @@ angular.module('socialNetworkControllers').controller('SigninController',
 		    authorization : "Basic " + btoa(credentials.username + ":" + credentials.password)
 		} : {};
 
-		$http.get(config.signinPath, {
-		    headers : headers
+		$http.post(config.tokenPath, {
+		    headers : headers,
+		    data: {
+			scope: 'server',
+			grant_type: 'client_credentials'
+		    }
 		}).success(function(data) {
-		    if (data.email) {
+		    if (data.access_token) {
+			$window.sessionStorage.setItem('authData', data.access_token);
 			$rootScope.authenticated = true;
 		    } else if (data.error) {
 			$scope.error = true;
@@ -34,7 +39,7 @@ angular.module('socialNetworkControllers').controller('SigninController',
 	    };
 
 	    if (!$rootScope.authenticated) {
-		authenticate();
+		//authenticate();
 	    }
 	    $scope.credentials = {};
 	    $scope.login = function() {

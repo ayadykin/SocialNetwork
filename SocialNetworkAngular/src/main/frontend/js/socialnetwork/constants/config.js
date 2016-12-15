@@ -10,7 +10,8 @@ angular.module('socialNetworkApp').constant('config', {
     
     chatPath: "/SocialNetworkApi/chat",
     
-    signinPath: "/SocialNetworkApi/signin",
+    signinPath: "/AuthService/oauth/token",
+    tokenPath: "/AuthService/oauth/token",
     logoutPath: "/SocialNetworkApi/logout",
     
     profilePath: "/SocialNetworkApi/profile",

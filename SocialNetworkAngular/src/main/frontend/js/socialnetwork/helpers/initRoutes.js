@@ -26,6 +26,9 @@ function initRoutes($route) {
 	},
 	'/home' : {
 	    templateUrl : 'pages/homeSignedIn.html'
+	},
+	'/' : {
+	    templateUrl : 'pages/index.html'
 	}
 
     }, defaultUrl;

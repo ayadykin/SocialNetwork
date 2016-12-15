@@ -24,6 +24,8 @@
 	    templateUrl : 'pages/viewProfile.html'
 	});
 
+	$httpProvider.defaults.headers.common.Authorization = 'Bearer ' + window.sessionStorage.getItem('authData');
+	$httpProvider.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 	$httpProvider.interceptors.push('restErrorInterceptor');
     });
 }());

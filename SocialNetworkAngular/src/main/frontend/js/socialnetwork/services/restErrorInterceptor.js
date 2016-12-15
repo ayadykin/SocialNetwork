@@ -21,10 +21,15 @@ angular.module('socialNetworkServices').factory('restErrorInterceptor',
 		    return response;
 		},
 		'responseError' : function(error) {
-		    $log.error("responseServerError  : " + angular.toJson(error));
-
-		    $rootScope.notification.message = "Server error";
-		    $rootScope.notification.error = true;
+		    if (error.status === 401) {
+			$log.error("restErrorInterceptor response status : " + response.status);
+			$location.path("/signin");
+		    }else{		    
+        		    $log.error("responseServerError  : " + angular.toJson(error));
+        
+        		    $rootScope.notification.message = "Server error";
+        		    $rootScope.notification.error = true;
+		    }
 		    return {};
 
 		}

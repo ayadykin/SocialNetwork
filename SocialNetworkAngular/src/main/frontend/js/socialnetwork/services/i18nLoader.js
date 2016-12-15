@@ -26,7 +26,7 @@ angular.module('socialNetworkServices').factory('i18nLoader',
 		    $log.debug("i18nLoader load from cache");
 		    complete(data, deferred, key);
 		} else {
-		    $http.get('../i18n/' + (key + '.properties' || '')).success(function(data) {
+		    $http.get('i18n/' + (key + '.properties' || '')).success(function(data) {
 			complete(data, deferred, key);
 		    }).error(function(data) {
 			deferred.reject(data.error);

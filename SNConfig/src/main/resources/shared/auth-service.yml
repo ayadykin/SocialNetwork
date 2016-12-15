@@ -1,0 +1,11 @@
+linkedin:
+  client:
+    clientId: 86k63lhjq6z5m5
+    clientSecret: ISP5ygCpYNA68DBv
+    accessTokenUri: https://www.linkedin.com/oauth/v2/accessToken
+    userAuthorizationUri: https://www.linkedin.com/oauth/v2/authorization
+    clientAuthenticationScheme: header
+    registered-redirect-uri: http://localhost:8080/SocialNetworkAngular/auth/linkedin/callback
+    use-current-uri: false
+  resource:
+    userInfoUri: https://api.github.com/user

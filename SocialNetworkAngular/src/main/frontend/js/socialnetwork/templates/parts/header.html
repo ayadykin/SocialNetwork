@@ -21,6 +21,9 @@
 			<li><a href="#" data-ng-click="changeLocale('ru')">Russian </a></li>
 
 			<li data-ng-show="!authenticated"><a href="#/signin">Sign in</a></li>
+			<li data-ng-show="!authenticated"><a href="login/github">Sign in with Github</a></li>
+			<li data-ng-show="!authenticated"><a href="login/facebook">Sign in with Facebook</a></li>
+			<li data-ng-show="!authenticated"><a href="login/linkedin">Sign in with LinkedIn</a></li>
 			<li data-ng-show="authenticated"><a href="#" data-ng-click="logout()">Logout</a></li>
 
 		</ul>
