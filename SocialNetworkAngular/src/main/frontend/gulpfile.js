@@ -2,7 +2,6 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var debug = require('gulp-debug');
 var concat = require('./gulp/concat');
-var clean = require('./gulp/clean');
 var rename = require("gulp-rename");
 
 gulp.task('default', ['jade', 'browserifyModues' ]);
@@ -10,10 +9,8 @@ gulp.task('production', ['jade', 'browserifyModues' ]);
 
 // Clean
 gulp.task('clean', function() {
-    var clean = require('gulp-clean');
-    gulp.src([ '../webapp/js/socialnetwork/build/*.js' ]).pipe(clean({
-	force : true
-    }));
+    var del = require('del');
+    del([ '../webapp/js/socialnetwork/build/*.js', '../webapp/js/*' ]);    
 });
 
 // Concat controllers
@@ -48,13 +45,12 @@ gulp.task('mainViewer', [ 'concat' ], function() {
 
 gulp.task('ngAnnotate', [ 'mainViewer' ], function() {
     var ngAnnotate = require('gulp-ng-annotate');
-
     gulp.src('../webapp/js/socialnetwork/build/app.js').pipe(debug({
 	title : 'ngAnnotate:'
     })).pipe(rename('app.annotate.js')).pipe(ngAnnotate()).pipe(gulp.dest('../webapp/js/socialnetwork/build/'));
 });
 
-gulp.task('uglify', [ 'ngAnnotate' ], function() {
+gulp.task('uglify', [ 'ngAnnotate' ], function() {    
     var uglify = require('gulp-uglify');
     gulp.src('../webapp/js/socialnetwork/build/app.annotate.js').pipe(debug({
 	title : 'uglify:'
